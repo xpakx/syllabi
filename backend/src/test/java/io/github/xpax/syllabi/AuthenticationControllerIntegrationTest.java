@@ -32,6 +32,9 @@ class AuthenticationControllerIntegrationTest {
     private final AuthenticationRequest authenticationRequest;
     private final AuthenticationRequest badAuthenticationRequest;
     private final AuthenticationRequest authenticationRequestNonexistentUser;
+    private final RegistrationRequest registrationRequest;
+    private final RegistrationRequest registrationRequestDifferentPasswords;
+    private final RegistrationRequest registrationRequestUserExists;
 
     @Autowired
     public AuthenticationControllerIntegrationTest(JwtTokenUtil jwtTokenUtil, UserRepository userRepository,
@@ -53,6 +56,19 @@ class AuthenticationControllerIntegrationTest {
         authenticationRequestNonexistentUser = new AuthenticationRequest();
         authenticationRequestNonexistentUser.setUsername("user2");
         authenticationRequestNonexistentUser.setPassword("password");
+
+        registrationRequest = new RegistrationRequest();
+        registrationRequest.setUsername("user2");
+        registrationRequest.setPassword("password");
+        registrationRequest.setPasswordRe("password");
+        registrationRequestDifferentPasswords = new RegistrationRequest();
+        registrationRequestDifferentPasswords.setUsername("user2");
+        registrationRequestDifferentPasswords.setPassword("password");
+        registrationRequestDifferentPasswords.setPasswordRe("badPassword");
+        registrationRequestUserExists = new RegistrationRequest();
+        registrationRequestUserExists.setUsername("user1");
+        registrationRequestUserExists.setPassword("password");
+        registrationRequestUserExists.setPasswordRe("password");
 
         String port = env.getProperty("local.server.port");
         port = port == null ? "" : port;
@@ -162,5 +178,56 @@ class AuthenticationControllerIntegrationTest {
                 .then()
                 .statusCode(UNAUTHORIZED.value())
                 .body("$", not(hasKey("token")));
+    }
+
+    @Test
+    void shouldRegisterUser() {
+        String token = given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(registrationRequest)
+                .when()
+                .post(baseUrl + "/register")
+                .then()
+                .statusCode(CREATED.value())
+                .body("$", hasKey("token"))
+                .extract()
+                .jsonPath()
+                .getString("token");
+    }
+
+    @Test
+    void shouldNotRegisterIfPasswordsDoNotMatch() {
+        given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(registrationRequestDifferentPasswords)
+                .when()
+                .post(baseUrl + "/register")
+                .then()
+                .log()
+                .body()
+                .statusCode(BAD_REQUEST.value())
+                .body("$", not(hasKey("token")))
+                .body("message", containsString("don't match"));
+    }
+
+    @Test
+    void shouldNotRegisterIfUsernameAlreadyUsed() {
+        given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(registrationRequestUserExists)
+                .when()
+                .post(baseUrl + "/register")
+                .then()
+                .log()
+                .body()
+                .statusCode(BAD_REQUEST.value())
+                .body("$", not(hasKey("token")))
+                .body("message", containsString("exists"));
     }
 }

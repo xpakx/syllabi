@@ -6,6 +6,7 @@ import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.AuthenticationRequest;
 import io.github.xpax.syllabi.entity.dto.AuthenticationResponse;
+import io.github.xpax.syllabi.entity.dto.RegistrationRequest;
 import io.github.xpax.syllabi.error.JwtBadCredentialsException;
 import io.github.xpax.syllabi.service.AuthenticationService;
 import io.restassured.http.ContentType;
@@ -48,7 +49,7 @@ public class AuthenticationControllerTest {
 
     private AuthenticationRequest authenticationRequest;
     private AuthenticationResponse authenticationResponse;
-
+    private RegistrationRequest registrationRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -59,12 +60,17 @@ public class AuthenticationControllerTest {
         authenticationRequest.setPassword("password");
 
         authenticationResponse = new AuthenticationResponse("generatedToken", "3");
+
+        registrationRequest = new RegistrationRequest();
+        registrationRequest.setUsername("username");
+        registrationRequest.setPassword("password");
+        registrationRequest.setPasswordRe("password");
     }
 
     private void injectMocks() {
-        AuthenticationController authenticationController = new AuthenticationController(
-                authenticationService);
-        RestAssuredMockMvc.standaloneSetup(authenticationController);
+        AuthenticationController userController =
+                new AuthenticationController(authenticationService);
+        RestAssuredMockMvc.standaloneSetup(userController);
         RestAssuredMockMvc.config = new RestAssuredMockMvcConfig()
                 .mockMvcConfig(MockMvcConfig.mockMvcConfig().dontAutomaticallyApplySpringSecurityMockMvcConfigurer());
     }
@@ -108,5 +114,32 @@ public class AuthenticationControllerTest {
                 .post("/authenticate")
                 .then()
                 .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondToRegisterRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(registrationRequest)
+                .when()
+                .post("/register")
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldRegisterUser() {
+        BDDMockito.given(authenticationService.register(any(RegistrationRequest.class)))
+                .willReturn(authenticationResponse);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(registrationRequest)
+                .when()
+                .post("/register")
+                .then()
+                .statusCode(CREATED.value())
+                .body("token", equalTo("generatedToken"));
     }
 }
