@@ -1,8 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterLinkWithHref } from '@angular/router';
-import { AuthenticationRequest } from '../../entity/authentication-request';
+import { Router } from '@angular/router';
 import { AuthenticationToken } from '../../entity/authentication-token';
 import { AuthenticationService } from '../../service/authentication.service';
 
@@ -33,11 +32,10 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    let auth: AuthenticationRequest = new AuthenticationRequest(
-      this.form.controls.username.value, 
-      this.form.controls.password.value
-    );
-    this.authService.authenticate(auth).subscribe(
+    this.authService.authenticate({
+      username: this.form.controls.username.value,
+      password: this.form.controls.password.value
+    }).subscribe(
       (response: AuthenticationToken) => {
         localStorage.setItem("token", response.token);
         localStorage.setItem("user_id", response.id);

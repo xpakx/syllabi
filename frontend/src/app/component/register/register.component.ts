@@ -32,12 +32,11 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    let auth: RegistrationRequest = new RegistrationRequest(
-      this.form.controls.username.value, 
-      this.form.controls.password.value, 
-      this.form.controls.passwordRe.value
-    );
-    this.authService.register(auth).subscribe(
+    this.authService.register({
+      username: this.form.controls.username.value, 
+      password: this.form.controls.password.value, 
+      passwordRe: this.form.controls.passwordRe.value
+    }).subscribe(
       (response: AuthenticationToken) => {
         localStorage.setItem("token", response.token);
         localStorage.setItem("user_id", response.id);
