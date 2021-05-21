@@ -51,6 +51,7 @@ class CourseControllerTest {
     private Course updatedCourse;
     private CourseYearRequest yearRequest;
     private CourseYear addedCourseYear;
+    private Page<CourseYearForPage> courseYearsPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -112,6 +113,21 @@ class CourseControllerTest {
                 .id(17)
                 .parent(course5)
                 .build();
+
+        CourseYear year0 = CourseYear.builder()
+                .id(0)
+                .build();
+        CourseYear year1 = CourseYear.builder()
+                .id(1)
+                .build();
+
+        CourseYearForPage year0ForPage = factory.createProjection(CourseYearForPage.class, year0);
+        CourseYearForPage year1ForPage = factory.createProjection(CourseYearForPage.class, year1);
+
+        List<CourseYearForPage> courseYearList = new ArrayList<>();
+        courseYearList.add(year0ForPage);
+        courseYearList.add(year1ForPage);
+        courseYearsPage = new PageImpl<>(courseYearList);
     }
 
     private void injectMocks() {
@@ -402,4 +418,59 @@ class CourseControllerTest {
                 //.body("parent.name", equalTo("Game Theory"))
                 .body("id", equalTo(17));
     }
+
+    @Test
+    void shouldRespondToGetAllCourseYearsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/years", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetAllCourseYearsRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/courses/{courseId}/years", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseYearService)
+                .should(times(1))
+                .getYearsForCourse(5, 7, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllCourseYearsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/years", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseYearService)
+                .should(times(1))
+                .getYearsForCourse(5,0, 20);
+    }
+
+    @Test
+    void shouldProduceListOfCourseYears() {
+        BDDMockito.given(courseYearService.getYearsForCourse(anyInt(), anyInt(), anyInt()))
+                .willReturn(courseYearsPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/years", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(2));
+    }
+
+
 }

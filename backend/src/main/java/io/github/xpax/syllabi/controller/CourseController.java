@@ -67,4 +67,14 @@ public class CourseController {
         return new ResponseEntity<>(courseYearService.addNewCourseYear(courseId, yearRequest), HttpStatus.CREATED);
     }
 
+    @GetMapping("/{courseId}/years")
+    public ResponseEntity<Page<CourseYearForPage>> getAllYearsForCourse(@PathVariable Integer courseId,
+                                                                        @RequestParam Optional<Integer> page,
+                                                                        @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                courseYearService.getYearsForCourse(courseId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
+
 }

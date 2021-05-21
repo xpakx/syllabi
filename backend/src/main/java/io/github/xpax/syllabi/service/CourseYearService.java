@@ -3,16 +3,21 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.CourseYearForPage;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class CourseYearService {
     private final CourseRepository courseRepository;
     private final CourseYearRepository courseYearRepository;
@@ -58,5 +63,9 @@ public class CourseYearService {
                 .commentary(yearRequest.getCommentary())
                 .startDate(yearRequest.getStartDate())
                 .endDate(yearRequest.getEndDate());
+    }
+
+    public Page<CourseYearForPage> getYearsForCourse(Integer courseId, Integer page, Integer size) {
+        return courseYearRepository.findAllByParentId(courseId, PageRequest.of(page, size));
     }
 }

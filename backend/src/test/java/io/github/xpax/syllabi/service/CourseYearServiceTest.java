@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.CourseYearForPage;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
@@ -20,8 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -41,6 +46,7 @@ class CourseYearServiceTest {
     private Course course;
     private Teacher firstTeacher;
     private Teacher secondTeacher;
+    private Page<CourseYearForPage> courseYearPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -64,6 +70,7 @@ class CourseYearServiceTest {
         coordinators.add(4);
         request.setCoordinators(coordinators);
 
+        courseYearPage = Page.empty();
     }
 
     private void injectMocks() {
@@ -92,5 +99,29 @@ class CourseYearServiceTest {
         assertNotNull(year.getParent());
         assertEquals(17, year.getParent().getId());
         assertNull(year.getId());
+    }
+
+    @Test
+    void shouldAskRepositoryForCourseYears() {
+        given(courseYearRepository.findAllByParentId(anyInt(), any(PageRequest.class)))
+                .willReturn(courseYearPage);
+        injectMocks();
+
+        Page<CourseYearForPage> result = courseYearService.getYearsForCourse(3, 0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        ArgumentCaptor<Integer> integerCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        then(courseYearRepository)
+                .should(times(1))
+                .findAllByParentId(integerCaptor.capture(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+        Integer courseId = integerCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+        assertEquals(3, courseId);
+
+        assertThat(result, is(sameInstance(courseYearPage)));
     }
 }

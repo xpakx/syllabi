@@ -7,6 +7,7 @@ import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.CourseRequest;
 import io.github.xpax.syllabi.entity.dto.UpdateCourseRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
+import io.github.xpax.syllabi.repo.CourseYearRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
@@ -44,6 +45,8 @@ class CourseControllerIntegrationTest {
     UserService userService;
     @Autowired
     CourseRepository courseRepository;
+    @Autowired
+    CourseYearRepository courseYearRepository;
 
     private CourseRequest courseRequest;
     private UpdateCourseRequest updateCourseRequest;
@@ -79,6 +82,7 @@ class CourseControllerIntegrationTest {
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
+        courseYearRepository.deleteAll();
         courseRepository.deleteAll();
     }
 
@@ -111,6 +115,30 @@ class CourseControllerIntegrationTest {
             courseRepository.save(dummyCourse);
         }
 
+        return courseId;
+    }
+
+    private Integer addCourseAndYears() {
+        Course course = Course.builder()
+                .name("Introduction to Cognitive Science")
+                .programs(new HashSet<>())
+                .build();
+        Integer courseId = courseRepository.save(course).getId();
+
+        Calendar calendarActive = Calendar.getInstance();
+        calendarActive.add(Calendar.YEAR, 1);
+
+        Calendar calendarNotActive = Calendar.getInstance();
+        calendarNotActive.add(Calendar.YEAR, -1);
+
+        for(int i = 1; i<=50; i++) {
+            CourseYear dummyCourseYear = CourseYear.builder()
+                    .parent(course)
+                    .description("Dummy Course Year #"+i)
+                    .endDate(i%2==0 ? calendarActive.getTime() : calendarNotActive.getTime())
+                    .build();
+            courseYearRepository.save(dummyCourseYear);
+        }
         return courseId;
     }
 
@@ -377,5 +405,54 @@ class CourseControllerIntegrationTest {
                 .delete(baseUrl + "/{courseId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCourseYearsRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{courseId}/years", 1)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCourseYearsPageAndDefaultPaginationToGetCourseYearsRequest() {
+        Integer id = addCourseAndYears();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}/years", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].description", equalTo("Dummy Course Year #1"))
+                .body("content[0].parent.name", equalTo("Introduction to Cognitive Science"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCourseYearsPageAndCustomPaginationToGetCourseYearsRequest() {
+        Integer id = addCourseAndYears();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{courseId}/years", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].description", equalTo("Dummy Course Year #16"))
+                .body("content[0].parent.name", equalTo("Introduction to Cognitive Science"))
+                .body("numberOfElements", equalTo(5));
     }
 }
