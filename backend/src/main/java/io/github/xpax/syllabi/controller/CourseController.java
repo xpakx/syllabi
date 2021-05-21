@@ -52,4 +52,11 @@ public class CourseController {
         return new ResponseEntity<>(courseService.updateCourse(courseRequest, courseId), HttpStatus.OK);
     }
 
+    @Secured("ROLE_COURSE_ADMIN")
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<?> deleteCourse(@PathVariable Integer courseId) {
+        courseService.deleteCourse(courseId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

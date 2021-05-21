@@ -314,4 +314,28 @@ class CourseControllerTest {
                 .body("name", equalTo("Pragmatics"))
                 .body("ects", equalTo(10));
     }
+
+    @Test
+    void shouldRespondToDeleteRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/courses/{courseId}", 9)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteCourse() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/courses/{courseId}", 9)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .deleteCourse(9);
+    }
 }

@@ -60,7 +60,9 @@ public class CourseService {
         return courseRepository.save(courseToUpdate);
     }
 
-
+    public void deleteCourse(Integer courseId) {
+        courseRepository.deleteById(courseId);
+    }
 
 
 
@@ -102,4 +104,5 @@ public class CourseService {
         else
             return new ArrayList<>();
     }
+
 }

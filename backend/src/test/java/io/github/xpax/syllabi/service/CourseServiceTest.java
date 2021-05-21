@@ -216,5 +216,15 @@ class CourseServiceTest {
         assertEquals(3, updatedCourse.getId());
     }
 
+    @Test
+    void shouldDeleteCourse() {
+        injectMocks();
+
+        courseService.deleteCourse(5);
+
+        then(courseRepository)
+                .should(times(1))
+                .deleteById(5);
+    }
 
 }
