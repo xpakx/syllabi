@@ -5,6 +5,7 @@ import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.CourseRequest;
+import io.github.xpax.syllabi.entity.dto.UpdateCourseRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
@@ -45,6 +46,7 @@ class CourseControllerIntegrationTest {
     CourseRepository courseRepository;
 
     private CourseRequest courseRequest;
+    private UpdateCourseRequest updateCourseRequest;
 
     @BeforeEach
     void setUp() {
@@ -69,6 +71,9 @@ class CourseControllerIntegrationTest {
 
         courseRequest = new CourseRequest();
         courseRequest.setName("Added Course");
+
+        updateCourseRequest = new UpdateCourseRequest();
+        updateCourseRequest.setName("Edited Course");
     }
 
     @AfterEach
@@ -254,5 +259,62 @@ class CourseControllerIntegrationTest {
                 .then()
                 .statusCode(OK.value())
                 .body("name", equalTo("Added Course"));
+    }
+
+    @Test
+    void shouldRespondWith401ToUpdateCourseRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/{courseId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateCourseRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(updateCourseRequest)
+                .when()
+                .put(baseUrl + "/{courseId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedCourse() {
+        Integer id = addCourses();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(updateCourseRequest)
+                .when()
+                .put(baseUrl + "/{courseId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(id))
+                .body("name", equalTo("Edited Course"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Edited Course"));
     }
 }

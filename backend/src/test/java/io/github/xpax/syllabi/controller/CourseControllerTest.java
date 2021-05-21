@@ -5,6 +5,7 @@ import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
+import io.github.xpax.syllabi.entity.dto.UpdateCourseRequest;
 import io.github.xpax.syllabi.service.CourseService;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -46,6 +47,8 @@ class CourseControllerTest {
     private CourseDetails course1;
     private NewCourseRequest newCourseRequest;
     private Course addedCourse;
+    private UpdateCourseRequest updateCourseRequest;
+    private Course updatedCourse;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -85,6 +88,16 @@ class CourseControllerTest {
                 .name("Logic II")
                 .ects(10)
                 .language("pl")
+                .build();
+
+        updateCourseRequest = new UpdateCourseRequest();
+        updateCourseRequest.setEcts(10);
+        updateCourseRequest.setName("Pragmatics");
+
+        updatedCourse = Course.builder()
+                .id(1)
+                .name("Pragmatics")
+                .ects(10)
                 .build();
     }
 
@@ -242,6 +255,63 @@ class CourseControllerTest {
                 .body("id", equalTo(17))
                 .body("name", equalTo("Logic II"))
                 .body("language", equalTo("pl"))
+                .body("ects", equalTo(10));
+    }
+
+    @Test
+    void shouldRespondToUpdateCourseRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateCourseRequest)
+                .when()
+                .put("/courses/{courseId}", 1)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldUpdateCourse() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateCourseRequest)
+                .when()
+                .put("/courses/{courseId}", 1)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<UpdateCourseRequest> requestCaptor = ArgumentCaptor.forClass(UpdateCourseRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .updateCourse(requestCaptor.capture(), idCaptor.capture());
+
+        Integer id = idCaptor.getValue();
+        assertEquals(1, id);
+
+        UpdateCourseRequest capturedRequest = requestCaptor.getValue();
+        assertEquals("Pragmatics", capturedRequest.getName());
+        assertEquals(10, capturedRequest.getEcts());
+    }
+
+    @Test
+    void shouldReturnUpdatedCourse() {
+        BDDMockito.given(courseService.updateCourse(any(UpdateCourseRequest.class), anyInt()))
+                .willReturn(updatedCourse);
+        injectMocks();
+
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateCourseRequest)
+                .when()
+                .put("/courses/{courseId}", 1)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(1))
+                .body("name", equalTo("Pragmatics"))
                 .body("ects", equalTo(10));
     }
 }

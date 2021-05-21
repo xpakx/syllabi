@@ -4,6 +4,7 @@ import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
+import io.github.xpax.syllabi.entity.dto.UpdateCourseRequest;
 import io.github.xpax.syllabi.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,13 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<Course> addNewCourse(@RequestBody NewCourseRequest courseRequest) {
         return new ResponseEntity<>(courseService.addNewCourse(courseRequest), HttpStatus.CREATED);
+    }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @PutMapping("/{courseId}")
+    public ResponseEntity<Course> editCourse(@RequestBody UpdateCourseRequest courseRequest,
+                                             @PathVariable Integer courseId) {
+        return new ResponseEntity<>(courseService.updateCourse(courseRequest, courseId), HttpStatus.OK);
     }
 
 }

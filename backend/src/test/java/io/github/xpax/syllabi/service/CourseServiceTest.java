@@ -6,9 +6,11 @@ import io.github.xpax.syllabi.entity.Program;
 import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
+import io.github.xpax.syllabi.entity.dto.UpdateCourseRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
+import io.github.xpax.syllabi.repo.ProgramRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,11 +22,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -39,6 +43,8 @@ class CourseServiceTest {
     private CourseRepository courseRepository;
     @Mock
     private InstituteRepository instituteRepository;
+    @Mock
+    private ProgramRepository programRepository;
 
     private CourseService courseService;
 
@@ -50,6 +56,7 @@ class CourseServiceTest {
     private Course computation;
     private Program program;
     private NewCourseRequest request;
+    private UpdateCourseRequest updateRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -91,10 +98,21 @@ class CourseServiceTest {
         request.setEcts(2);
         request.setFacultative(false);
         request.setOrganizerId(2);
+
+        updateRequest = new UpdateCourseRequest();
+        List<Integer> prerequisites = new ArrayList<>();
+        prerequisites.add(1);
+        prerequisites.add(2);
+        updateRequest.setPrerequisites(prerequisites);
+        List<Integer> programs = new ArrayList<>();
+        programs.add(0);
+        updateRequest.setPrograms(programs);
+        updateRequest.setName("Artificial Intelligence");
+        updateRequest.setOrganizerId(0);
     }
 
     private void injectMocks() {
-        courseService = new CourseService(courseRepository, instituteRepository);
+        courseService = new CourseService(courseRepository, instituteRepository, programRepository);
     }
 
     @Test
@@ -161,6 +179,41 @@ class CourseServiceTest {
         assertEquals(2, addedCourse.getEcts());
         assertEquals("Introduction to Epistemology", addedCourse.getName());
         assertFalse(addedCourse.getFacultative());
+    }
+
+    @Test
+    void shouldUpdateCourse() {
+        given(instituteRepository.getOne(0))
+                .willReturn(organizer2);
+        given(courseRepository.getOne(1))
+                .willReturn(algorithms);
+        given(courseRepository.getOne(2))
+                .willReturn(computation);
+        given(programRepository.getOne(0))
+                .willReturn(program);
+        injectMocks();
+
+        courseService.updateCourse(updateRequest, 3);
+
+        then(courseRepository)
+                .should(times(2))
+                .getOne(anyInt());
+        then(instituteRepository)
+                .should(times(1))
+                .getOne(anyInt());
+
+        ArgumentCaptor<Course> courseArgumentCaptor = ArgumentCaptor.forClass(Course.class);
+
+        then(courseRepository)
+                .should(times(1))
+                .save(courseArgumentCaptor.capture());
+        Course updatedCourse = courseArgumentCaptor.getValue();
+
+        assertNotNull(updatedCourse);
+        assertThat(updatedCourse.getPrerequisites(), hasSize(2));
+        assertThat(updatedCourse.getPrograms(), hasSize(1));
+        assertEquals("Artificial Intelligence", updatedCourse.getName());
+        assertEquals(3, updatedCourse.getId());
     }
 
 

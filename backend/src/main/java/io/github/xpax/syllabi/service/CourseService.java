@@ -2,27 +2,31 @@ package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
-import io.github.xpax.syllabi.entity.dto.CourseDetails;
-import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.CourseRequest;
-import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
+import io.github.xpax.syllabi.repo.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
     private final InstituteRepository instituteRepository;
+    private final ProgramRepository programRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, InstituteRepository instituteRepository) {
+    public CourseService(CourseRepository courseRepository, InstituteRepository instituteRepository, ProgramRepository programRepository) {
         this.courseRepository = courseRepository;
         this.instituteRepository = instituteRepository;
+        this.programRepository = programRepository;
     }
 
     public Page<CourseForPage> getAllCourses(Integer page, Integer size) {
@@ -38,6 +42,22 @@ public class CourseService {
         Institute institute = getInstitute(courseRequest);
         Course courseToAdd = buildCourse(courseRequest, institute).build();
         return courseRepository.save(courseToAdd);
+    }
+
+    public Course updateCourse(UpdateCourseRequest courseRequest, Integer courseId) {
+        Institute institute = getInstitute(courseRequest);
+        Course courseToUpdate = buildCourse(courseRequest, institute)
+                .id(courseId)
+                .prerequisites(getPrerequisites(courseRequest)
+                        .stream()
+                        .map(courseRepository::getOne)
+                        .collect(Collectors.toSet()))
+                .programs(getPrograms(courseRequest)
+                        .stream()
+                        .map(programRepository::getOne)
+                        .collect(Collectors.toSet()))
+                .build();
+        return courseRepository.save(courseToUpdate);
     }
 
 
@@ -69,5 +89,17 @@ public class CourseService {
                 .requirements(courseRequest.getRequirements());
     }
 
+    private List<Integer> getPrograms(UpdateCourseRequest courseRequest) {
+        if(courseRequest.getPrograms() != null)
+            return courseRequest.getPrograms();
+        else
+            return new ArrayList<>();
+    }
 
+    private List<Integer> getPrerequisites(UpdateCourseRequest courseRequest) {
+        if(courseRequest.getPrerequisites() != null)
+            return courseRequest.getPrerequisites();
+        else
+            return new ArrayList<>();
+    }
 }
