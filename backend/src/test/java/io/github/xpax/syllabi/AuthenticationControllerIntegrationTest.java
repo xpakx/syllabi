@@ -150,6 +150,14 @@ class AuthenticationControllerIntegrationTest {
                 .extract()
                 .jsonPath()
                 .getString("token");
+
+        given()
+                .auth()
+                .oauth2(token)
+                .when()
+                .get(baseUrl + "/courses")
+                .then()
+                .statusCode(OK.value());
     }
 
     @Test
@@ -195,6 +203,14 @@ class AuthenticationControllerIntegrationTest {
                 .extract()
                 .jsonPath()
                 .getString("token");
+
+        given()
+                .auth()
+                .oauth2(token)
+                .when()
+                .get(baseUrl + "/courses")
+                .then()
+                .statusCode(OK.value());
     }
 
     @Test
