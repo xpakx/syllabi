@@ -472,5 +472,56 @@ class CourseControllerTest {
                 .body("content", hasSize(2));
     }
 
+    @Test
+    void shouldRespondToGetAllActiveCourseYearsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/years/active", 5)
+                .then()
+                .statusCode(OK.value());
+    }
 
+    @Test
+    void shouldTakePageAndSizeFromGetAllActiveCourseYearsRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/courses/{courseId}/years/active", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseYearService)
+                .should(times(1))
+                .getActiveYearsForCourse(5, 7, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllActiveCourseYearsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/years/active", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseYearService)
+                .should(times(1))
+                .getActiveYearsForCourse(5,0, 20);
+    }
+
+    @Test
+    void shouldProduceListOfActiveCourseYears() {
+        BDDMockito.given(courseYearService.getActiveYearsForCourse(anyInt(), anyInt(), anyInt()))
+                .willReturn(courseYearsPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/years/active", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(2));
+    }
 }

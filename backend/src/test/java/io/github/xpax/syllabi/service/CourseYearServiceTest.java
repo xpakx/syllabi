@@ -20,6 +20,7 @@ import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -115,6 +116,30 @@ class CourseYearServiceTest {
         then(courseYearRepository)
                 .should(times(1))
                 .findAllByParentId(integerCaptor.capture(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+        Integer courseId = integerCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+        assertEquals(3, courseId);
+
+        assertThat(result, is(sameInstance(courseYearPage)));
+    }
+
+    @Test
+    void shouldAskRepositoryForActiveCourseYears() {
+        given(courseYearRepository.findByParentIdAndEndDateAfter(anyInt(), any(Date.class), any(PageRequest.class)))
+                .willReturn(courseYearPage);
+        injectMocks();
+
+        Page<CourseYearForPage> result = courseYearService.getActiveYearsForCourse(3, 0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        ArgumentCaptor<Integer> integerCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        then(courseYearRepository)
+                .should(times(1))
+                .findByParentIdAndEndDateAfter(integerCaptor.capture(), any(Date.class), pageRequestCaptor.capture());
         PageRequest pageRequest = pageRequestCaptor.getValue();
         Integer courseId = integerCaptor.getValue();
 

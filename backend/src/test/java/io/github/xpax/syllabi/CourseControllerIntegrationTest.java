@@ -455,4 +455,53 @@ class CourseControllerIntegrationTest {
                 .body("content[0].parent.name", equalTo("Introduction to Cognitive Science"))
                 .body("numberOfElements", equalTo(5));
     }
+
+    @Test
+    void shouldRespondWith401ToGetActiveCourseYearsRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{courseId}/years/active", 1)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCourseYearsPageAndDefaultPaginationToGetActiveCourseYearsRequest() {
+        Integer id = addCourseAndYears();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}/years/active", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].description", equalTo("Dummy Course Year #2"))
+                .body("content[0].parent.name", equalTo("Introduction to Cognitive Science"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCourseYearsPageAndCustomPaginationToGetActiveCourseYearsRequest() {
+        Integer id = addCourseAndYears();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{courseId}/years/active", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].description", equalTo("Dummy Course Year #32"))
+                .body("content[0].parent.name", equalTo("Introduction to Cognitive Science"))
+                .body("numberOfElements", equalTo(5));
+    }
 }

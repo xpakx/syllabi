@@ -77,4 +77,14 @@ public class CourseController {
         );
     }
 
+    @GetMapping("/{courseId}/years/active")
+    public ResponseEntity<Page<CourseYearForPage>> getAllActiveYearsForCourse(@PathVariable Integer courseId,
+                                                                              @RequestParam Optional<Integer> page,
+                                                                              @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                courseYearService.getActiveYearsForCourse(courseId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
+
 }

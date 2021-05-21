@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,5 +68,9 @@ public class CourseYearService {
 
     public Page<CourseYearForPage> getYearsForCourse(Integer courseId, Integer page, Integer size) {
         return courseYearRepository.findAllByParentId(courseId, PageRequest.of(page, size));
+    }
+
+    public Page<CourseYearForPage> getActiveYearsForCourse(Integer courseId, Integer page, Integer size) {
+        return courseYearRepository.findByParentIdAndEndDateAfter(courseId, new Date(), PageRequest.of(page, size));
     }
 }
