@@ -504,4 +504,43 @@ class CourseControllerIntegrationTest {
                 .body("content[0].parent.name", equalTo("Introduction to Cognitive Science"))
                 .body("numberOfElements", equalTo(5));
     }
+
+    @Test
+    void shouldRespondWith401ToGetCourseMinRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{courseId}/min", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCourseMin() {
+        Integer id = addCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}/min", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Pragmatics"));
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseMinNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}/min", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
 }

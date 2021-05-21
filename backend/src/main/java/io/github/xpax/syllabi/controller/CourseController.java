@@ -40,6 +40,11 @@ public class CourseController {
         return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
     }
 
+    @GetMapping("/{courseId}/min")
+    public ResponseEntity<CourseSummary> getCourseByIdMin(@PathVariable Integer courseId) {
+        return new ResponseEntity<>(courseService.getCourseMin(courseId), HttpStatus.OK);
+    }
+
     @Secured("ROLE_COURSE_ADMIN")
     @PostMapping
     public ResponseEntity<Course> addNewCourse(@RequestBody NewCourseRequest courseRequest) {

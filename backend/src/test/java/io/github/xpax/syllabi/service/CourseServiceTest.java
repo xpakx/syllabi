@@ -3,10 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Program;
-import io.github.xpax.syllabi.entity.dto.CourseDetails;
-import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
-import io.github.xpax.syllabi.entity.dto.UpdateCourseRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
@@ -57,8 +54,10 @@ class CourseServiceTest {
     private Program program;
     private NewCourseRequest request;
     private UpdateCourseRequest updateRequest;
+    private CourseSummary courseMin;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+
 
     @BeforeEach
     void setUp() {
@@ -79,6 +78,7 @@ class CourseServiceTest {
                 .build();
 
         this.course = factory.createProjection(CourseDetails.class, course);
+        this.courseMin = factory.createProjection(CourseSummary.class, course);
 
         program = Program.builder()
                 .id(0)
@@ -225,6 +225,19 @@ class CourseServiceTest {
         then(courseRepository)
                 .should(times(1))
                 .deleteById(5);
+    }
+
+    @Test
+    void shouldReturnCourseMin() {
+        given(courseRepository.getProjectedById(anyInt(), any(Class.class)))
+                .willReturn(Optional.of(courseMin));
+        injectMocks();
+
+        CourseSummary result = courseService.getCourseMin(3);
+
+        assertNotNull(result);
+        assertEquals("Artificial Intelligence", result.getName());
+        assertEquals(3, result.getId());
     }
 
 }

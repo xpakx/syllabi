@@ -52,6 +52,7 @@ class CourseControllerTest {
     private CourseYearRequest yearRequest;
     private CourseYear addedCourseYear;
     private Page<CourseYearForPage> courseYearsPage;
+    private CourseSummary course1Min;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -63,6 +64,7 @@ class CourseControllerTest {
                 .name("Introduction to Cognitive Science")
                 .build();
         this.course1 = factory.createProjection(CourseDetails.class, course1);
+        this.course1Min = factory.createProjection(CourseSummary.class, course1);
         Course course2 = Course.builder()
                 .id(1)
                 .name("Pragmatics")
@@ -523,5 +525,43 @@ class CourseControllerTest {
                 .then()
                 .statusCode(OK.value())
                 .body("content", hasSize(2));
+    }
+
+    @Test
+    void shouldRespondToGetCourseMinRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/min", 0)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceCourseMin() {
+        BDDMockito.given(courseService.getCourseMin(0))
+                .willReturn(course1Min);
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/min", 0)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(0))
+                .body("name", equalTo("Introduction to Cognitive Science"));
+    }
+
+    @Test
+    void shouldAskServiceForCourseMin() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}/min", 0)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getCourseMin(0);
     }
 }

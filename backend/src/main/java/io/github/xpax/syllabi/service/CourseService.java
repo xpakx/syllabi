@@ -105,4 +105,8 @@ public class CourseService {
             return new ArrayList<>();
     }
 
+    public CourseSummary getCourseMin(Integer courseId) {
+        return courseRepository.getProjectedById(courseId, CourseSummary.class)
+                .orElseThrow( () -> new NotFoundException("Course with id "+ courseId + "not found"));
+    }
 }
