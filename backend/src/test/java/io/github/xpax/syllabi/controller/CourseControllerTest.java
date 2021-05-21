@@ -2,11 +2,9 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
-import io.github.xpax.syllabi.entity.dto.CourseDetails;
-import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
-import io.github.xpax.syllabi.entity.dto.UpdateCourseRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.CourseService;
+import io.github.xpax.syllabi.service.CourseYearService;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.config.MockMvcConfig;
@@ -42,6 +40,8 @@ import static org.springframework.http.HttpStatus.OK;
 class CourseControllerTest {
     @Mock
     private CourseService courseService;
+    @Mock
+    private CourseYearService courseYearService;
 
     private Page<CourseForPage> coursePage;
     private CourseDetails course1;
@@ -49,6 +49,8 @@ class CourseControllerTest {
     private Course addedCourse;
     private UpdateCourseRequest updateCourseRequest;
     private Course updatedCourse;
+    private CourseYearRequest yearRequest;
+    private CourseYear addedCourseYear;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -99,10 +101,21 @@ class CourseControllerTest {
                 .name("Pragmatics")
                 .ects(10)
                 .build();
+
+        yearRequest = new CourseYearRequest();
+
+        Course course5 = Course.builder()
+                .id(5)
+                .name("Game Theory")
+                .build();
+        addedCourseYear = CourseYear.builder()
+                .id(17)
+                .parent(course5)
+                .build();
     }
 
     private void injectMocks() {
-        CourseController courseController = new CourseController(courseService);
+        CourseController courseController = new CourseController(courseService, courseYearService);
         RestAssuredMockMvc.standaloneSetup(courseController);
         RestAssuredMockMvc.config = new RestAssuredMockMvcConfig()
                 .mockMvcConfig(MockMvcConfig.mockMvcConfig().dontAutomaticallyApplySpringSecurityMockMvcConfigurer());
@@ -337,5 +350,56 @@ class CourseControllerTest {
         BDDMockito.then(courseService)
                 .should(times(1))
                 .deleteCourse(9);
+    }
+
+    @Test
+    void shouldRespondToAddCourseYearRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(yearRequest)
+                .when()
+                .post("/courses/{courseId}/years", 9)
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldAddCourseYear() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(yearRequest)
+                .when()
+                .post("/courses/{courseId}/years", 5)
+                .then()
+                .statusCode(CREATED.value());
+
+        ArgumentCaptor<CourseYearRequest> requestCaptor = ArgumentCaptor.forClass(CourseYearRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+        BDDMockito.then(courseYearService)
+                .should(times(1))
+                .addNewCourseYear(idCaptor.capture(), requestCaptor.capture());
+
+        CourseYearRequest capturedRequest = requestCaptor.getValue();
+        Integer parentId = idCaptor.getValue();
+        assertEquals(5, parentId);
+    }
+
+    @Test
+    void shouldReturnCreatedCourseYear() {
+        BDDMockito.given(courseYearService.addNewCourseYear(anyInt(), any(CourseYearRequest.class)))
+                .willReturn(addedCourseYear);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(yearRequest)
+                .when()
+                .post("/courses/{courseId}/years", 5)
+                .then()
+                .statusCode(CREATED.value())
+                //.body("parent.id", equalTo(5))
+                //.body("parent.name", equalTo("Game Theory"))
+                .body("id", equalTo(17));
     }
 }
