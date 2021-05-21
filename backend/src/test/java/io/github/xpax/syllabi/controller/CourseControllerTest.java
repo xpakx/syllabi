@@ -1,0 +1,134 @@
+package io.github.xpax.syllabi.controller;
+
+import io.github.xpax.syllabi.entity.Course;
+import io.github.xpax.syllabi.entity.CourseYear;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
+import io.github.xpax.syllabi.service.CourseService;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.module.mockmvc.config.MockMvcConfig;
+import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.springframework.http.HttpStatus.OK;
+
+@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+class CourseControllerTest {
+    @Mock
+    private CourseService courseService;
+
+    private Page<CourseForPage> coursePage;
+
+    private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+
+
+    @BeforeEach
+    void setUp() {
+        Course course1 = Course.builder()
+                .id(0)
+                .name("Introduction to Cognitive Science")
+                .build();
+        Course course2 = Course.builder()
+                .id(1)
+                .name("Pragmatics")
+                .build();
+        Course course3 = Course.builder()
+                .id(2)
+                .name("Logic I")
+                .build();
+
+        CourseForPage courseCognitiveScience = factory.createProjection(CourseForPage.class, course1);
+        CourseForPage coursePragmatics = factory.createProjection(CourseForPage.class, course2);
+        CourseForPage courseLogic = factory.createProjection(CourseForPage.class, course3);
+        List<CourseForPage> courseList = new ArrayList<>();
+        courseList.add(courseCognitiveScience);
+        courseList.add(coursePragmatics);
+        courseList.add(courseLogic);
+        coursePage = new PageImpl<>(courseList);
+    }
+
+    private void injectMocks() {
+        CourseController courseController = new CourseController(courseService);
+        RestAssuredMockMvc.standaloneSetup(courseController);
+        RestAssuredMockMvc.config = new RestAssuredMockMvcConfig()
+                .mockMvcConfig(MockMvcConfig.mockMvcConfig().dontAutomaticallyApplySpringSecurityMockMvcConfigurer());
+    }
+
+    @Test
+    void shouldRespondToAllRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses")
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceListOfCourses() {
+        BDDMockito.given(courseService.getAllCourses(anyInt(), anyInt()))
+                .willReturn(coursePage);
+        injectMocks();
+        given()
+                .when()
+                .get("/courses")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(3))
+                .body("content[0].id", equalTo(0))
+                .body("content[0].name", equalTo("Introduction to Cognitive Science"))
+                .body("content[1].id", equalTo(1))
+                .body("content[1].name", equalTo("Pragmatics"))
+                .body("content[2].id", equalTo(2))
+                .body("content[2].name", equalTo("Logic I"))
+                .body("numberOfElements", equalTo(3));
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetCoursesRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/courses")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getAllCourses(7, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForCoursesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getAllCourses(0, 20);
+    }
+}
