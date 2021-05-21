@@ -1,15 +1,13 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -31,4 +29,10 @@ public class CourseController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/{courseId}")
+    public ResponseEntity<CourseDetails> getCourseById(@PathVariable Integer courseId) {
+        return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
+    }
+
 }

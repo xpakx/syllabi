@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
+import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.service.CourseService;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -36,6 +37,7 @@ class CourseControllerTest {
     private CourseService courseService;
 
     private Page<CourseForPage> coursePage;
+    private CourseDetails course1;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -46,6 +48,7 @@ class CourseControllerTest {
                 .id(0)
                 .name("Introduction to Cognitive Science")
                 .build();
+        this.course1 = factory.createProjection(CourseDetails.class, course1);
         Course course2 = Course.builder()
                 .id(1)
                 .name("Pragmatics")
@@ -63,6 +66,8 @@ class CourseControllerTest {
         courseList.add(coursePragmatics);
         courseList.add(courseLogic);
         coursePage = new PageImpl<>(courseList);
+
+
     }
 
     private void injectMocks() {
@@ -130,5 +135,43 @@ class CourseControllerTest {
         BDDMockito.then(courseService)
                 .should(times(1))
                 .getAllCourses(0, 20);
+    }
+
+    @Test
+    void shouldRespondToGetCourseRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}", 0)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceCourse() {
+        BDDMockito.given(courseService.getCourse(0))
+                .willReturn(course1);
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}", 0)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(0))
+                .body("name", equalTo("Introduction to Cognitive Science"));
+    }
+
+    @Test
+    void shouldAskServiceForCourse() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/{courseId}", 0)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getCourse(0);
     }
 }

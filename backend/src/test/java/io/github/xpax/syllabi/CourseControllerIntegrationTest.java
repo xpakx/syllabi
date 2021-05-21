@@ -22,8 +22,7 @@ import java.util.Set;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CourseControllerIntegrationTest {
@@ -151,5 +150,44 @@ class CourseControllerIntegrationTest {
                 .body("content", hasSize(5))
                 .body("content[0].name", equalTo("Dummy Course #16"))
                 .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCourseRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{courseId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCourse() {
+        Integer id = addCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Pragmatics"));
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 }
