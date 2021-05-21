@@ -5,8 +5,10 @@ import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Program;
 import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
+import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
+import io.github.xpax.syllabi.repo.InstituteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,6 +37,8 @@ class CourseServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
+    @Mock
+    private InstituteRepository instituteRepository;
 
     private CourseService courseService;
 
@@ -47,6 +49,7 @@ class CourseServiceTest {
     private Course algorithms;
     private Course computation;
     private Program program;
+    private NewCourseRequest request;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -83,10 +86,15 @@ class CourseServiceTest {
                 .name("Theory of Computation")
                 .build();
 
+        request = new NewCourseRequest();
+        request.setName("Introduction to Epistemology");
+        request.setEcts(2);
+        request.setFacultative(false);
+        request.setOrganizerId(2);
     }
 
     private void injectMocks() {
-        courseService = new CourseService(courseRepository);
+        courseService = new CourseService(courseRepository, instituteRepository);
     }
 
     @Test
@@ -130,6 +138,29 @@ class CourseServiceTest {
         injectMocks();
 
         assertThrows(NotFoundException.class, () -> courseService.getCourse(0));
+    }
+
+    @Test
+    void shouldAddNewCourse() {
+        given(instituteRepository.getOne(2))
+                .willReturn(organizer);
+        injectMocks();
+
+        courseService.addNewCourse(request);
+
+        ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
+        then(courseRepository)
+                .should(times(1))
+                .save(courseCaptor.capture());
+        Course addedCourse = courseCaptor.getValue();
+
+        assertNotNull(addedCourse);
+        assertNotNull(addedCourse.getOrganizer());
+        assertEquals(2, addedCourse.getOrganizer().getId());
+        assertEquals("Institute of Philosophy", addedCourse.getOrganizer().getName());
+        assertEquals(2, addedCourse.getEcts());
+        assertEquals("Introduction to Epistemology", addedCourse.getName());
+        assertFalse(addedCourse.getFacultative());
     }
 
 

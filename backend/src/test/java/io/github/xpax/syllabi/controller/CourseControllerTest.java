@@ -4,13 +4,16 @@ import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
+import io.github.xpax.syllabi.entity.dto.NewCourseRequest;
 import io.github.xpax.syllabi.service.CourseService;
+import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.config.MockMvcConfig;
 import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,8 +29,11 @@ import java.util.List;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +44,8 @@ class CourseControllerTest {
 
     private Page<CourseForPage> coursePage;
     private CourseDetails course1;
+    private NewCourseRequest newCourseRequest;
+    private Course addedCourse;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -67,7 +75,17 @@ class CourseControllerTest {
         courseList.add(courseLogic);
         coursePage = new PageImpl<>(courseList);
 
+        newCourseRequest = new NewCourseRequest();
+        newCourseRequest.setEcts(10);
+        newCourseRequest.setName("Logic II");
+        newCourseRequest.setLanguage("pl");
 
+        addedCourse = Course.builder()
+                .id(17)
+                .name("Logic II")
+                .ects(10)
+                .language("pl")
+                .build();
     }
 
     private void injectMocks() {
@@ -173,5 +191,57 @@ class CourseControllerTest {
         BDDMockito.then(courseService)
                 .should(times(1))
                 .getCourse(0);
+    }
+
+    @Test
+    void shouldRespondToAddNewCourseRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(newCourseRequest)
+                .when()
+                .post("/courses")
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldCreateNewCourse() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(newCourseRequest)
+                .when()
+                .post("/courses")
+                .then()
+                .statusCode(CREATED.value());
+
+        ArgumentCaptor<NewCourseRequest> requestCaptor = ArgumentCaptor.forClass(NewCourseRequest.class);
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .addNewCourse(requestCaptor.capture());
+
+        NewCourseRequest capturedRequest = requestCaptor.getValue();
+        assertEquals("Logic II", capturedRequest.getName());
+        assertEquals("pl", capturedRequest.getLanguage());
+        assertEquals(10, capturedRequest.getEcts());
+    }
+
+    @Test
+    void shouldReturnAddedCourse() {
+        BDDMockito.given(courseService.addNewCourse(any(NewCourseRequest.class)))
+                .willReturn(addedCourse);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(newCourseRequest)
+                .when()
+                .post("/courses")
+                .then()
+                .statusCode(CREATED.value())
+                .body("id", equalTo(17))
+                .body("name", equalTo("Logic II"))
+                .body("language", equalTo("pl"))
+                .body("ects", equalTo(10));
     }
 }

@@ -4,10 +4,12 @@ import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.CourseRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,7 @@ class CourseControllerIntegrationTest {
     @Autowired
     CourseRepository courseRepository;
 
+    private CourseRequest courseRequest;
 
     @BeforeEach
     void setUp() {
@@ -63,6 +66,9 @@ class CourseControllerIntegrationTest {
                 .roles(roles)
                 .build();
         userRepository.save(admin);
+
+        courseRequest = new CourseRequest();
+        courseRequest.setName("Added Course");
     }
 
     @AfterEach
@@ -189,5 +195,64 @@ class CourseControllerIntegrationTest {
                 .get(baseUrl + "/{courseId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToAddCourseRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToAddCourseRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(courseRequest)
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithAddedCourse() {
+        addCourses();
+        Integer addedCourseId = given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(courseRequest)
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(CREATED.value())
+                .body("name", equalTo("Added Course"))
+                .extract()
+                .jsonPath()
+                .getInt("id");
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}", addedCourseId)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Added Course"));
     }
 }
