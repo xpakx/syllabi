@@ -2,6 +2,7 @@ package io.github.xpax.syllabi;
 
 import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
+import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
 import io.github.xpax.syllabi.repo.*;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
@@ -15,11 +16,14 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,6 +52,7 @@ class CourseYearControllerIntegrationTest {
     StudyGroupRepository studyGroupRepository;
 
     private CourseYearRequest updateCourseYearRequest;
+    private StudyGroupRequest studyGroupRequest;
 
     @BeforeEach
     void setUp() {
@@ -161,6 +166,33 @@ class CourseYearControllerIntegrationTest {
                     .build();
             courseYearRepository.save(dummyCourseYear);
         }
+        return yearId;
+    }
+
+    private Integer addCourseAndYear() {
+        Course linguisticsIntro = Course.builder()
+                .name("Introduction to Linguistics")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(linguisticsIntro);
+
+        Calendar calendarActive = Calendar.getInstance();
+        calendarActive.add(Calendar.YEAR, 1);
+
+        Calendar calendarNotActive = Calendar.getInstance();
+        calendarNotActive.add(Calendar.YEAR, -1);
+
+        CourseYear year = CourseYear.builder()
+                .parent(linguisticsIntro)
+                .description("First Year")
+                .startDate(calendarNotActive.getTime())
+                .endDate(calendarActive.getTime())
+                .build();
+        Integer yearId = courseYearRepository.save(year).getId();
+
+        studyGroupRequest = new StudyGroupRequest();
+        studyGroupRequest.setDescription("Added Study Group");
+
         return yearId;
     }
 
@@ -352,5 +384,58 @@ class CourseYearControllerIntegrationTest {
                 .then()
                 .statusCode(OK.value())
                 .body("description", equalTo("Edited Year"));
+    }
+
+    @Test
+    void shouldRespondWith401ToAddStudyGroupRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .post(baseUrl + "{yearId}/groups", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToAddStudyGroupRequestIfNotAdmin() {
+        Integer yearId = addCourseAndYear();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(studyGroupRequest)
+                .when()
+                .post(baseUrl + "/{yearId}/groups", yearId)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithAddedStudyGroup() {
+        Integer yearId = addCourseAndYear();
+        Integer addedStudyGroupId = given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(studyGroupRequest)
+                .when()
+                .post(baseUrl + "/{yearId}/groups", yearId)
+                .then()
+                .statusCode(CREATED.value())
+                .body("description", equalTo("Added Study Group"))
+                .extract()
+                .jsonPath()
+                .getInt("id");
+
+        Optional<StudyGroup> group = studyGroupRepository.findById(addedStudyGroupId);
+        assertTrue(group.isPresent());
+        assertEquals("Added Study Group", group.get().getDescription());
     }
 }

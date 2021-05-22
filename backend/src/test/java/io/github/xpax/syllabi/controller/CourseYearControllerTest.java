@@ -1,9 +1,12 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.CourseYear;
+import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.dto.CourseYearDetails;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
+import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
 import io.github.xpax.syllabi.service.CourseYearService;
+import io.github.xpax.syllabi.service.StudyGroupService;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.config.MockMvcConfig;
@@ -25,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,9 +36,13 @@ import static org.springframework.http.HttpStatus.OK;
 public class CourseYearControllerTest {
     @Mock
     private CourseYearService courseYearService;
+    @Mock
+    private StudyGroupService studyGroupService;
     private CourseYearDetails yearWithId1;
     private CourseYear yearWithId1Updated;
     private CourseYearRequest courseYearRequest;
+    private StudyGroupRequest studyGroupRequest;
+    private StudyGroup createdStudyGroup;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -51,10 +59,18 @@ public class CourseYearControllerTest {
                 .build();
         courseYearRequest = new CourseYearRequest();
         courseYearRequest.setCommentary("comment");
+        studyGroupRequest = new StudyGroupRequest();
+        studyGroupRequest.setOngoing(true);
+
+        createdStudyGroup = StudyGroup.builder()
+                .id(7)
+                .year(yearWithId1)
+                .ongoing(true)
+                .build();
     }
 
     private void injectMocks() {
-        CourseYearController courseYearController = new CourseYearController(courseYearService);
+        CourseYearController courseYearController = new CourseYearController(courseYearService, studyGroupService);
         RestAssuredMockMvc.standaloneSetup(courseYearController);
         RestAssuredMockMvc.config = new RestAssuredMockMvcConfig()
                 .mockMvcConfig(MockMvcConfig.mockMvcConfig().dontAutomaticallyApplySpringSecurityMockMvcConfigurer());
@@ -157,6 +173,58 @@ public class CourseYearControllerTest {
                 .statusCode(OK.value())
                 .body("id", equalTo(1))
                 .body("commentary", equalTo("comment"));
+    }
+
+    @Test
+    void shouldRespondToAddStudyGroupRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(studyGroupRequest)
+                .when()
+                .post("/years/{yearId}/groups", 1)
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldAddStudyGroup() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(studyGroupRequest)
+                .when()
+                .post("/years/{yearId}/groups", 1)
+                .then()
+                .statusCode(CREATED.value());
+
+        ArgumentCaptor<StudyGroupRequest> requestCaptor = ArgumentCaptor.forClass(StudyGroupRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(studyGroupService)
+                .should(times(1))
+                .addNewStudyGroup(requestCaptor.capture(), idCaptor.capture());
+        StudyGroupRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(1, id);
+        assertEquals(true, request.getOngoing());
+    }
+
+    @Test
+    void shouldProduceCreatedStudyGroup() {
+        BDDMockito.given(studyGroupService.addNewStudyGroup(any(StudyGroupRequest.class), anyInt()))
+                .willReturn(createdStudyGroup);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(studyGroupRequest)
+                .when()
+                .post("/years/{yearId}/groups", 1)
+                .then()
+                .statusCode(CREATED.value())
+                .body("id", equalTo(7))
+                .body("ongoing", equalTo(true));
     }
 
 }
