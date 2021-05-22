@@ -3,8 +3,10 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.CourseYearDetails;
 import io.github.xpax.syllabi.entity.dto.CourseYearForPage;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
@@ -72,5 +74,10 @@ public class CourseYearService {
 
     public Page<CourseYearForPage> getActiveYearsForCourse(Integer courseId, Integer page, Integer size) {
         return courseYearRepository.findByParentIdAndEndDateAfter(courseId, new Date(), PageRequest.of(page, size));
+    }
+
+    public CourseYearDetails getCourseYear(Integer yearId) {
+        return courseYearRepository.findProjectedById(yearId, CourseYearDetails.class)
+                .orElseThrow(() -> new NotFoundException("No year with id " + yearId + "!"));
     }
 }

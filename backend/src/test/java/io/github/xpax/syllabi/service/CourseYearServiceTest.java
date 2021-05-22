@@ -3,8 +3,10 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.CourseYearDetails;
 import io.github.xpax.syllabi.entity.dto.CourseYearForPage;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
@@ -22,6 +24,7 @@ import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -47,6 +50,7 @@ class CourseYearServiceTest {
     private Course course;
     private Teacher firstTeacher;
     private Teacher secondTeacher;
+    private CourseYearDetails year;
     private Page<CourseYearForPage> courseYearPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
@@ -72,6 +76,12 @@ class CourseYearServiceTest {
         request.setCoordinators(coordinators);
 
         courseYearPage = Page.empty();
+
+        CourseYear year = CourseYear.builder()
+                .id(17)
+                .build();
+
+        this.year = factory.createProjection(CourseYearDetails.class, year);
     }
 
     private void injectMocks() {
@@ -148,5 +158,27 @@ class CourseYearServiceTest {
         assertEquals(3, courseId);
 
         assertThat(result, is(sameInstance(courseYearPage)));
+    }
+
+    @Test
+    void shouldReturnCourseYear() {
+        given(courseYearRepository.findProjectedById(anyInt(), any(Class.class)))
+                .willReturn(Optional.of(year));
+        injectMocks();
+
+        CourseYearDetails result = courseYearService.getCourseYear(17);
+
+        assertNotNull(result);
+        assertThat(result, is(sameInstance(year)));
+        assertEquals(17, result.getId());
+    }
+
+    @Test
+    void shouldThrowExceptionIfCourseYearNotFound() {
+        given(courseYearRepository.findProjectedById(anyInt(), any(Class.class)))
+                .willReturn(Optional.empty());
+        injectMocks();
+
+        assertThrows(NotFoundException.class, () -> courseYearService.getCourseYear(17));
     }
 }
