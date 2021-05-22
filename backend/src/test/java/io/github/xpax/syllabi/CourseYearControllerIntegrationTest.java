@@ -322,4 +322,35 @@ class CourseYearControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("description", equalTo("Edited Year"));
     }
+
+    @Test
+    void shouldRespondWithUpdatedCourseTypeIfCoordinatingTeacher() {
+        Integer id = addCoursesAndYears();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("teacher1"))
+                .contentType(ContentType.JSON)
+                .body(updateCourseYearRequest)
+                .when()
+                .put(baseUrl + "/{yearId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(id))
+                .body("description", equalTo("Edited Year"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{yearId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("description", equalTo("Edited Year"));
+    }
 }

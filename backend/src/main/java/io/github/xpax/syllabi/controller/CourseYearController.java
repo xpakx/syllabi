@@ -35,7 +35,8 @@ public class CourseYearController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Secured("ROLE_COURSE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_COURSE_ADMIN') or " +
+            "@permissionEvaluator.canEditCourseYear(#yearId, authentication.principal.username)")
     @PutMapping("/{yearId}")
     public ResponseEntity<CourseYear> editCourseYear(@RequestBody @Valid CourseYearRequest yearRequest,
                                                      @PathVariable Integer yearId) {
