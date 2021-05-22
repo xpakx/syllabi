@@ -52,6 +52,7 @@ class CourseYearServiceTest {
     private Teacher secondTeacher;
     private CourseYearDetails year;
     private Page<CourseYearForPage> courseYearPage;
+    private CourseYear yearWithId4;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -82,6 +83,11 @@ class CourseYearServiceTest {
                 .build();
 
         this.year = factory.createProjection(CourseYearDetails.class, year);
+
+        yearWithId4 = CourseYear.builder()
+                .id(4)
+                .parent(course)
+                .build();
     }
 
     private void injectMocks() {
@@ -189,5 +195,29 @@ class CourseYearServiceTest {
         then(courseYearRepository)
                 .should(times(1))
                 .deleteById(5);
+    }
+
+    @Test
+    void shouldUpdateCourseYear() {
+        given(teacherRepository.getOne(0))
+                .willReturn(firstTeacher);
+        given(teacherRepository.getOne(0))
+                .willReturn(secondTeacher);
+        given(courseYearRepository.findById(4))
+                .willReturn(Optional.of(yearWithId4));
+        injectMocks();
+
+        courseYearService.updateCourseYear(request, 4);
+        ArgumentCaptor<CourseYear> yearArgumentCaptor = ArgumentCaptor.forClass(CourseYear.class);
+        then(courseYearRepository)
+                .should(times(1))
+                .save(yearArgumentCaptor.capture());
+        CourseYear year = yearArgumentCaptor.getValue();
+
+        assertNotNull(year);
+        assertThat(year.getCoordinatedBy(), hasSize(2));
+        assertNotNull(year.getParent());
+        assertEquals(17, year.getParent().getId());
+        assertEquals(4, year.getId());
     }
 }

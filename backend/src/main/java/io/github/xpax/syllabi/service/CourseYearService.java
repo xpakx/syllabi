@@ -45,6 +45,20 @@ public class CourseYearService {
         courseYearRepository.deleteById(yearId);
     }
 
+    public CourseYear updateCourseYear(CourseYearRequest yearRequest, Integer yearId) {
+        CourseYear year = courseYearRepository.findById(yearId)
+                .orElseThrow(() -> new NotFoundException("No year with id " + yearId + "!"));
+        Set<Teacher> teachers = getTeacherSet(yearRequest);
+        year.setCoordinatedBy(teachers);
+        year.setAssessmentRules(yearRequest.getAssessmentRules());
+        year.setDescription(yearRequest.getDescription());
+        year.setCommentary(yearRequest.getCommentary());
+        year.setStartDate(yearRequest.getStartDate());
+        year.setEndDate(yearRequest.getEndDate());
+        return courseYearRepository.save(year);
+    }
+
+
 
 
     private Set<Teacher> getTeacherSet(CourseYearRequest yearRequest) {
