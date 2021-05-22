@@ -10,7 +10,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
@@ -53,5 +61,28 @@ class CourseTypeServiceTest {
         assertNotNull(type);
         assertEquals(request.getName(), type.getName());
         assertNull(type.getId());
+    }
+
+    @Test
+    void shouldReturnCourseType() {
+        given(courseTypeRepository.findById(7))
+                .willReturn(Optional.of(type));
+        injectMocks();
+
+        CourseType result = courseTypeService.getCourseType(7);
+
+        assertNotNull(result);
+        assertThat(result, is(sameInstance(type)));
+        assertEquals("Laboratory", result.getName());
+        assertEquals(7, result.getId());
+    }
+
+    @Test
+    void shouldThrowExceptionIfCourseTypeNotFound() {
+        given(courseTypeRepository.findById(anyInt()))
+                .willReturn(Optional.empty());
+        injectMocks();
+
+        assertThrows(NotFoundException.class, () -> courseTypeService.getCourseType(7));
     }
 }

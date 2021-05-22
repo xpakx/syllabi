@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.CourseType;
 import io.github.xpax.syllabi.entity.dto.CourseTypeRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,13 @@ public class CourseTypeService {
                 .build();
         return courseTypeRepository.save(courseType);
     }
+
+    public CourseType getCourseType(Integer typeId) {
+        return courseTypeRepository.findById(typeId)
+                .orElseThrow(() -> new NotFoundException("Type with id "+typeId+" not found!"));
+    }
+
+
 
 
     private CourseType.CourseTypeBuilder buildCourseType(CourseTypeRequest courseTypeRequest) {

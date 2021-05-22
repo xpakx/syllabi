@@ -1,5 +1,6 @@
 package io.github.xpax.syllabi;
 
+import io.github.xpax.syllabi.entity.CourseType;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.CourseTypeRequest;
@@ -81,6 +82,22 @@ class CourseTypeControllerIntegrationTest {
         return jwtTokenUtil.generateToken(userService.loadUserToLogin(username));
     }
 
+    private Integer addCourseTypes() {
+        CourseType lecture = CourseType.builder()
+                .name("Lecture")
+                .build();
+        Integer lectureId = courseTypeRepository.save(lecture).getId();
+
+        for(int i = 2; i<=25; i++) {
+            CourseType dummyCourseType = CourseType.builder()
+                    .name("Dummy Course Type #"+i)
+                    .build();
+            courseTypeRepository.save(dummyCourseType);
+        }
+
+        return lectureId;
+    }
+
     @Test
     void shouldRespondWith401ToAddCourseTypeRequestIfUserUnauthorized() {
         given()
@@ -126,5 +143,55 @@ class CourseTypeControllerIntegrationTest {
                 .extract()
                 .jsonPath()
                 .getInt("id");
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}", addedCourseTypeId)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Lecture"));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCourseTypeRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{courseTypeId}", 1)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCourseType() {
+        Integer id = addCourseTypes();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseTypeId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Lecture"));
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseTypeNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseTypeId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 }

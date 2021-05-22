@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -94,6 +95,30 @@ class CourseTypeControllerTest {
                 .post("/types")
                 .then()
                 .statusCode(CREATED.value())
+                .body("id", equalTo(3))
+                .body("name", equalTo("Lecture"));
+    }
+
+    @Test
+    void shouldRespondToGetCourseTypeRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/types/{typeId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceCourseType() {
+        BDDMockito.given(courseTypeService.getCourseType(3))
+                .willReturn(lecture);
+        injectMocks();
+        given()
+                .when()
+                .get("/types/{typeId}", 3)
+                .then()
+                .statusCode(OK.value())
                 .body("id", equalTo(3))
                 .body("name", equalTo("Lecture"));
     }
