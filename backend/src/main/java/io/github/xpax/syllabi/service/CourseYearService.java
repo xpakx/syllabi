@@ -41,6 +41,10 @@ public class CourseYearService {
         return courseYearRepository.save(courseYearToAdd);
     }
 
+    public void deleteCourseYear(Integer yearId) {
+        courseYearRepository.deleteById(yearId);
+    }
+
 
 
     private Set<Teacher> getTeacherSet(CourseYearRequest yearRequest) {

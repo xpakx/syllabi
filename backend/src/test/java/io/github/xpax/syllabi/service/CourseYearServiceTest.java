@@ -181,4 +181,13 @@ class CourseYearServiceTest {
 
         assertThrows(NotFoundException.class, () -> courseYearService.getCourseYear(17));
     }
+
+    @Test
+    void shouldDeleteCourseYear() {
+        injectMocks();
+        courseYearService.deleteCourseYear(5);
+        then(courseYearRepository)
+                .should(times(1))
+                .deleteById(5);
+    }
 }

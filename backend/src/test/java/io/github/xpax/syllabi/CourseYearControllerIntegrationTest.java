@@ -203,4 +203,65 @@ class CourseYearControllerIntegrationTest {
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
+
+    @Test
+    void shouldRespondWith401ToDeleteCourseYearRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/{yearId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteCourseYearRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/{yearId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteCourseYear() {
+        Integer id = addCoursesAndYears();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{yearId}", id)
+                .then()
+                .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{yearId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseTypeToDeleteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{yearId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
 }
