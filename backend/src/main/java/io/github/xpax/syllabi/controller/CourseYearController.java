@@ -4,10 +4,12 @@ import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.dto.CourseYearDetails;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
+import io.github.xpax.syllabi.entity.dto.StudyGroupForPage;
 import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
 import io.github.xpax.syllabi.service.CourseYearService;
 import io.github.xpax.syllabi.service.StudyGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -15,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/years")
@@ -58,6 +61,16 @@ public class CourseYearController {
         return new ResponseEntity<>(
                 studyGroupService.addNewStudyGroup(studyGroupRequest, yearId),
                 HttpStatus.CREATED
+        );
+    }
+
+    @GetMapping("/{yearId}/groups")
+    public ResponseEntity<Page<StudyGroupForPage>> getAllGroupsForYear(@PathVariable Integer yearId,
+                                                                       @RequestParam Optional<Integer> page,
+                                                                       @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                studyGroupService.getAllGroupsByCourseYear(yearId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
         );
     }
 }

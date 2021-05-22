@@ -4,6 +4,7 @@ import io.github.xpax.syllabi.entity.CourseType;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.StudyGroupForPage;
 import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
 import io.github.xpax.syllabi.repo.CourseTypeRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
@@ -16,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
@@ -25,6 +27,8 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -47,6 +51,7 @@ class StudyGroupServiceTest {
     private Teacher teacher0;
     private Teacher teacher1;
     private StudyGroupRequest request;
+    private Page<StudyGroupForPage> page;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -80,6 +85,7 @@ class StudyGroupServiceTest {
         teachers.add(3);
         teachers.add(9);
         request.setTeachers(teachers);
+        page = Page.empty();
     }
 
     private void injectMocks() {
@@ -127,4 +133,28 @@ class StudyGroupServiceTest {
         assertNull(addedGroup.getId());
     }
 
+    @Test
+    void shouldAskRepositoryForGroups() {
+        given(studyGroupRepository.findAllByYearId(anyInt(), any(PageRequest.class)))
+                .willReturn(page);
+        injectMocks();
+
+        Page<StudyGroupForPage> result = studyGroupService.getAllGroupsByCourseYear(5, 0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        ArgumentCaptor<Integer> integerCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        then(studyGroupRepository)
+                .should(times(1))
+                .findAllByYearId(integerCaptor.capture(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+        Integer yearId = integerCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+
+        assertThat(result, is(sameInstance(page)));
+
+        assertEquals(5, yearId);
+    }
 }

@@ -4,6 +4,7 @@ import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.dto.CourseYearDetails;
 import io.github.xpax.syllabi.entity.dto.CourseYearRequest;
+import io.github.xpax.syllabi.entity.dto.StudyGroupForPage;
 import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
 import io.github.xpax.syllabi.service.CourseYearService;
 import io.github.xpax.syllabi.service.StudyGroupService;
@@ -18,12 +19,18 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -43,9 +50,9 @@ public class CourseYearControllerTest {
     private CourseYearRequest courseYearRequest;
     private StudyGroupRequest studyGroupRequest;
     private StudyGroup createdStudyGroup;
+    private Page<StudyGroupForPage> groupPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-
 
     @BeforeEach
     void setUp() {
@@ -67,6 +74,12 @@ public class CourseYearControllerTest {
                 .year(yearWithId1)
                 .ongoing(true)
                 .build();
+
+        StudyGroupForPage createdStudyGroupProj = factory.createProjection(StudyGroupForPage.class, createdStudyGroup);
+
+        List<StudyGroupForPage> groupList = new ArrayList<>();
+        groupList.add(createdStudyGroupProj);
+        groupPage = new PageImpl<>(groupList);
     }
 
     private void injectMocks() {
@@ -227,4 +240,59 @@ public class CourseYearControllerTest {
                 .body("ongoing", equalTo(true));
     }
 
+    @Test
+    void shouldRespondToGetStudyGroupsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/years/{yearId}/groups", 1)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromStudyGroupsRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("/years/{yearId}/groups", 1)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(studyGroupService)
+                .should(times(1))
+                .getAllGroupsByCourseYear(1, 2, 15);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForStudyGroupsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/years/{yearId}/groups", 1)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(studyGroupService)
+                .should(times(1))
+                .getAllGroupsByCourseYear(1, 0, 20);
+    }
+
+    @Test
+    void shouldProducePageOfStudyGroups() {
+        BDDMockito.given(studyGroupService.getAllGroupsByCourseYear(anyInt(), anyInt(), anyInt()))
+                .willReturn(groupPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/years/{yearId}/groups", 1)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(1))
+                .body("content[0].id", equalTo(7))
+                .body("content[0].ongoing", equalTo(true))
+                .body("numberOfElements", equalTo(1));
+    }
 }

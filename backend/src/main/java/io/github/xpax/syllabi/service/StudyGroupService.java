@@ -4,11 +4,14 @@ import io.github.xpax.syllabi.entity.CourseType;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.StudyGroupForPage;
 import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
 import io.github.xpax.syllabi.repo.CourseTypeRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
 import io.github.xpax.syllabi.repo.StudyGroupRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +41,10 @@ public class StudyGroupService {
         StudyGroup studyGroupToAdd = buildStudyGroup(studyGroupRequest, year, type, teachers)
                 .build();
         return studyGroupRepository.save(studyGroupToAdd);
+    }
+
+    public Page<StudyGroupForPage> getAllGroupsByCourseYear(Integer yearId, Integer page, Integer size) {
+        return studyGroupRepository.findAllByYearId(yearId, PageRequest.of(page, size));
     }
 
 

@@ -196,6 +196,37 @@ class CourseYearControllerIntegrationTest {
         return yearId;
     }
 
+    private Integer addCourseAndYearAndGroups() {
+        Course linguisticsIntro = Course.builder()
+                .name("Introduction to Linguistics")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(linguisticsIntro);
+
+        Calendar calendarActive = Calendar.getInstance();
+        calendarActive.add(Calendar.YEAR, 1);
+
+        Calendar calendarNotActive = Calendar.getInstance();
+        calendarNotActive.add(Calendar.YEAR, -1);
+
+        CourseYear year = CourseYear.builder()
+                .parent(linguisticsIntro)
+                .description("First Year")
+                .startDate(calendarNotActive.getTime())
+                .endDate(calendarActive.getTime())
+                .build();
+        Integer yearId = courseYearRepository.save(year).getId();
+
+        for(int i = 1; i<=25; i++) {
+            StudyGroup dummyStudyGroup = StudyGroup.builder()
+                    .year(year)
+                    .description("Dummy Study Group #"+i)
+                    .build();
+            studyGroupRepository.save(dummyStudyGroup);
+        }
+        return yearId;
+    }
+
     @Test
     void shouldRespondWith401ToGetCourseYearRequestIfUserUnauthorized() {
         given()
@@ -437,5 +468,52 @@ class CourseYearControllerIntegrationTest {
         Optional<StudyGroup> group = studyGroupRepository.findById(addedStudyGroupId);
         assertTrue(group.isPresent());
         assertEquals("Added Study Group", group.get().getDescription());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetStudyGroupsRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{yearId}/groups", 1)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithStudyGroupsPageAndDefaultPaginationToGetStudyGroupsRequest() {
+        Integer id = addCourseAndYearAndGroups();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{yearId}/groups", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].description", equalTo("Dummy Study Group #1"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithStudyGroupsPageAndCustomPaginationToGetStudyGroupsRequest() {
+        Integer id = addCourseAndYearAndGroups();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{yearId}/groups", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].description", equalTo("Dummy Study Group #16"))
+                .body("numberOfElements", equalTo(5));
     }
 }
