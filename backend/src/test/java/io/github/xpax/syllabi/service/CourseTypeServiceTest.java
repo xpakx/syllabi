@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
@@ -17,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -32,6 +35,7 @@ class CourseTypeServiceTest {
 
     private CourseType type;
     private CourseTypeRequest request;
+    private Page<CourseType> typePage;
 
     @BeforeEach
     void setUp() {
@@ -41,6 +45,8 @@ class CourseTypeServiceTest {
                 .build();
         request = new CourseTypeRequest();
         request.setName("Lecture");
+
+        typePage = Page.empty();
     }
 
     private void injectMocks() {
@@ -111,5 +117,26 @@ class CourseTypeServiceTest {
         assertNotNull(type);
         assertEquals(request.getName(), type.getName());
         assertEquals(7, type.getId());
+    }
+
+    @Test
+    void shouldAskRepositoryForCourseTypes() {
+        given(courseTypeRepository.findAll(any(PageRequest.class)))
+                .willReturn(typePage);
+        injectMocks();
+
+        Page<CourseType> result = courseTypeService.getAllCourseTypes(0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+
+        then(courseTypeRepository)
+                .should(times(1))
+                .findAll(pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+
+        assertThat(result, is(sameInstance(typePage)));
     }
 }

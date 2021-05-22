@@ -22,6 +22,7 @@ import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -317,4 +318,51 @@ class CourseTypeControllerIntegrationTest {
                 .body("name", equalTo("Edited lecture"));
     }
 
+    @Test
+    void shouldRespondWith401ToGetAllCourseTypesRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndDefaultPaginationToGetAllCoursesRequest() {
+        addCourseTypes();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].name", equalTo("Lecture"))
+                .body("content[1].name", equalTo("Dummy Course Type #2"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndCustomPaginationToGetAllCoursesRequest() {
+        addCourseTypes();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].name", equalTo("Dummy Course Type #16"))
+                .body("numberOfElements", equalTo(5));
+    }
 }

@@ -14,10 +14,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -35,6 +41,7 @@ class CourseTypeControllerTest {
     private CourseType lecture;
     private CourseTypeRequest updateTypeRequest;
     private CourseType updatedLecture;
+    private Page<CourseType> typePage;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +60,15 @@ class CourseTypeControllerTest {
                 .id(3)
                 .name("lecture")
                 .build();
+
+        CourseType lab = CourseType.builder()
+                .id(4)
+                .name("Laboratory")
+                .build();
+        List<CourseType> types = new ArrayList<>();
+        types.add(lecture);
+        types.add(lab);
+        typePage = new PageImpl<>(types);
     }
 
     private void injectMocks() {
@@ -207,5 +223,63 @@ class CourseTypeControllerTest {
                 .statusCode(OK.value())
                 .body("id", equalTo(3))
                 .body("name", equalTo("lecture"));
+    }
+
+    @Test
+    void shouldRespondToGetAllCourseTypesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/types")
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetAllCourseTypesRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 1)
+                .queryParam("size", 15)
+                .when()
+                .get("/types")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseTypeService)
+                .should(times(1))
+                .getAllCourseTypes(1, 15);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllCourseTypesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/types")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseTypeService)
+                .should(times(1))
+                .getAllCourseTypes(0, 20);
+    }
+
+    @Test
+    void shouldProducePageOfAllCourseTypes() {
+        BDDMockito.given(courseTypeService.getAllCourseTypes(anyInt(), anyInt()))
+                .willReturn(typePage);
+        injectMocks();
+        given()
+                .when()
+                .get("/types")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(2))
+                .body("content[0].id", equalTo(3))
+                .body("content[0].name", equalTo("Lecture"))
+                .body("content[1].id", equalTo(4))
+                .body("content[1].name", equalTo("Laboratory"))
+                .body("numberOfElements", equalTo(2));
     }
 }

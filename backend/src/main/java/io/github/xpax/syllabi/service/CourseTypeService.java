@@ -5,6 +5,8 @@ import io.github.xpax.syllabi.entity.dto.CourseTypeRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +40,9 @@ public class CourseTypeService {
         return courseTypeRepository.save(courseType);
     }
 
+    public Page<CourseType> getAllCourseTypes(int page, int size) {
+        return courseTypeRepository.findAll(PageRequest.of(page, size));
+    }
 
     private CourseType.CourseTypeBuilder buildCourseType(CourseTypeRequest courseTypeRequest) {
         return CourseType.builder()
