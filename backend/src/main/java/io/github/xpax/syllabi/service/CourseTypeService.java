@@ -31,6 +31,12 @@ public class CourseTypeService {
         courseTypeRepository.deleteById(typeId);
     }
 
+    public CourseType updateCourseType(CourseTypeRequest courseTypeRequest, Integer typeId) {
+        CourseType courseType = buildCourseType(courseTypeRequest)
+                .id(typeId)
+                .build();
+        return courseTypeRepository.save(courseType);
+    }
 
 
     private CourseType.CourseTypeBuilder buildCourseType(CourseTypeRequest courseTypeRequest) {

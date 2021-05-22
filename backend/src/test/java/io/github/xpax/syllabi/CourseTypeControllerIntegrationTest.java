@@ -45,6 +45,7 @@ class CourseTypeControllerIntegrationTest {
     @Autowired
     CourseTypeRepository courseTypeRepository;
     private CourseTypeRequest courseTypeRequest;
+    private CourseTypeRequest updateCourseTypeRequest;
 
     @BeforeEach
     void setUp() {
@@ -69,6 +70,9 @@ class CourseTypeControllerIntegrationTest {
 
         courseTypeRequest = new CourseTypeRequest();
         courseTypeRequest.setName("Lecture");
+
+        updateCourseTypeRequest = new CourseTypeRequest();
+        updateCourseTypeRequest.setName("Edited lecture");
     }
 
     @AfterEach
@@ -255,4 +259,62 @@ class CourseTypeControllerIntegrationTest {
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
+
+    @Test
+    void shouldRespondWith401ToUpdateCourseTypeRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/{courseTypeId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateCourseTypeRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(updateCourseTypeRequest)
+                .when()
+                .put(baseUrl + "/{courseTypeId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedCourseType() {
+        Integer id = addCourseTypes();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(updateCourseTypeRequest)
+                .when()
+                .put(baseUrl + "/{courseTypeId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(id))
+                .body("name", equalTo("Edited lecture"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Edited lecture"));
+    }
+
 }

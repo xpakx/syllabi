@@ -36,4 +36,11 @@ public class CourseTypeController {
         courseTypeService.deleteCourseType(typeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @PutMapping("/{typeId}")
+    public ResponseEntity<CourseType> editCourseType(@RequestBody CourseTypeRequest typeRequest,
+                                                     @PathVariable Integer typeId) {
+        return new ResponseEntity<>(courseTypeService.updateCourseType(typeRequest, typeId), HttpStatus.OK);
+    }
 }

@@ -96,4 +96,20 @@ class CourseTypeServiceTest {
                 .should(times(1))
                 .deleteById(2);
     }
+
+    @Test
+    void shouldUpdateCourseType() {
+        injectMocks();
+
+        courseTypeService.updateCourseType(request, 7);
+        ArgumentCaptor<CourseType> typeArgumentCaptor = ArgumentCaptor.forClass(CourseType.class);
+        then(courseTypeRepository)
+                .should(times(1))
+                .save(typeArgumentCaptor.capture());
+        CourseType type = typeArgumentCaptor.getValue();
+
+        assertNotNull(type);
+        assertEquals(request.getName(), type.getName());
+        assertEquals(7, type.getId());
+    }
 }

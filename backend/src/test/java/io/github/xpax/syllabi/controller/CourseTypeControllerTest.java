@@ -20,6 +20,7 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -32,6 +33,8 @@ class CourseTypeControllerTest {
 
     private CourseTypeRequest typeRequest;
     private CourseType lecture;
+    private CourseTypeRequest updateTypeRequest;
+    private CourseType updatedLecture;
 
     @BeforeEach
     void setUp() {
@@ -41,6 +44,14 @@ class CourseTypeControllerTest {
         lecture = CourseType.builder()
                 .id(3)
                 .name("Lecture")
+                .build();
+
+        updateTypeRequest = new CourseTypeRequest();
+        updateTypeRequest.setName("lecture");
+
+        updatedLecture = CourseType.builder()
+                .id(3)
+                .name("lecture")
                 .build();
     }
 
@@ -145,5 +156,56 @@ class CourseTypeControllerTest {
         BDDMockito.then(courseTypeService)
                 .should(times(1))
                 .deleteCourseType(3);
+    }
+
+    @Test
+    void shouldRespondToUpdateCourseTypeRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateTypeRequest)
+                .when()
+                .put("/types/{typeId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldUpdateCourseType() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateTypeRequest)
+                .when()
+                .put("/types/{typeId}", 3)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<CourseTypeRequest> requestCaptor = ArgumentCaptor.forClass(CourseTypeRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+        BDDMockito.then(courseTypeService)
+                .should(times(1))
+                .updateCourseType(requestCaptor.capture(), idCaptor.capture());
+        CourseTypeRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals("lecture", request.getName());
+        assertEquals(3, id);
+    }
+
+    @Test
+    void shouldProduceUpdatedCourseType() {
+        BDDMockito.given(courseTypeService.updateCourseType(any(CourseTypeRequest.class), anyInt()))
+                .willReturn(updatedLecture);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateTypeRequest)
+                .when()
+                .put("/types/{typeId}", 3)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(3))
+                .body("name", equalTo("lecture"));
     }
 }
