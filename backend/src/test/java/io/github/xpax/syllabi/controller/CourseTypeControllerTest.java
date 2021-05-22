@@ -123,4 +123,27 @@ class CourseTypeControllerTest {
                 .body("name", equalTo("Lecture"));
     }
 
+    @Test
+    void shouldRespondToDeleteCourseTypeRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/types/{typeId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteCourseType() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/types/{typeId}", 3)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseTypeService)
+                .should(times(1))
+                .deleteCourseType(3);
+    }
 }

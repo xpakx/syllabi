@@ -27,6 +27,9 @@ public class CourseTypeService {
                 .orElseThrow(() -> new NotFoundException("Type with id "+typeId+" not found!"));
     }
 
+    public void deleteCourseType(Integer typeId) {
+        courseTypeRepository.deleteById(typeId);
+    }
 
 
 

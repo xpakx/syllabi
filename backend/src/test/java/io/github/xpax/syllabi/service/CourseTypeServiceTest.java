@@ -85,4 +85,15 @@ class CourseTypeServiceTest {
 
         assertThrows(NotFoundException.class, () -> courseTypeService.getCourseType(7));
     }
+
+    @Test
+    void shouldDeleteCourseType() {
+        injectMocks();
+
+        courseTypeService.deleteCourseType(2);
+
+        then(courseTypeRepository)
+                .should(times(1))
+                .deleteById(2);
+    }
 }

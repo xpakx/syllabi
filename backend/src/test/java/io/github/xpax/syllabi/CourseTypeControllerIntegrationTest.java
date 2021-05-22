@@ -194,4 +194,65 @@ class CourseTypeControllerIntegrationTest {
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
+
+    @Test
+    void shouldRespondWith401ToDeleteCourseTypeRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/{courseTypeId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteCourseTypeRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/{courseTypeId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteCourseType() {
+        Integer id = addCourseTypes();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{courseTypeId}", id)
+                .then()
+                .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{courseTypeId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseTypeToDeleteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{courseTypeId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
 }

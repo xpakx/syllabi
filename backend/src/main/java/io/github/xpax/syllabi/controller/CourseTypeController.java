@@ -30,4 +30,10 @@ public class CourseTypeController {
         return new ResponseEntity<>(courseTypeService.getCourseType(typeId), HttpStatus.OK);
     }
 
+    @Secured("ROLE_COURSE_ADMIN")
+    @DeleteMapping("/{typeId}")
+    public ResponseEntity<?> deleteCourseType(@PathVariable Integer typeId) {
+        courseTypeService.deleteCourseType(typeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
