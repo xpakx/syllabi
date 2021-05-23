@@ -67,4 +67,14 @@ class CourseLiteratureServiceTest {
 
         assertThat(result, is(sameInstance(courseLiteraturePage)));
     }
+
+    @Test
+    void shouldDeleteLiterature() {
+        injectMocks();
+        courseLiteratureService.deleteLiterature(0);
+
+        then(courseLiteratureRepository)
+                .should(times(1))
+                .deleteById(0);
+    }
 }

@@ -23,8 +23,8 @@ import java.util.Set;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LiteratureControllerIntegrationTest {
@@ -119,6 +119,21 @@ class LiteratureControllerIntegrationTest {
         return courseId;
     }
 
+    private Integer addCourseLiteratureAndReturnLiteratureId() {
+        Course course = Course.builder()
+                .name("Philosophy of Science")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(course);
+
+        CourseLiterature lit1 = CourseLiterature.builder()
+                .course(course)
+                .title("The Aim and Structure of Physical Theory")
+                .author("Pierre Duhem")
+                .build();
+        return courseLiteratureRepository.save(lit1).getId();
+    }
+
     @Test
     void shouldRespondWith401ToGetCourseLiteratureRequestIfUserUnauthorized() {
         given()
@@ -169,5 +184,56 @@ class LiteratureControllerIntegrationTest {
                 .body("content", hasSize(5))
                 .body("content[0].title", equalTo("Dummy Literature #16"))
                 .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToDeleteCourseLiteratureRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/courses/literature/{literatureId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteCourseLiteratureRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/courses/literature/{literatureId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteCourseLiterature() {
+        Integer id = addCourseLiteratureAndReturnLiteratureId();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/courses/literature/{literatureId}", id)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseLiteratureToDeleteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/courses/literature/{literatureId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 }

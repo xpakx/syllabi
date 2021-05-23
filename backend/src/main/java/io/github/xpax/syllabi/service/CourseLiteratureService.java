@@ -22,4 +22,8 @@ public class CourseLiteratureService {
     public Page<LiteratureForPage> getAllLiterature(Integer page, Integer size, Integer courseId) {
         return courseLiteratureRepository.findAllByCourseId(courseId, PageRequest.of(page, size));
     }
+
+    public void deleteLiterature(Integer literatureId) {
+        courseLiteratureRepository.deleteById(literatureId);
+    }
 }

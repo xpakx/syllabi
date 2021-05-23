@@ -135,4 +135,28 @@ class LiteratureControllerTest {
                 .body("content[1].title", equalTo("Primate Societies"))
                 .body("numberOfElements", equalTo(2));
     }
+
+    @Test
+    void shouldRespondToDeleteCourseLiteratureRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/courses/literature/{literatureId}", 4)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteCourseLiterature() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/courses/literature/{literatureId}", 4)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseLiteratureService)
+                .should(times(1))
+                .deleteLiterature(4);
+    }
 }
