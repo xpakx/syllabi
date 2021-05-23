@@ -1,6 +1,7 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Institute;
+import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
 import io.github.xpax.syllabi.service.InstituteService;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -36,6 +37,7 @@ class InstituteControllerTest {
 
     private Page<InstituteForPage> institutePage;
     private Institute institute1;
+    private InstituteDetails institute1Det;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -54,6 +56,7 @@ class InstituteControllerTest {
                 .name("Department of Physics")
                 .build();
 
+        institute1Det = factory.createProjection(InstituteDetails.class, institute1);
 
         List<InstituteForPage> instituteList = new ArrayList<>();
         instituteList.add(factory.createProjection(InstituteForPage.class, institute1));
@@ -151,5 +154,29 @@ class InstituteControllerTest {
         BDDMockito.then(instituteService)
                 .should(times(1))
                 .deleteInstitute(3);
+    }
+
+    @Test
+    void shouldRespondToGetInstituteRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/institutes/{instituteId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceInstitute() {
+        BDDMockito.given(instituteService.getInstitute(7))
+                .willReturn(institute1Det);
+        injectMocks();
+        given()
+                .when()
+                .get("/institutes/{instituteId}", 7)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(7))
+                .body("name", equalTo("Department of Philosophy"));
     }
 }

@@ -187,6 +187,16 @@ class InstituteControllerIntegrationTest {
                 .delete(baseUrl + "/{instituteId}", id)
                 .then()
                 .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{instituteId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 
     @Test
@@ -198,6 +208,45 @@ class InstituteControllerIntegrationTest {
                 .oauth2(tokenFor("admin1"))
                 .when()
                 .delete(baseUrl + "/{instituteId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetInstituteRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{instituteId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithInstitute() {
+        Integer id = addInstitutes();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{instituteId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Department of Computer Science"));
+    }
+
+    @Test
+    void shouldRespondWith404IfInstituteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{instituteId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
     }

@@ -1,5 +1,6 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
 import io.github.xpax.syllabi.service.InstituteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,8 @@ public class InstituteController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @GetMapping("/{instituteId}")
+    public ResponseEntity<InstituteDetails> getInstitute(@PathVariable Integer instituteId) {
+        return new ResponseEntity<>(instituteService.getInstitute(instituteId), HttpStatus.OK);
+    }
 }
