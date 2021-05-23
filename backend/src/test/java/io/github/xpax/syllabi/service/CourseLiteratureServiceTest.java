@@ -41,6 +41,8 @@ class CourseLiteratureServiceTest {
     private CourseLiterature literature;
     private Course course;
     private LiteratureRequest request;
+    private LiteratureRequest editRequest;
+    private CourseLiterature literatureBeforeEdit;
 
     @BeforeEach
     void setUp() {
@@ -58,6 +60,21 @@ class CourseLiteratureServiceTest {
         request = new LiteratureRequest();
         request.setAuthor("Stephen Toulmin");
         request.setTitle("The Uses of Argument");
+        editRequest = new LiteratureRequest();
+        editRequest.setObligatory(true);
+        editRequest.setAuthor("Sarah Blaffer Hrdy");
+        editRequest.setTitle("The Woman That Never Evolved");
+        Course secondCourse = Course.builder()
+                .id(5)
+                .name("Sociobiology")
+                .build();
+        literatureBeforeEdit = CourseLiterature.builder()
+                .id(2)
+                .author("Sarah Hrdy")
+                .title("The Woman That Never Evolved")
+                .course(secondCourse)
+                .obligatory(false)
+                .build();
     }
 
     private void injectMocks() {
@@ -140,5 +157,25 @@ class CourseLiteratureServiceTest {
         assertEquals("The Uses of Argument", courseLiterature.getTitle());
         assertNotNull(courseLiterature.getCourse());
         assertEquals(1, courseLiterature.getCourse().getId());
+    }
+
+    @Test
+    void shouldUpdateLiterature() {
+        given(courseLiteratureRepository.findById(2))
+                .willReturn(Optional.of(literatureBeforeEdit));
+        injectMocks();
+
+        courseLiteratureService.updateLiterature(editRequest, 2);
+
+        ArgumentCaptor<CourseLiterature> literatureCaptor = ArgumentCaptor.forClass(CourseLiterature.class);
+        then(courseLiteratureRepository)
+                .should(times(1))
+                .save(literatureCaptor.capture());
+        CourseLiterature courseLiterature = literatureCaptor.getValue();
+
+        assertNotNull(courseLiterature);
+        assertEquals("Sarah Blaffer Hrdy", courseLiterature.getAuthor());
+        assertEquals("The Woman That Never Evolved", courseLiterature.getTitle());
+        assertTrue(courseLiterature.getObligatory());
     }
 }

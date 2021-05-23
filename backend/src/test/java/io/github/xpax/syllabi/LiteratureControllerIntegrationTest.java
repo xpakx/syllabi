@@ -355,4 +355,63 @@ class LiteratureControllerIntegrationTest {
                 .body("title", equalTo("Models and Analogies in Science"))
                 .body("author", equalTo("Mary Hesse"));
     }
+
+    @Test
+    void shouldRespondWith401ToUpdateCourseLiteratureRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/courses/literature/{literatureId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateCourseLiteratureRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .put(baseUrl + "/courses/literature/{literatureId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedCourseLiterature() {
+        Integer id = addCourseLiteratureAndReturnLiteratureId();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .put(baseUrl + "/courses/literature/{literatureId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(id))
+                .body("title", equalTo("Models and Analogies in Science"))
+                .body("author", equalTo("Mary Hesse"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/courses/literature/{literatureId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("title", equalTo("Models and Analogies in Science"))
+                .body("author", equalTo("Mary Hesse"));
+    }
 }

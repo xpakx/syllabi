@@ -57,4 +57,14 @@ public class LiteratureController {
                 HttpStatus.CREATED
         );
     }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @PutMapping("/courses/literature/{literatureId}")
+    public ResponseEntity<CourseLiterature> updateLiterature(@RequestBody LiteratureRequest literatureRequest,
+                                                             @PathVariable Integer literatureId) {
+        return new ResponseEntity<>(
+                courseLiteratureService.updateLiterature(literatureRequest, literatureId),
+                HttpStatus.OK
+        );
+    }
 }

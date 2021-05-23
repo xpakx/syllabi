@@ -49,4 +49,16 @@ public class CourseLiteratureService {
                 .build();
         return courseLiteratureRepository.save(courseLiteratureToAdd);
     }
+
+    public CourseLiterature updateLiterature(LiteratureRequest literatureRequest, Integer literatureId) {
+        CourseLiterature courseLiterature = courseLiteratureRepository.findById(literatureId)
+                .orElseThrow(() -> new NotFoundException("No literature with id "+literatureId+ " found!"));
+        courseLiterature.setAuthor(literatureRequest.getAuthor());
+        courseLiterature.setTitle(literatureRequest.getTitle());
+        courseLiterature.setEdition(literatureRequest.getEdition());
+        courseLiterature.setPages(literatureRequest.getPages());
+        courseLiterature.setDescription(literatureRequest.getDescription());
+        courseLiterature.setObligatory(literatureRequest.getObligatory());
+        return courseLiteratureRepository.save(courseLiterature);
+    }
 }
