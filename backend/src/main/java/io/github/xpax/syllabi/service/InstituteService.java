@@ -19,4 +19,8 @@ public class InstituteService {
     public Page<InstituteForPage> getAllInstitutes(Integer page, Integer size) {
         return instituteRepository.findProjectedBy(PageRequest.of(page, size));
     }
+
+    public void deleteInstitute(Integer instituteId) {
+        instituteRepository.deleteById(instituteId);
+    }
 }

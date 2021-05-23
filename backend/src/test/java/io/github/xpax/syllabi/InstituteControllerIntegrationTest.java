@@ -22,8 +22,8 @@ import java.util.Set;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class InstituteControllerIntegrationTest {
@@ -149,5 +149,56 @@ class InstituteControllerIntegrationTest {
                 .body("content", hasSize(5))
                 .body("content[0].name", equalTo("Dummy Institute #16"))
                 .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToDeleteInstituteRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/{instituteId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteInstituteRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/{instituteId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteInstitute() {
+        Integer id = addInstitutes();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{instituteId}", id)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldRespondWith404IfInstituteToDeleteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{instituteId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 }

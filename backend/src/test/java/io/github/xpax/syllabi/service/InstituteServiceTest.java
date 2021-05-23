@@ -61,4 +61,15 @@ class InstituteServiceTest {
 
         assertThat(result, is(sameInstance(page)));
     }
+
+    @Test
+    void shouldDeleteInstitute() {
+        injectMocks();
+
+        instituteService.deleteInstitute(5);
+
+        then(instituteRepository)
+                .should(times(1))
+                .deleteById(5);
+    }
 }

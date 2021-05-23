@@ -128,4 +128,28 @@ class InstituteControllerTest {
                 .body("content[2].name", equalTo("Department of Physics"))
                 .body("numberOfElements", equalTo(3));
     }
+
+    @Test
+    void shouldRespondToDeleteInstituteRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/institutes/{instituteId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteInstitute() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/institutes/{instituteId}", 3)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .deleteInstitute(3);
+    }
 }
