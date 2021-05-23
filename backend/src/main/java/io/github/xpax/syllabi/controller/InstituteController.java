@@ -50,4 +50,14 @@ public class InstituteController {
     public ResponseEntity<Institute> addNewInstitute(@RequestBody InstituteRequest instituteRequest) {
         return new ResponseEntity<>(instituteService.addNewInstitute(instituteRequest), HttpStatus.CREATED);
     }
+
+    @Secured("ROLE_INSTITUTE_ADMIN")
+    @PutMapping("/{instituteId}")
+    public ResponseEntity<Institute> updateInstitute(@RequestBody InstituteRequest instituteRequest,
+                                                     @PathVariable Integer instituteId) {
+        return new ResponseEntity<>(
+                instituteService.updateInstitute(instituteRequest, instituteId),
+                HttpStatus.OK
+        );
+    }
 }

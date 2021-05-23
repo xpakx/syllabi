@@ -134,4 +134,26 @@ class InstituteServiceTest {
         assertEquals("Institute of Artificial Intelligence", addedInstitute.getName());
         assertNull(addedInstitute.getId());
     }
+
+    @Test
+    void shouldUpdateInstitute() {
+        given(instituteRepository.getOne(3))
+                .willReturn(institute);
+        injectMocks();
+
+        instituteService.updateInstitute(request, 4);
+
+        ArgumentCaptor<Institute> instituteCaptor = ArgumentCaptor.forClass(Institute.class);
+        then(instituteRepository)
+                .should(times(1))
+                .save(instituteCaptor.capture());
+        Institute addedInstitute = instituteCaptor.getValue();
+
+        assertNotNull(addedInstitute);
+        assertNotNull(addedInstitute.getParent());
+        assertEquals(3, addedInstitute.getParent().getId());
+        assertEquals("Institute of Computer Science", addedInstitute.getParent().getName());
+        assertEquals("Institute of Artificial Intelligence", addedInstitute.getName());
+        assertEquals(4, addedInstitute.getId());
+    }
 }

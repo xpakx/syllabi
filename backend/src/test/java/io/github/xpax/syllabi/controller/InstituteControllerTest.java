@@ -247,4 +247,58 @@ class InstituteControllerTest {
                 .body("id", equalTo(13))
                 .body("name", equalTo("Institute of Experimental Philosophy"));
     }
+
+    @Test
+    void shouldRespondToUpdateInstituteRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .put("/institutes/{instituteId}", 13)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldUpdateInstitute() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .put("/institutes/{instituteId}", 13)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<InstituteRequest> requestCaptor = ArgumentCaptor.forClass(InstituteRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .updateInstitute(requestCaptor.capture(), idCaptor.capture());
+        InstituteRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(13, id);
+
+        assertEquals("Institute of Experimental Philosophy", request.getName());
+        assertEquals(7, request.getParentId());
+    }
+
+    @Test
+    void shouldProduceUpdatedInstitute() {
+        BDDMockito.given(instituteService.updateInstitute(any(InstituteRequest.class), anyInt()))
+                .willReturn(createdInstitute);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .put("/institutes/{instituteId}", 13)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(13))
+                .body("name", equalTo("Institute of Experimental Philosophy"));
+    }
 }

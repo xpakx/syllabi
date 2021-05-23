@@ -41,6 +41,20 @@ public class InstituteService {
         return instituteRepository.save(instituteToAdd);
     }
 
+    public Institute updateInstitute(InstituteRequest instituteRequest, Integer instituteId) {
+        Institute parent = getParentInstitute(instituteRequest);
+        Institute institute = Institute.builder()
+                .id(instituteId)
+                .parent(parent)
+                .code(instituteRequest.getCode())
+                .name(instituteRequest.getName())
+                .url(instituteRequest.getUrl())
+                .phone(instituteRequest.getPhone())
+                .address(instituteRequest.getAddress())
+                .build();
+        return instituteRepository.save(institute);
+    }
+
     private Institute getParentInstitute(InstituteRequest instituteRequest) {
         Institute parent = null;
         if(instituteRequest.getParentId() != null) {

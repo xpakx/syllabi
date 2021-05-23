@@ -316,4 +316,61 @@ class InstituteControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("name", equalTo("Department of Cognitive Science"));
     }
+
+    @Test
+    void shouldRespondWith401ToUpdateInstituteRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/{instituteId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateInstituteRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .put(baseUrl + "/{instituteId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedInstitute() {
+        Integer id = addInstitutes();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .put(baseUrl + "/{instituteId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(id))
+                .body("name", equalTo("Department of Cognitive Science"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{instituteId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Department of Cognitive Science"));
+    }
 }
