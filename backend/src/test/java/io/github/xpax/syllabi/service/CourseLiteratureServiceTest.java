@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseLiteratureRepository;
 import io.github.xpax.syllabi.repo.CourseRepository;
@@ -38,6 +39,8 @@ class CourseLiteratureServiceTest {
 
     private Page<LiteratureForPage> courseLiteraturePage;
     private CourseLiterature literature;
+    private Course course;
+    private LiteratureRequest request;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +51,13 @@ class CourseLiteratureServiceTest {
                 .author("Dante Alighieri")
                 .title("Divine Comedy")
                 .build();
+        course = Course.builder()
+                .id(1)
+                .name("Argumentation Theory")
+                .build();
+        request = new LiteratureRequest();
+        request.setAuthor("Stephen Toulmin");
+        request.setTitle("The Uses of Argument");
     }
 
     private void injectMocks() {
@@ -109,5 +119,26 @@ class CourseLiteratureServiceTest {
         injectMocks();
 
         assertThrows(NotFoundException.class, () -> courseLiteratureService.getLiterature(0));
+    }
+
+    @Test
+    void shouldAddNewLiteratureToCourse() {
+        given(courseRepository.getOne(1))
+                .willReturn(course);
+        injectMocks();
+
+        courseLiteratureService.addNewLiterature(request, 1);
+
+        ArgumentCaptor<CourseLiterature> literatureCaptor = ArgumentCaptor.forClass(CourseLiterature.class);
+        then(courseLiteratureRepository)
+                .should(times(1))
+                .save(literatureCaptor.capture());
+        CourseLiterature courseLiterature = literatureCaptor.getValue();
+
+        assertNotNull(courseLiterature);
+        assertEquals("Stephen Toulmin", courseLiterature.getAuthor());
+        assertEquals("The Uses of Argument", courseLiterature.getTitle());
+        assertNotNull(courseLiterature.getCourse());
+        assertEquals(1, courseLiterature.getCourse().getId());
     }
 }

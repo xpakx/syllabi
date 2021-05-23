@@ -1,7 +1,9 @@
 package io.github.xpax.syllabi.service;
 
+import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseLiteratureRepository;
 import io.github.xpax.syllabi.repo.CourseRepository;
@@ -32,5 +34,19 @@ public class CourseLiteratureService {
     public CourseLiterature getLiterature(Integer literatureId) {
         return courseLiteratureRepository.findById(literatureId)
                 .orElseThrow(() -> new NotFoundException("No literature with id "+literatureId+ " found!"));
+    }
+
+    public CourseLiterature addNewLiterature(LiteratureRequest literatureRequest, Integer courseId) {
+        Course course = courseRepository.getOne(courseId);
+        CourseLiterature courseLiteratureToAdd = CourseLiterature.builder()
+                .author(literatureRequest.getAuthor())
+                .title(literatureRequest.getTitle())
+                .edition(literatureRequest.getEdition())
+                .pages(literatureRequest.getPages())
+                .description(literatureRequest.getDescription())
+                .obligatory(literatureRequest.getObligatory())
+                .course(course)
+                .build();
+        return courseLiteratureRepository.save(courseLiteratureToAdd);
     }
 }

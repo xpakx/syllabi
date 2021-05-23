@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.CourseLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.service.CourseLiteratureService;
 import io.github.xpax.syllabi.service.GroupLiteratureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,15 @@ public class LiteratureController {
     @GetMapping("/courses/literature/{literatureId}")
     public ResponseEntity<CourseLiterature> getLiterature(@PathVariable Integer literatureId) {
         return new ResponseEntity<>(courseLiteratureService.getLiterature(literatureId), HttpStatus.OK);
+    }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @PostMapping("/courses/{courseId}/literature")
+    public ResponseEntity<CourseLiterature> addNewLiterature(@RequestBody LiteratureRequest literatureRequest,
+                                                             @PathVariable Integer courseId) {
+        return new ResponseEntity<>(
+                courseLiteratureService.addNewLiterature(literatureRequest, courseId),
+                HttpStatus.CREATED
+        );
     }
 }

@@ -4,12 +4,14 @@ import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseLiterature;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.repo.CourseLiteratureRepository;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.GroupLiteratureRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,8 @@ class LiteratureControllerIntegrationTest {
     @Autowired
     GroupLiteratureRepository groupLiteratureRepository;
 
+    private LiteratureRequest literatureRequest;
+
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost".concat(":").concat(port + "");
@@ -68,6 +72,10 @@ class LiteratureControllerIntegrationTest {
                 .roles(roles)
                 .build();
         userRepository.save(admin);
+
+        literatureRequest = new LiteratureRequest();
+        literatureRequest.setAuthor("Mary Hesse");
+        literatureRequest.setTitle("Models and Analogies in Science");
     }
 
     @AfterEach
@@ -285,5 +293,66 @@ class LiteratureControllerIntegrationTest {
                 .get(baseUrl + "/courses/literature/{literatureId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToAddCourseLiteratureRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .post(baseUrl + "/courses/{courseId}/literature", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToAddCourseLiteratureRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post(baseUrl + "/courses/{courseId}/literature", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithAddedCourseLiterature() {
+        Integer id = addCourseLiteratureAndReturnCourseId();
+        Integer addedCourseId = given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post(baseUrl+ "/courses/{courseId}/literature", id)
+                .then()
+                .statusCode(CREATED.value())
+                .body("title", equalTo("Models and Analogies in Science"))
+                .body("author", equalTo("Mary Hesse"))
+                .extract()
+                .jsonPath()
+                .getInt("id");
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/courses/literature/{literatureId}", addedCourseId)
+                .then()
+                .statusCode(OK.value())
+                .body("title", equalTo("Models and Analogies in Science"))
+                .body("author", equalTo("Mary Hesse"));
     }
 }

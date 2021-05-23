@@ -2,14 +2,17 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.CourseLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.service.CourseLiteratureService;
 import io.github.xpax.syllabi.service.GroupLiteratureService;
+import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.config.MockMvcConfig;
 import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,8 +28,12 @@ import java.util.List;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +46,8 @@ class LiteratureControllerTest {
 
     private Page<LiteratureForPage> courseLiteraturePage;
     private CourseLiterature courseLiterature2;
+    private LiteratureRequest literatureRequest;
+    private CourseLiterature createdCourseLiterature;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -67,6 +76,18 @@ class LiteratureControllerTest {
         courseLiteratureList.add(courseLiterature1Proj);
         courseLiteratureList.add(courseLiterature2Proj);
         courseLiteraturePage = new PageImpl<>(courseLiteratureList);
+
+        literatureRequest = new LiteratureRequest();
+        literatureRequest.setAuthor("Shirley C. Strum");
+        literatureRequest.setObligatory(false);
+        literatureRequest.setTitle("Almost Human: A Journey into the World of Baboons");
+
+        createdCourseLiterature = CourseLiterature.builder()
+                .id(0)
+                .author("Shirley C. Strum")
+                .obligatory(false)
+                .title("Almost Human: A Journey into the World of Baboons")
+                .build();
     }
 
     private void injectMocks() {
@@ -183,5 +204,61 @@ class LiteratureControllerTest {
                 .body("id", equalTo(2))
                 .body("author", equalTo("Barbara Smuts"))
                 .body("title", equalTo("Primate Societies"));
+    }
+
+    @Test
+    void shouldRespondToAddCourseLiteratureRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post("/courses/{courseId}/literature", 1)
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldAddCourseLiterature() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post("/courses/{courseId}/literature", 1)
+                .then()
+                .statusCode(CREATED.value());
+
+        ArgumentCaptor<LiteratureRequest> requestCaptor = ArgumentCaptor.forClass(LiteratureRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(courseLiteratureService)
+                .should(times(1))
+                .addNewLiterature(requestCaptor.capture(), idCaptor.capture());
+        LiteratureRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(1, id);
+        assertEquals("Shirley C. Strum", request.getAuthor());
+        assertEquals("Almost Human: A Journey into the World of Baboons", request.getTitle());
+        assertFalse(request.getObligatory());
+    }
+
+    @Test
+    void shouldProduceCreatedCourseLiterature() {
+        BDDMockito.given(courseLiteratureService.addNewLiterature(any(LiteratureRequest.class), anyInt()))
+                .willReturn(createdCourseLiterature);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post("/courses/{courseId}/literature", 1)
+                .then()
+                .statusCode(CREATED.value())
+                .body("id", equalTo(0))
+                .body("obligatory", equalTo(false))
+                .body("title", equalTo("Almost Human: A Journey into the World of Baboons"))
+                .body("author", equalTo("Shirley C. Strum"));
     }
 }
