@@ -1,6 +1,7 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.CourseLiterature;
+import io.github.xpax.syllabi.entity.GroupLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
 import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.service.CourseLiteratureService;
@@ -48,6 +49,8 @@ class LiteratureControllerTest {
     private CourseLiterature courseLiterature2;
     private LiteratureRequest literatureRequest;
     private CourseLiterature createdCourseLiterature;
+    private Page<LiteratureForPage> groupLiteraturePage;
+    private GroupLiterature groupLiterature2;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -88,6 +91,30 @@ class LiteratureControllerTest {
                 .obligatory(false)
                 .title("Almost Human: A Journey into the World of Baboons")
                 .build();
+
+        GroupLiterature groupLiterature1 = GroupLiterature.builder()
+                .id(1)
+                .author("Dorothy Cheney, Robert Seyfarth")
+                .title("Baboon Metaphysics: The Evolution of a Social Mind")
+                .build();
+        groupLiterature2 = GroupLiterature.builder()
+                .id(2)
+                .author("Barbara Smuts")
+                .title("Primate Societies")
+                .build();
+
+        LiteratureForPage groupLiterature1Proj = factory.createProjection(
+                LiteratureForPage.class,
+                groupLiterature1
+        );
+        LiteratureForPage groupLiterature2Proj = factory.createProjection(
+                LiteratureForPage.class,
+                groupLiterature2
+        );
+        List<LiteratureForPage> groupLiteratureList = new ArrayList<>();
+        groupLiteratureList.add(groupLiterature1Proj);
+        groupLiteratureList.add(groupLiterature2Proj);
+        groupLiteraturePage = new PageImpl<>(groupLiteratureList);
     }
 
     private void injectMocks() {
@@ -316,5 +343,65 @@ class LiteratureControllerTest {
                 .body("obligatory", equalTo(false))
                 .body("title", equalTo("Almost Human: A Journey into the World of Baboons"))
                 .body("author", equalTo("Shirley C. Strum"));
+    }
+
+    @Test
+    void shouldRespondToGetAllGroupLiteratureRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("groups/{groupId}/literature", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetAllGroupLiteratureRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("groups/{groupId}/literature", 3)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(groupLiteratureService)
+                .should(times(1))
+                .getAllLiterature(2, 15, 3);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllGroupLiteratureRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("groups/{groupId}/literature", 3)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(groupLiteratureService)
+                .should(times(1))
+                .getAllLiterature(0, 20, 3);
+    }
+
+    @Test
+    void shouldProducePageOfGroupLiterature() {
+        BDDMockito.given(groupLiteratureService.getAllLiterature(anyInt(), anyInt(), anyInt()))
+                .willReturn(groupLiteraturePage);
+        injectMocks();
+        given()
+                .when()
+                .get("groups/{groupId}/literature", 3)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(2))
+                .body("content[0].id", equalTo(1))
+                .body("content[0].author", equalTo("Dorothy Cheney, Robert Seyfarth"))
+                .body("content[0].title", equalTo("Baboon Metaphysics: The Evolution of a Social Mind"))
+                .body("content[1].id", equalTo(2))
+                .body("content[1].author", equalTo("Barbara Smuts"))
+                .body("content[1].title", equalTo("Primate Societies"))
+                .body("numberOfElements", equalTo(2));
     }
 }

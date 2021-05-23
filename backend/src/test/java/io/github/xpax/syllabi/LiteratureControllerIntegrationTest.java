@@ -1,14 +1,8 @@
 package io.github.xpax.syllabi;
 
-import io.github.xpax.syllabi.entity.Course;
-import io.github.xpax.syllabi.entity.CourseLiterature;
-import io.github.xpax.syllabi.entity.Role;
-import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
-import io.github.xpax.syllabi.repo.CourseLiteratureRepository;
-import io.github.xpax.syllabi.repo.CourseRepository;
-import io.github.xpax.syllabi.repo.GroupLiteratureRepository;
-import io.github.xpax.syllabi.repo.UserRepository;
+import io.github.xpax.syllabi.repo.*;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
 import io.restassured.http.ContentType;
@@ -49,6 +43,10 @@ class LiteratureControllerIntegrationTest {
     CourseLiteratureRepository courseLiteratureRepository;
     @Autowired
     GroupLiteratureRepository groupLiteratureRepository;
+    @Autowired
+    StudyGroupRepository studyGroupRepository;
+    @Autowired
+    CourseYearRepository courseYearRepository;
 
     private LiteratureRequest literatureRequest;
 
@@ -83,6 +81,8 @@ class LiteratureControllerIntegrationTest {
         userRepository.deleteAll();
         courseLiteratureRepository.deleteAll();
         groupLiteratureRepository.deleteAll();
+        studyGroupRepository.deleteAll();
+        courseYearRepository.deleteAll();
         courseRepository.deleteAll();
     }
 
@@ -173,6 +173,52 @@ class LiteratureControllerIntegrationTest {
                 .body("content[2].title", equalTo("The Structure of Scientific Revolutions"))
                 .body("content[2].author", equalTo("Thomas Kuhn"))
                 .body("numberOfElements", equalTo(20));
+    }
+
+    private Integer addGroupLiteratureAndReturnGroupId() {
+        Course course = Course.builder()
+                .name("Philosophy of Science")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(course);
+        CourseYear year = CourseYear.builder()
+                .parent(course)
+                .build();
+        courseYearRepository.save(year);
+
+        StudyGroup group = StudyGroup.builder()
+                .year(year)
+                .build();
+        Integer groupId = studyGroupRepository.save(group).getId();
+
+        GroupLiterature lit1 = GroupLiterature.builder()
+                .studyGroup(group)
+                .title("The Aim and Structure of Physical Theory")
+                .author("Pierre Duhem")
+                .build();
+        groupLiteratureRepository.save(lit1);
+        GroupLiterature lit2 = GroupLiterature.builder()
+                .studyGroup(group)
+                .title("The Logic of Scientific Discovery")
+                .author("Karl Popper")
+                .build();
+        groupLiteratureRepository.save(lit2);
+        GroupLiterature lit3 = GroupLiterature.builder()
+                .studyGroup(group)
+                .title("The Structure of Scientific Revolutions")
+                .author("Thomas Kuhn")
+                .build();
+        groupLiteratureRepository.save(lit3);
+
+        for(int i = 4; i<=25; i++) {
+            GroupLiterature dummyLiterature = GroupLiterature.builder()
+                    .title("Dummy Literature #"+i)
+                    .studyGroup(group)
+                    .build();
+            groupLiteratureRepository.save(dummyLiterature);
+        }
+
+        return groupId;
     }
 
     @Test
@@ -413,5 +459,57 @@ class LiteratureControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("title", equalTo("Models and Analogies in Science"))
                 .body("author", equalTo("Mary Hesse"));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetGroupLiteratureRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/groups/{courseId}/literature", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithLiteraturePageAndDefaultPaginationToGetGroupLiteratureRequest() {
+        Integer id = addGroupLiteratureAndReturnGroupId();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/groups/{courseId}/literature", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].title", equalTo("The Aim and Structure of Physical Theory"))
+                .body("content[0].author", equalTo("Pierre Duhem"))
+                .body("content[1].title", equalTo("The Logic of Scientific Discovery"))
+                .body("content[1].author", equalTo("Karl Popper"))
+                .body("content[2].title", equalTo("The Structure of Scientific Revolutions"))
+                .body("content[2].author", equalTo("Thomas Kuhn"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithLiteraturePageAndCustomPaginationToGetAllGroupLiteratureRequest() {
+        Integer id = addGroupLiteratureAndReturnGroupId();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/groups/{groupId}/literature", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].title", equalTo("Dummy Literature #16"))
+                .body("numberOfElements", equalTo(5));
     }
 }

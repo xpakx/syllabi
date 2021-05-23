@@ -67,4 +67,14 @@ public class LiteratureController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("groups/{groupId}/literature")
+    public ResponseEntity<Page<LiteratureForPage>> getAllLiteratureByGroup(@RequestParam Optional<Integer> page,
+                                                                           Optional<Integer> size,
+                                                                           @PathVariable Integer groupId) {
+        return new ResponseEntity<>(
+                groupLiteratureService.getAllLiterature(page.orElse(0), size.orElse(20), groupId),
+                HttpStatus.OK
+        );
+    }
 }
