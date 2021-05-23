@@ -40,6 +40,8 @@ class GroupLiteratureServiceTest {
     private GroupLiterature literature;
     private StudyGroup group;
     private LiteratureRequest request;
+    private LiteratureRequest editRequest;
+    private GroupLiterature literatureBeforeEdit;
 
     @BeforeEach
     void setUp() {
@@ -55,6 +57,20 @@ class GroupLiteratureServiceTest {
         request = new LiteratureRequest();
         request.setAuthor("Stephen Toulmin");
         request.setTitle("The Uses of Argument");
+        editRequest = new LiteratureRequest();
+        editRequest.setObligatory(true);
+        editRequest.setAuthor("Sarah Blaffer Hrdy");
+        editRequest.setTitle("The Woman That Never Evolved");
+        StudyGroup secondGroup = StudyGroup.builder()
+                .id(5)
+                .build();
+        literatureBeforeEdit = GroupLiterature.builder()
+                .id(2)
+                .author("Sarah Hrdy")
+                .title("The Woman That Never Evolved")
+                .studyGroup(secondGroup)
+                .obligatory(false)
+                .build();
     }
 
     private void injectMocks() {
@@ -137,5 +153,25 @@ class GroupLiteratureServiceTest {
         assertEquals("The Uses of Argument", groupLiterature.getTitle());
         assertNotNull(groupLiterature.getStudyGroup());
         assertEquals(1, groupLiterature.getStudyGroup().getId());
+    }
+
+    @Test
+    void shouldUpdateLiterature() {
+        given(groupLiteratureRepository.findById(2))
+                .willReturn(Optional.of(literatureBeforeEdit));
+        injectMocks();
+
+        groupLiteratureService.updateLiterature(editRequest, 2);
+
+        ArgumentCaptor<GroupLiterature> literatureCaptor = ArgumentCaptor.forClass(GroupLiterature.class);
+        then(groupLiteratureRepository)
+                .should(times(1))
+                .save(literatureCaptor.capture());
+        GroupLiterature groupLiterature = literatureCaptor.getValue();
+
+        assertNotNull(groupLiterature);
+        assertEquals("Sarah Blaffer Hrdy", groupLiterature.getAuthor());
+        assertEquals("The Woman That Never Evolved", groupLiterature.getTitle());
+        assertTrue(groupLiterature.getObligatory());
     }
 }

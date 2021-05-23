@@ -49,4 +49,16 @@ public class GroupLiteratureService {
                 .build();
         return groupLiteratureRepository.save(groupLiteratureToAdd);
     }
+
+    public GroupLiterature updateLiterature(LiteratureRequest literatureRequest, Integer literatureId) {
+        GroupLiterature groupLiterature = groupLiteratureRepository.findById(literatureId)
+                .orElseThrow(() -> new NotFoundException("No literature with id "+literatureId+ " found!"));
+        groupLiterature.setAuthor(literatureRequest.getAuthor());
+        groupLiterature.setTitle(literatureRequest.getTitle());
+        groupLiterature.setEdition(literatureRequest.getEdition());
+        groupLiterature.setPages(literatureRequest.getPages());
+        groupLiterature.setDescription(literatureRequest.getDescription());
+        groupLiterature.setObligatory(literatureRequest.getObligatory());
+        return groupLiteratureRepository.save(groupLiterature);
+    }
 }

@@ -516,4 +516,60 @@ class LiteratureControllerTest {
                 .body("title", equalTo("Almost Human: A Journey into the World of Baboons"))
                 .body("author", equalTo("Shirley C. Strum"));
     }
+
+    @Test
+    void shouldRespondToUpdateGroupLiteratureRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .put("/groups/literature/{literatureId}", 0)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldUpdateGroupLiterature() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .put("/groups/literature/{literatureId}", 0)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<LiteratureRequest> requestCaptor = ArgumentCaptor.forClass(LiteratureRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(groupLiteratureService)
+                .should(times(1))
+                .updateLiterature(requestCaptor.capture(), idCaptor.capture());
+        LiteratureRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(0, id);
+        assertEquals("Shirley C. Strum", request.getAuthor());
+        assertEquals("Almost Human: A Journey into the World of Baboons", request.getTitle());
+        assertFalse(request.getObligatory());
+    }
+
+    @Test
+    void shouldProduceUpdatedGroupLiterature() {
+        BDDMockito.given(groupLiteratureService.updateLiterature(any(LiteratureRequest.class), anyInt()))
+                .willReturn(createdGroupLiterature);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .put("/groups/literature/{literatureId}", 0)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(0))
+                .body("obligatory", equalTo(false))
+                .body("title", equalTo("Almost Human: A Journey into the World of Baboons"))
+                .body("author", equalTo("Shirley C. Strum"));
+    }
 }

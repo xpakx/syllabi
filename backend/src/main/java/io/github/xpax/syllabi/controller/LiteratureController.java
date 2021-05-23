@@ -102,4 +102,15 @@ public class LiteratureController {
                 HttpStatus.CREATED
         );
     }
+
+    @PreAuthorize("hasRole('ROLE_COURSE_ADMIN') or " +
+            "@permissionEvaluator.canEditStudyGroup(#groupId, authentication.principal.username)")
+    @PutMapping("/groups/literature/{literatureId}")
+    public ResponseEntity<GroupLiterature> updateGroupLiterature(@RequestBody LiteratureRequest literatureRequest,
+                                                                 @PathVariable Integer literatureId) {
+        return new ResponseEntity<>(
+                groupLiteratureService.updateLiterature(literatureRequest, literatureId),
+                HttpStatus.OK
+        );
+    }
 }
