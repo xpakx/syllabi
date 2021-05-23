@@ -1,6 +1,7 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.CourseLiterature;
+import io.github.xpax.syllabi.entity.GroupLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
 import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.service.CourseLiteratureService;
@@ -83,5 +84,10 @@ public class LiteratureController {
     public ResponseEntity<?> deleteGroupLiterature(@PathVariable Integer literatureId) {
         groupLiteratureService.deleteLiterature(literatureId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/groups/literature/{literatureId}")
+    public ResponseEntity<GroupLiterature> getGroupLiterature(@PathVariable Integer literatureId) {
+        return new ResponseEntity<>(groupLiteratureService.getLiterature(literatureId), HttpStatus.OK);
     }
 }

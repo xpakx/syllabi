@@ -574,6 +574,16 @@ class LiteratureControllerIntegrationTest {
                 .delete(baseUrl + "/groups/literature/{literatureId}", id)
                 .then()
                 .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/groups/literature/{literatureId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 
     @Test
@@ -585,6 +595,46 @@ class LiteratureControllerIntegrationTest {
                 .oauth2(tokenFor("admin1"))
                 .when()
                 .delete(baseUrl + "/groups/literature/{literatureId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetGroupLiteratureByIdRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/groups/literature/{literatureId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithGroupLiterature() {
+        Integer id = addGroupLiteratureAndReturnLiteratureId();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/groups/literature/{literatureId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("title", equalTo("The Aim and Structure of Physical Theory"))
+                .body("author", equalTo("Pierre Duhem"));
+    }
+
+    @Test
+    void shouldRespondWith404IfGroupLiteratureNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/groups/literature/{literatureId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
     }

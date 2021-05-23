@@ -428,4 +428,29 @@ class LiteratureControllerTest {
                 .should(times(1))
                 .deleteLiterature(4);
     }
+
+    @Test
+    void shouldRespondToGetGroupLiteratureRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/groups/literature/{literatureId}", 2)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceGroupLiterature() {
+        BDDMockito.given(groupLiteratureService.getLiterature(2))
+                .willReturn(groupLiterature2);
+        injectMocks();
+        given()
+                .when()
+                .get("/groups/literature/{literatureId}", 2)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(2))
+                .body("author", equalTo("Barbara Smuts"))
+                .body("title", equalTo("Primate Societies"));
+    }
 }
