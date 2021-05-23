@@ -2,10 +2,8 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
-import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.InstituteDetails;
-import io.github.xpax.syllabi.entity.dto.InstituteForPage;
-import io.github.xpax.syllabi.entity.dto.InstituteRequest;
+import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.InstituteService;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -49,6 +47,7 @@ class InstituteControllerTest {
     private Institute createdInstitute;
     private InstituteRequest instituteRequest;
     private Page<CourseForPage> coursePage;
+    private Page<ProgramForPage> programPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -93,6 +92,15 @@ class InstituteControllerTest {
         List<CourseForPage> courseList = new ArrayList<>();
         courseList.add(courseForPage);
         coursePage = new PageImpl<>(courseList);
+
+        Program program = Program.builder()
+                .id(3)
+                .name("Philosophy")
+                .build();
+        ProgramForPage programProj = factory.createProjection(ProgramForPage.class, program);
+        List<ProgramForPage> programList = new ArrayList<>();
+        programList.add(programProj);
+        programPage = new PageImpl<>(programList);
     }
 
     private void injectMocks() {
@@ -367,6 +375,62 @@ class InstituteControllerTest {
                 .body("content", hasSize(1))
                 .body("content[0].id", equalTo(3))
                 .body("content[0].name", equalTo("Introduction to Archeology"))
+                .body("numberOfElements", equalTo(1));
+    }
+
+    @Test
+    void shouldRespondToGetAllProgramsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("institutes/{instituteId}/programs", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetAllProgramsRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("institutes/{instituteId}/programs", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .getAllProgramsByInstitute(2, 15, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllProgramsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("institutes/{instituteId}/programs", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .getAllProgramsByInstitute(0, 20, 5);
+    }
+
+    @Test
+    void shouldProducePageOfPrograms() {
+        BDDMockito.given(instituteService.getAllProgramsByInstitute(anyInt(), anyInt(), anyInt()))
+                .willReturn(programPage);
+        injectMocks();
+        given()
+                .when()
+                .get("institutes/{instituteId}/programs", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(1))
+                .body("content[0].id", equalTo(3))
+                .body("content[0].name", equalTo("Philosophy"))
                 .body("numberOfElements", equalTo(1));
     }
 }

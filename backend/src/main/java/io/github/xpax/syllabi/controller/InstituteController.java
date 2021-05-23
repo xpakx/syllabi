@@ -1,10 +1,7 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Institute;
-import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.InstituteDetails;
-import io.github.xpax.syllabi.entity.dto.InstituteForPage;
-import io.github.xpax.syllabi.entity.dto.InstituteRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.InstituteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -68,6 +65,16 @@ public class InstituteController {
                                                                          @PathVariable Integer instituteId) {
         return new ResponseEntity<>(
                 instituteService.getAllCoursesByOrganizerId(page.orElse(0), size.orElse(20), instituteId),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/{instituteId}/programs")
+    public ResponseEntity<Page<ProgramForPage>> getAllProgramsForInstitute(@RequestParam Optional<Integer> page,
+                                                                           @RequestParam Optional<Integer> size,
+                                                                           @PathVariable Integer instituteId) {
+        return new ResponseEntity<>(
+                instituteService.getAllProgramsByInstitute(page.orElse(0), size.orElse(20), instituteId),
                 HttpStatus.OK
         );
     }

@@ -1,9 +1,6 @@
 package io.github.xpax.syllabi;
 
-import io.github.xpax.syllabi.entity.Course;
-import io.github.xpax.syllabi.entity.Institute;
-import io.github.xpax.syllabi.entity.Role;
-import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.InstituteRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
@@ -48,6 +45,8 @@ class InstituteControllerIntegrationTest {
     InstituteRepository instituteRepository;
     @Autowired
     CourseRepository courseRepository;
+    @Autowired
+    ProgramRepository programRepository;
 
     private InstituteRequest instituteRequest;
 
@@ -80,6 +79,7 @@ class InstituteControllerIntegrationTest {
     void cleanUp() {
         userRepository.deleteAll();
         courseRepository.deleteAll();
+        programRepository.deleteAll();
         instituteRepository.deleteAll();
     }
 
@@ -145,6 +145,39 @@ class InstituteControllerIntegrationTest {
                     .organizer(institute1)
                     .build();
             courseRepository.save(dummyCourse);
+        }
+
+        return instituteId;
+    }
+
+    private Integer addInstituteAndPrograms() {
+        Institute institute1 = Institute.builder()
+                .name("Institute of Philosophy")
+                .build();
+        Integer instituteId = instituteRepository.save(institute1).getId();
+
+        Program program1 = Program.builder()
+                .name("Philosophy 2020")
+                .organizer(institute1)
+                .build();
+        programRepository.save(program1);
+        Program program2 = Program.builder()
+                .name("Philosophy 2021")
+                .organizer(institute1)
+                .build();
+        programRepository.save(program2);
+        Program program3 = Program.builder()
+                .name("Cognitive Science 2020")
+                .organizer(institute1)
+                .build();
+        programRepository.save(program3);
+
+        for(int i = 4; i<=25; i++) {
+            Program dummyProgram = Program.builder()
+                    .name("Dummy Program #"+i)
+                    .organizer(institute1)
+                    .build();
+            programRepository.save(dummyProgram);
         }
 
         return instituteId;
@@ -461,6 +494,55 @@ class InstituteControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("content", hasSize(5))
                 .body("content[0].name", equalTo("Dummy Course #16"))
+                .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetInstituteProgramsRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{instituteId}/programs", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithProgramsPageAndDefaultPaginationToGetInstituteProgramsRequest() {
+        Integer id = addInstituteAndPrograms();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{instituteId}/programs", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].name", equalTo("Philosophy 2020"))
+                .body("content[1].name", equalTo("Philosophy 2021"))
+                .body("content[2].name", equalTo("Cognitive Science 2020"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithProgramsPageAndCustomPaginationToGetAllProgramsRequest() {
+        Integer id = addInstituteAndPrograms();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{instituteId}/programs", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].name", equalTo("Dummy Program #16"))
                 .body("numberOfElements", equalTo(5));
     }
 }

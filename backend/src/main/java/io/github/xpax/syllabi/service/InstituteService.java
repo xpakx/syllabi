@@ -1,13 +1,11 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.Institute;
-import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.InstituteDetails;
-import io.github.xpax.syllabi.entity.dto.InstituteForPage;
-import io.github.xpax.syllabi.entity.dto.InstituteRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
+import io.github.xpax.syllabi.repo.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,11 +15,13 @@ import org.springframework.stereotype.Service;
 public class InstituteService {
     private final InstituteRepository instituteRepository;
     private final CourseRepository courseRepository;
+    private final ProgramRepository programRepository;
 
     @Autowired
-    public InstituteService(InstituteRepository instituteRepository, CourseRepository courseRepository) {
+    public InstituteService(InstituteRepository instituteRepository, CourseRepository courseRepository, ProgramRepository programRepository) {
         this.instituteRepository = instituteRepository;
         this.courseRepository = courseRepository;
+        this.programRepository = programRepository;
     }
 
     public Page<InstituteForPage> getAllInstitutes(Integer page, Integer size) {
@@ -61,6 +61,10 @@ public class InstituteService {
 
     public Page<CourseForPage> getAllCoursesByOrganizerId(Integer page, Integer size, Integer instituteId) {
         return courseRepository.findByOrganizerId(instituteId, PageRequest.of(page, size));
+    }
+
+    public Page<ProgramForPage> getAllProgramsByInstitute(Integer page, Integer size, Integer instituteId) {
+        return programRepository.findByOrganizerId(instituteId, PageRequest.of(page, size));
     }
 
     private Institute getParentInstitute(InstituteRequest instituteRequest) {
