@@ -222,6 +222,16 @@ class LiteratureControllerIntegrationTest {
                 .delete(baseUrl + "/courses/literature/{literatureId}", id)
                 .then()
                 .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/courses/literature/{literatureId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 
     @Test
@@ -233,6 +243,46 @@ class LiteratureControllerIntegrationTest {
                 .oauth2(tokenFor("admin1"))
                 .when()
                 .delete(baseUrl + "/courses/literature/{literatureId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCourseLiteratureByIdRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/courses/literature/{literatureId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCourseLiterature() {
+        Integer id = addCourseLiteratureAndReturnLiteratureId();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/courses/literature/{literatureId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("title", equalTo("The Aim and Structure of Physical Theory"))
+                .body("author", equalTo("Pierre Duhem"));
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseLiteratureNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/courses/literature/{literatureId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
     }

@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.CourseLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseLiteratureRepository;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.Optional;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -34,10 +37,17 @@ class CourseLiteratureServiceTest {
     private CourseLiteratureService courseLiteratureService;
 
     private Page<LiteratureForPage> courseLiteraturePage;
+    private CourseLiterature literature;
 
     @BeforeEach
     void setUp() {
         courseLiteraturePage = Page.empty();
+
+        literature = CourseLiterature.builder()
+                .id(0)
+                .author("Dante Alighieri")
+                .title("Divine Comedy")
+                .build();
     }
 
     private void injectMocks() {
@@ -76,5 +86,28 @@ class CourseLiteratureServiceTest {
         then(courseLiteratureRepository)
                 .should(times(1))
                 .deleteById(0);
+    }
+
+    @Test
+    void shouldReturnLiteratureIfFound() {
+        given(courseLiteratureRepository.findById(0))
+                .willReturn(Optional.of(literature));
+        injectMocks();
+
+        CourseLiterature result = courseLiteratureService.getLiterature(0);
+
+        assertNotNull(result);
+        assertEquals("Dante Alighieri", result.getAuthor());
+        assertEquals("Divine Comedy", result.getTitle());
+        assertEquals(0, result.getId());
+    }
+
+    @Test
+    void shouldThrowExceptionIfLiteratureNotFound() {
+        given(courseLiteratureRepository.findById(0))
+                .willReturn(Optional.empty());
+        injectMocks();
+
+        assertThrows(NotFoundException.class, () -> courseLiteratureService.getLiterature(0));
     }
 }

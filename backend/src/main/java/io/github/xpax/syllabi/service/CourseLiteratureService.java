@@ -1,6 +1,8 @@
 package io.github.xpax.syllabi.service;
 
+import io.github.xpax.syllabi.entity.CourseLiterature;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseLiteratureRepository;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +27,10 @@ public class CourseLiteratureService {
 
     public void deleteLiterature(Integer literatureId) {
         courseLiteratureRepository.deleteById(literatureId);
+    }
+
+    public CourseLiterature getLiterature(Integer literatureId) {
+        return courseLiteratureRepository.findById(literatureId)
+                .orElseThrow(() -> new NotFoundException("No literature with id "+literatureId+ " found!"));
     }
 }

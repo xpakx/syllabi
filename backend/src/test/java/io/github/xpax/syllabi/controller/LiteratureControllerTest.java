@@ -159,4 +159,29 @@ class LiteratureControllerTest {
                 .should(times(1))
                 .deleteLiterature(4);
     }
+
+    @Test
+    void shouldRespondToGetCourseLiteratureRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/literature/{literatureId}", 2)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceCourseLiterature() {
+        BDDMockito.given(courseLiteratureService.getLiterature(2))
+                .willReturn(courseLiterature2);
+        injectMocks();
+        given()
+                .when()
+                .get("/courses/literature/{literatureId}", 2)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(2))
+                .body("author", equalTo("Barbara Smuts"))
+                .body("title", equalTo("Primate Societies"));
+    }
 }
