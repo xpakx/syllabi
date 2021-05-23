@@ -22,4 +22,8 @@ public class GroupLiteratureService {
     public Page<LiteratureForPage> getAllLiterature(Integer page, Integer size, Integer groupId) {
         return groupLiteratureRepository.findAllByStudyGroupId(groupId, PageRequest.of(page, size));
     }
+
+    public void deleteLiterature(Integer literatureId) {
+        groupLiteratureRepository.deleteById(literatureId);
+    }
 }

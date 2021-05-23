@@ -77,4 +77,11 @@ public class LiteratureController {
                 HttpStatus.OK
         );
     }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @DeleteMapping("/groups/literature/{literatureId}")
+    public ResponseEntity<?> deleteGroupLiterature(@PathVariable Integer literatureId) {
+        groupLiteratureService.deleteLiterature(literatureId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

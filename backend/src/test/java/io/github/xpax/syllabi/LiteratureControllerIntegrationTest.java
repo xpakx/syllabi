@@ -221,6 +221,31 @@ class LiteratureControllerIntegrationTest {
         return groupId;
     }
 
+    private Integer addGroupLiteratureAndReturnLiteratureId() {
+        Course course = Course.builder()
+                .name("Philosophy of Science")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(course);
+
+        CourseYear year = CourseYear.builder()
+                .parent(course)
+                .build();
+        courseYearRepository.save(year);
+
+        StudyGroup group = StudyGroup.builder()
+                .year(year)
+                .build();
+        studyGroupRepository.save(group);
+
+        GroupLiterature lit1 = GroupLiterature.builder()
+                .studyGroup(group)
+                .title("The Aim and Structure of Physical Theory")
+                .author("Pierre Duhem")
+                .build();
+        return groupLiteratureRepository.save(lit1).getId();
+    }
+
     @Test
     void shouldRespondWithLiteraturePageAndCustomPaginationToGetAllCourseLiteratureRequest() {
         Integer id = addCourseLiteratureAndReturnCourseId();
@@ -511,5 +536,56 @@ class LiteratureControllerIntegrationTest {
                 .body("content", hasSize(5))
                 .body("content[0].title", equalTo("Dummy Literature #16"))
                 .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToDeleteGroupLiteratureRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/groups/literature/{literatureId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteGroupLiteratureRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/groups/literature/{literatureId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteGroupLiterature() {
+        Integer id = addGroupLiteratureAndReturnLiteratureId();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/groups/literature/{literatureId}", id)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldRespondWith404IfGroupLiteratureToDeleteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/groups/literature/{literatureId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 }
