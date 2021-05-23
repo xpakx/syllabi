@@ -16,4 +16,6 @@ public interface InstituteRepository extends JpaRepository<Institute, Integer> {
     Page<InstituteForPage> findProjectedBy(Pageable page);
 
     Optional<InstituteDetails> findProjectedById(Integer id);
+
+    Page<InstituteForPage> findByParentId(Integer instituteId, Pageable page);
 }

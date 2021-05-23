@@ -67,6 +67,10 @@ public class InstituteService {
         return programRepository.findByOrganizerId(instituteId, PageRequest.of(page, size));
     }
 
+    public Page<InstituteForPage> getAllChildrenByOrganizerId(Integer page, Integer size, Integer instituteId) {
+        return instituteRepository.findByParentId(instituteId, PageRequest.of(page, size));
+    }
+
     private Institute getParentInstitute(InstituteRequest instituteRequest) {
         Institute parent = null;
         if(instituteRequest.getParentId() != null) {

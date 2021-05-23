@@ -78,4 +78,14 @@ public class InstituteController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/{instituteId}/children")
+    public ResponseEntity<Page<InstituteForPage>> getAllChildren(@RequestParam Optional<Integer> page,
+                                                                 @RequestParam Optional<Integer> size,
+                                                                 @PathVariable Integer instituteId) {
+        return new ResponseEntity<>(
+                instituteService.getAllChildrenByOrganizerId(page.orElse(0), size.orElse(20), instituteId),
+                HttpStatus.OK
+        );
+    }
 }

@@ -183,6 +183,41 @@ class InstituteControllerIntegrationTest {
         return instituteId;
     }
 
+    private Integer addInstituteAndChildren() {
+        Institute institute = Institute.builder()
+                .name("Institute of Philosophy")
+                .build();
+        Integer instituteId = instituteRepository.save(institute).getId();
+
+        Institute institute1 = Institute.builder()
+                .name("Institute of Philosophy")
+                .parent(institute)
+                .build();
+        instituteRepository.save(institute1);
+
+        Institute institute2 = Institute.builder()
+                .name("Institute of Physics")
+                .parent(institute)
+                .build();
+        instituteRepository.save(institute2);
+
+        Institute institute3 = Institute.builder()
+                .name("Department of Computer Science")
+                .parent(institute)
+                .build();
+        instituteRepository.save(institute3);
+
+        for(int i = 4; i<=25; i++) {
+            Institute dummyInstitute = Institute.builder()
+                    .name("Dummy Institute #"+i)
+                    .parent(institute)
+                    .build();
+            instituteRepository.save(dummyInstitute);
+        }
+
+        return instituteId;
+    }
+
     @Test
     void shouldRespondWith401ToGetAllInstitutesRequestIfUserUnauthorized() {
         given()
@@ -543,6 +578,55 @@ class InstituteControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("content", hasSize(5))
                 .body("content[0].name", equalTo("Dummy Program #16"))
+                .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetChildrenRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl+ "/{instituteId}/children", 5)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithInstitutesPageAndDefaultPaginationToGetChildrenRequest() {
+        Integer id = addInstituteAndChildren();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl+ "/{instituteId}/children", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].name", equalTo("Institute of Philosophy"))
+                .body("content[1].name", equalTo("Institute of Physics"))
+                .body("content[2].name", equalTo("Department of Computer Science"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithInstitutesPageAndCustomPaginationToGetChildrenRequest() {
+        Integer id = addInstituteAndChildren();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl+ "/{instituteId}/children", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].name", equalTo("Dummy Institute #16"))
                 .body("numberOfElements", equalTo(5));
     }
 }

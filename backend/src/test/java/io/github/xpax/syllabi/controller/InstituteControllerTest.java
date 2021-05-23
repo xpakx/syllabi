@@ -433,4 +433,64 @@ class InstituteControllerTest {
                 .body("content[0].name", equalTo("Philosophy"))
                 .body("numberOfElements", equalTo(1));
     }
+
+    @Test
+    void shouldRespondToGetChildrenRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/institutes/{instituteId}/children", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetChildrenRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/institutes/{instituteId}/children", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .getAllChildrenByOrganizerId(7, 5, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetChildrenRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/institutes/{instituteId}/children", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .getAllChildrenByOrganizerId(0, 20, 5);
+    }
+
+    @Test
+    void shouldProducePageOfChildren() {
+        BDDMockito.given(instituteService.getAllChildrenByOrganizerId(anyInt(), anyInt(), anyInt()))
+                .willReturn(institutePage);
+        injectMocks();
+        given()
+                .when()
+                .get("/institutes/{instituteId}/children", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(3))
+                .body("content[0].id", equalTo(7))
+                .body("content[0].name", equalTo("Department of Philosophy"))
+                .body("content[1].id", equalTo(15))
+                .body("content[1].name", equalTo("Institute of Computer Science"))
+                .body("content[2].id", equalTo(21))
+                .body("content[2].name", equalTo("Department of Physics"))
+                .body("numberOfElements", equalTo(3));
+    }
 }

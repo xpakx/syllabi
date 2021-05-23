@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
@@ -207,5 +208,26 @@ class InstituteServiceTest {
         assertEquals(0, pageRequest.getPageNumber());
         assertEquals(20, pageRequest.getPageSize());
         assertEquals(5, organizerId);
+    }
+
+    @Test
+    void shouldAskRepositoryForPageOfChildren() {
+        given(instituteRepository.findByParentId(anyInt(), any(PageRequest.class)))
+                .willReturn(page);
+        injectMocks();
+
+        Page<InstituteForPage> result = instituteService.getAllChildrenByOrganizerId(0, 20, 5);
+
+        ArgumentCaptor<Pageable> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+
+        then(instituteRepository)
+                .should(times(1))
+                .findByParentId(anyInt(), pageRequestCaptor.capture());
+        Pageable pageRequest = pageRequestCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+
+        assertThat(result, is(sameInstance(page)));
     }
 }
