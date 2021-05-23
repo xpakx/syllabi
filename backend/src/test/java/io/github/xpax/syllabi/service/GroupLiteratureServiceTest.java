@@ -1,7 +1,9 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.GroupLiterature;
+import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.GroupLiteratureRepository;
 import io.github.xpax.syllabi.repo.StudyGroupRepository;
@@ -36,6 +38,8 @@ class GroupLiteratureServiceTest {
     private GroupLiteratureService groupLiteratureService;
     private Page<LiteratureForPage> groupLiteraturePage;
     private GroupLiterature literature;
+    private StudyGroup group;
+    private LiteratureRequest request;
 
     @BeforeEach
     void setUp() {
@@ -45,6 +49,12 @@ class GroupLiteratureServiceTest {
                 .author("Dante Alighieri")
                 .title("Divine Comedy")
                 .build();
+        group = StudyGroup.builder()
+                .id(1)
+                .build();
+        request = new LiteratureRequest();
+        request.setAuthor("Stephen Toulmin");
+        request.setTitle("The Uses of Argument");
     }
 
     private void injectMocks() {
@@ -106,5 +116,26 @@ class GroupLiteratureServiceTest {
         injectMocks();
 
         assertThrows(NotFoundException.class, () -> groupLiteratureService.getLiterature(0));
+    }
+
+    @Test
+    void shouldAddNewLiteratureToStudyGroup() {
+        given(studyGroupRepository.getOne(1))
+                .willReturn(group);
+        injectMocks();
+
+        groupLiteratureService.addNewLiterature(request, 1);
+
+        ArgumentCaptor<GroupLiterature> literatureCaptor = ArgumentCaptor.forClass(GroupLiterature.class);
+        then(groupLiteratureRepository)
+                .should(times(1))
+                .save(literatureCaptor.capture());
+        GroupLiterature groupLiterature = literatureCaptor.getValue();
+
+        assertNotNull(groupLiterature);
+        assertEquals("Stephen Toulmin", groupLiterature.getAuthor());
+        assertEquals("The Uses of Argument", groupLiterature.getTitle());
+        assertNotNull(groupLiterature.getStudyGroup());
+        assertEquals(1, groupLiterature.getStudyGroup().getId());
     }
 }

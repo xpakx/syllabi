@@ -51,6 +51,7 @@ class LiteratureControllerTest {
     private CourseLiterature createdCourseLiterature;
     private Page<LiteratureForPage> groupLiteraturePage;
     private GroupLiterature groupLiterature2;
+    private GroupLiterature createdGroupLiterature;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -115,6 +116,12 @@ class LiteratureControllerTest {
         groupLiteratureList.add(groupLiterature1Proj);
         groupLiteratureList.add(groupLiterature2Proj);
         groupLiteraturePage = new PageImpl<>(groupLiteratureList);
+        createdGroupLiterature = GroupLiterature.builder()
+                .id(0)
+                .author("Shirley C. Strum")
+                .obligatory(false)
+                .title("Almost Human: A Journey into the World of Baboons")
+                .build();
     }
 
     private void injectMocks() {
@@ -452,5 +459,61 @@ class LiteratureControllerTest {
                 .body("id", equalTo(2))
                 .body("author", equalTo("Barbara Smuts"))
                 .body("title", equalTo("Primate Societies"));
+    }
+
+    @Test
+    void shouldRespondToAddGroupLiteratureRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post("/groups/{groupId}/literature", 1)
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldAddGroupLiterature() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post("/groups/{groupId}/literature", 1)
+                .then()
+                .statusCode(CREATED.value());
+
+        ArgumentCaptor<LiteratureRequest> requestCaptor = ArgumentCaptor.forClass(LiteratureRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(groupLiteratureService)
+                .should(times(1))
+                .addNewLiterature(requestCaptor.capture(), idCaptor.capture());
+        LiteratureRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(1, id);
+        assertEquals("Shirley C. Strum", request.getAuthor());
+        assertEquals("Almost Human: A Journey into the World of Baboons", request.getTitle());
+        assertFalse(request.getObligatory());
+    }
+
+    @Test
+    void shouldProduceCreatedGroupLiterature() {
+        BDDMockito.given(groupLiteratureService.addNewLiterature(any(LiteratureRequest.class), anyInt()))
+                .willReturn(createdGroupLiterature);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(literatureRequest)
+                .when()
+                .post("/groups/{groupId}/literature", 1)
+                .then()
+                .statusCode(CREATED.value())
+                .body("id", equalTo(0))
+                .body("obligatory", equalTo(false))
+                .body("title", equalTo("Almost Human: A Journey into the World of Baboons"))
+                .body("author", equalTo("Shirley C. Strum"));
     }
 }

@@ -1,7 +1,9 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.GroupLiterature;
+import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.dto.LiteratureForPage;
+import io.github.xpax.syllabi.entity.dto.LiteratureRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.GroupLiteratureRepository;
 import io.github.xpax.syllabi.repo.StudyGroupRepository;
@@ -32,5 +34,19 @@ public class GroupLiteratureService {
     public GroupLiterature getLiterature(Integer literatureId) {
         return groupLiteratureRepository.findById(literatureId)
                 .orElseThrow(() -> new NotFoundException("No literature with id "+literatureId+ " found!"));
+    }
+
+    public GroupLiterature addNewLiterature(LiteratureRequest literatureRequest, Integer groupId) {
+        StudyGroup group = studyGroupRepository.getOne(groupId);
+        GroupLiterature groupLiteratureToAdd = GroupLiterature.builder()
+                .author(literatureRequest.getAuthor())
+                .title(literatureRequest.getTitle())
+                .edition(literatureRequest.getEdition())
+                .pages(literatureRequest.getPages())
+                .description(literatureRequest.getDescription())
+                .studyGroup(group)
+                .obligatory(literatureRequest.getObligatory())
+                .build();
+        return groupLiteratureRepository.save(groupLiteratureToAdd);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -89,5 +90,16 @@ public class LiteratureController {
     @GetMapping("/groups/literature/{literatureId}")
     public ResponseEntity<GroupLiterature> getGroupLiterature(@PathVariable Integer literatureId) {
         return new ResponseEntity<>(groupLiteratureService.getLiterature(literatureId), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_COURSE_ADMIN') or " +
+            "@permissionEvaluator.canEditStudyGroup(#groupId, authentication.principal.username)")
+    @PostMapping("/groups/{groupId}/literature")
+    public ResponseEntity<GroupLiterature> addNewGroupLiterature(@RequestBody LiteratureRequest literatureRequest,
+                                                                 @PathVariable Integer groupId) {
+        return new ResponseEntity<>(
+                groupLiteratureService.addNewLiterature(literatureRequest, groupId),
+                HttpStatus.CREATED
+        );
     }
 }
