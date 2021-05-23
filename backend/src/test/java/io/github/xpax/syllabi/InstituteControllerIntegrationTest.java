@@ -1,5 +1,6 @@
 package io.github.xpax.syllabi;
 
+import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
@@ -45,6 +46,8 @@ class InstituteControllerIntegrationTest {
 
     @Autowired
     InstituteRepository instituteRepository;
+    @Autowired
+    CourseRepository courseRepository;
 
     private InstituteRequest instituteRequest;
 
@@ -76,6 +79,7 @@ class InstituteControllerIntegrationTest {
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
+        courseRepository.deleteAll();
         instituteRepository.deleteAll();
     }
 
@@ -104,6 +108,43 @@ class InstituteControllerIntegrationTest {
                     .name("Dummy Institute #"+i)
                     .build();
             instituteRepository.save(dummyInstitute);
+        }
+
+        return instituteId;
+    }
+
+    private Integer addInstituteAndCourses() {
+        Institute institute1 = Institute.builder()
+                .name("Institute of Philosophy")
+                .build();
+        Integer instituteId = instituteRepository.save(institute1).getId();
+
+        Course course1 = Course.builder()
+                .name("Ethics")
+                .programs(new HashSet<>())
+                .organizer(institute1)
+                .build();
+        courseRepository.save(course1);
+        Course course2 = Course.builder()
+                .name("Epistemology")
+                .programs(new HashSet<>())
+                .organizer(institute1)
+                .build();
+        courseRepository.save(course2);
+        Course course3 = Course.builder()
+                .name("Metaphysics")
+                .programs(new HashSet<>())
+                .organizer(institute1)
+                .build();
+        courseRepository.save(course3);
+
+        for(int i = 4; i<=25; i++) {
+            Course dummyCourse = Course.builder()
+                    .name("Dummy Course #"+i)
+                    .programs(new HashSet<>())
+                    .organizer(institute1)
+                    .build();
+            courseRepository.save(dummyCourse);
         }
 
         return instituteId;
@@ -372,5 +413,54 @@ class InstituteControllerIntegrationTest {
                 .then()
                 .statusCode(OK.value())
                 .body("name", equalTo("Department of Cognitive Science"));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetInstituteCoursesRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{instituteId}/courses", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndDefaultPaginationToGetInstituteCoursesRequest() {
+        Integer id = addInstituteAndCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{instituteId}/courses", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].name", equalTo("Ethics"))
+                .body("content[1].name", equalTo("Epistemology"))
+                .body("content[2].name", equalTo("Metaphysics"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndCustomPaginationToGetAllCoursesRequest() {
+        Integer id = addInstituteAndCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{instituteId}/courses", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].name", equalTo("Dummy Course #16"))
+                .body("numberOfElements", equalTo(5));
     }
 }

@@ -1,10 +1,12 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.Institute;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
+import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,12 +35,15 @@ import static org.mockito.Mockito.times;
 class InstituteServiceTest {
     @Mock
     private InstituteRepository instituteRepository;
+    @Mock
+    private CourseRepository courseRepository;
 
     private InstituteService instituteService;
     private Page<InstituteForPage> page;
     private Institute institute;
     private InstituteDetails instituteDet;
     private InstituteRequest request;
+    private Page<CourseForPage> coursePage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -53,10 +58,11 @@ class InstituteServiceTest {
         request = new InstituteRequest();
         request.setName("Institute of Artificial Intelligence");
         request.setParentId(3);
+        coursePage = Page.empty();
     }
 
     private void injectMocks() {
-        instituteService = new InstituteService(instituteRepository);
+        instituteService = new InstituteService(instituteRepository, courseRepository);
     }
 
     @Test
@@ -155,5 +161,27 @@ class InstituteServiceTest {
         assertEquals("Institute of Computer Science", addedInstitute.getParent().getName());
         assertEquals("Institute of Artificial Intelligence", addedInstitute.getName());
         assertEquals(4, addedInstitute.getId());
+    }
+
+    @Test
+    void shouldAskRepositoryForOrganizedCourses() {
+        given(courseRepository.findByOrganizerId(anyInt(), any(PageRequest.class)))
+                .willReturn(coursePage);
+        injectMocks();
+
+        instituteService.getAllCoursesByOrganizerId(0, 20, 5);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        ArgumentCaptor<Integer> instituteIdCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        then(courseRepository)
+                .should(times(1))
+                .findByOrganizerId(instituteIdCaptor.capture(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+        Integer organizerId = instituteIdCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+        assertEquals(5, organizerId);
     }
 }

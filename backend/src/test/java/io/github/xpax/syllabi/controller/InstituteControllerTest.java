@@ -1,6 +1,8 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteRequest;
@@ -46,6 +48,7 @@ class InstituteControllerTest {
     private InstituteDetails institute1Det;
     private Institute createdInstitute;
     private InstituteRequest instituteRequest;
+    private Page<CourseForPage> coursePage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -81,6 +84,15 @@ class InstituteControllerTest {
                 .name("Institute of Experimental Philosophy")
                 .parent(institute1)
                 .build();
+
+        Course course = Course.builder()
+                .id(3)
+                .name("Introduction to Archeology")
+                .build();
+        CourseForPage courseForPage = factory.createProjection(CourseForPage.class, course);
+        List<CourseForPage> courseList = new ArrayList<>();
+        courseList.add(courseForPage);
+        coursePage = new PageImpl<>(courseList);
     }
 
     private void injectMocks() {
@@ -300,5 +312,61 @@ class InstituteControllerTest {
                 .statusCode(OK.value())
                 .body("id", equalTo(13))
                 .body("name", equalTo("Institute of Experimental Philosophy"));
+    }
+
+    @Test
+    void shouldRespondToGetAllCoursesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("institutes/{instituteId}/courses", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetAllCoursesRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("institutes/{instituteId}/courses", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .getAllCoursesByOrganizerId(2, 15, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllCoursesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("institutes/{instituteId}/courses", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .getAllCoursesByOrganizerId(0, 20, 5);
+    }
+
+    @Test
+    void shouldProducePageOfCourses() {
+        BDDMockito.given(instituteService.getAllCoursesByOrganizerId(anyInt(), anyInt(), anyInt()))
+                .willReturn(coursePage);
+        injectMocks();
+        given()
+                .when()
+                .get("institutes/{instituteId}/courses", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(1))
+                .body("content[0].id", equalTo(3))
+                .body("content[0].name", equalTo("Introduction to Archeology"))
+                .body("numberOfElements", equalTo(1));
     }
 }

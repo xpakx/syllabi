@@ -1,6 +1,7 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Institute;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteRequest;
@@ -57,6 +58,16 @@ public class InstituteController {
                                                      @PathVariable Integer instituteId) {
         return new ResponseEntity<>(
                 instituteService.updateInstitute(instituteRequest, instituteId),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/{instituteId}/courses")
+    public ResponseEntity<Page<CourseForPage>> getAllCoursesForInstitute(@RequestParam Optional<Integer> page,
+                                                                         @RequestParam Optional<Integer> size,
+                                                                         @PathVariable Integer instituteId) {
+        return new ResponseEntity<>(
+                instituteService.getAllCoursesByOrganizerId(page.orElse(0), size.orElse(20), instituteId),
                 HttpStatus.OK
         );
     }

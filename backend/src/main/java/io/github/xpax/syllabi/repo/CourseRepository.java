@@ -22,4 +22,6 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     <T> Optional<T> findProjectedById(Integer courseId, Class<T> type);
 
     <T> Optional<T> getProjectedById(Integer courseId, Class<T> type);
+
+    Page<CourseForPage> findByOrganizerId(Integer organizerId, Pageable page);
 }

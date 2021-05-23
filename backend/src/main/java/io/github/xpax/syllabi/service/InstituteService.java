@@ -1,10 +1,12 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.Institute;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
 import io.github.xpax.syllabi.entity.dto.InstituteRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
+import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class InstituteService {
     private final InstituteRepository instituteRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public InstituteService(InstituteRepository instituteRepository) {
+    public InstituteService(InstituteRepository instituteRepository, CourseRepository courseRepository) {
         this.instituteRepository = instituteRepository;
+        this.courseRepository = courseRepository;
     }
 
     public Page<InstituteForPage> getAllInstitutes(Integer page, Integer size) {
@@ -53,6 +57,10 @@ public class InstituteService {
                 .address(instituteRequest.getAddress())
                 .build();
         return instituteRepository.save(institute);
+    }
+
+    public Page<CourseForPage> getAllCoursesByOrganizerId(Integer page, Integer size, Integer instituteId) {
+        return courseRepository.findByOrganizerId(instituteId, PageRequest.of(page, size));
     }
 
     private Institute getParentInstitute(InstituteRequest instituteRequest) {
