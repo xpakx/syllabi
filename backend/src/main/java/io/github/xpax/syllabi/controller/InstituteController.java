@@ -1,7 +1,9 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
+import io.github.xpax.syllabi.entity.dto.InstituteRequest;
 import io.github.xpax.syllabi.service.InstituteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,5 +43,11 @@ public class InstituteController {
     @GetMapping("/{instituteId}")
     public ResponseEntity<InstituteDetails> getInstitute(@PathVariable Integer instituteId) {
         return new ResponseEntity<>(instituteService.getInstitute(instituteId), HttpStatus.OK);
+    }
+
+    @Secured("ROLE_INSTITUTE_ADMIN")
+    @PostMapping
+    public ResponseEntity<Institute> addNewInstitute(@RequestBody InstituteRequest instituteRequest) {
+        return new ResponseEntity<>(instituteService.addNewInstitute(instituteRequest), HttpStatus.CREATED);
     }
 }

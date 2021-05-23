@@ -3,12 +3,14 @@ package io.github.xpax.syllabi;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.InstituteRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,6 +46,8 @@ class InstituteControllerIntegrationTest {
     @Autowired
     InstituteRepository instituteRepository;
 
+    private InstituteRequest instituteRequest;
+
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost".concat(":").concat(port+"").concat("/institutes");
@@ -64,6 +68,9 @@ class InstituteControllerIntegrationTest {
                 .roles(roles)
                 .build();
         userRepository.save(admin);
+
+        instituteRequest = new InstituteRequest();
+        instituteRequest.setName("Department of Cognitive Science");
     }
 
     @AfterEach
@@ -249,5 +256,64 @@ class InstituteControllerIntegrationTest {
                 .get(baseUrl + "/{instituteId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToAddInstituteRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToAddInstituteRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithAddedInstitute() {
+        addInstitutes();
+        Integer addedInstituteId = given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(CREATED.value())
+                .body("name", equalTo("Department of Cognitive Science"))
+                .extract()
+                .jsonPath()
+                .getInt("id");
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{instituteId}", addedInstituteId)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Department of Cognitive Science"));
     }
 }

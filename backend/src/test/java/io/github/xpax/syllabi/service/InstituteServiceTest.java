@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
+import io.github.xpax.syllabi.entity.dto.InstituteRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,7 @@ class InstituteServiceTest {
     private Page<InstituteForPage> page;
     private Institute institute;
     private InstituteDetails instituteDet;
+    private InstituteRequest request;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -48,6 +50,9 @@ class InstituteServiceTest {
                 .name("Institute of Computer Science")
                 .build();
         instituteDet = factory.createProjection(InstituteDetails.class, institute);
+        request = new InstituteRequest();
+        request.setName("Institute of Artificial Intelligence");
+        request.setParentId(3);
     }
 
     private void injectMocks() {
@@ -106,5 +111,27 @@ class InstituteServiceTest {
         injectMocks();
 
         assertThrows(NotFoundException.class, () -> instituteService.getInstitute(3));
+    }
+
+    @Test
+    void shouldAddNewInstitute() {
+        given(instituteRepository.getOne(3))
+                .willReturn(institute);
+        injectMocks();
+
+        instituteService.addNewInstitute(request);
+
+        ArgumentCaptor<Institute> instituteCaptor = ArgumentCaptor.forClass(Institute.class);
+        then(instituteRepository)
+                .should(times(1))
+                .save(instituteCaptor.capture());
+        Institute addedInstitute = instituteCaptor.getValue();
+
+        assertNotNull(addedInstitute);
+        assertNotNull(addedInstitute.getParent());
+        assertEquals(3, addedInstitute.getParent().getId());
+        assertEquals("Institute of Computer Science", addedInstitute.getParent().getName());
+        assertEquals("Institute of Artificial Intelligence", addedInstitute.getName());
+        assertNull(addedInstitute.getId());
     }
 }

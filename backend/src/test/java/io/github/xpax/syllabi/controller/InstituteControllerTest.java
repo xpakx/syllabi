@@ -3,13 +3,16 @@ package io.github.xpax.syllabi.controller;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.dto.InstituteDetails;
 import io.github.xpax.syllabi.entity.dto.InstituteForPage;
+import io.github.xpax.syllabi.entity.dto.InstituteRequest;
 import io.github.xpax.syllabi.service.InstituteService;
+import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.config.MockMvcConfig;
 import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,8 +28,11 @@ import java.util.List;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +44,8 @@ class InstituteControllerTest {
     private Page<InstituteForPage> institutePage;
     private Institute institute1;
     private InstituteDetails institute1Det;
+    private Institute createdInstitute;
+    private InstituteRequest instituteRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -63,6 +71,16 @@ class InstituteControllerTest {
         instituteList.add(factory.createProjection(InstituteForPage.class, institute2));
         instituteList.add(factory.createProjection(InstituteForPage.class, institute3));
         institutePage = new PageImpl<>(instituteList);
+
+        instituteRequest = new InstituteRequest();
+        instituteRequest.setName("Institute of Experimental Philosophy");
+        instituteRequest.setParentId(7);
+
+        createdInstitute = Institute.builder()
+                .id(13)
+                .name("Institute of Experimental Philosophy")
+                .parent(institute1)
+                .build();
     }
 
     private void injectMocks() {
@@ -178,5 +196,55 @@ class InstituteControllerTest {
                 .statusCode(OK.value())
                 .body("id", equalTo(7))
                 .body("name", equalTo("Department of Philosophy"));
+    }
+
+    @Test
+    void shouldRespondToAddInstituteRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .post("/institutes")
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldAddInstitute() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .post("/institutes")
+                .then()
+                .statusCode(CREATED.value());
+
+        ArgumentCaptor<InstituteRequest> requestCaptor = ArgumentCaptor.forClass(InstituteRequest.class);
+
+        BDDMockito.then(instituteService)
+                .should(times(1))
+                .addNewInstitute(requestCaptor.capture());
+        InstituteRequest request = requestCaptor.getValue();
+
+        assertEquals("Institute of Experimental Philosophy", request.getName());
+        assertEquals(7, request.getParentId());
+    }
+
+    @Test
+    void shouldProduceCreatedInstitute() {
+        BDDMockito.given(instituteService.addNewInstitute(any(InstituteRequest.class)))
+                .willReturn(createdInstitute);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(instituteRequest)
+                .when()
+                .post("/institutes")
+                .then()
+                .statusCode(CREATED.value())
+                .body("id", equalTo(13))
+                .body("name", equalTo("Institute of Experimental Philosophy"));
     }
 }
