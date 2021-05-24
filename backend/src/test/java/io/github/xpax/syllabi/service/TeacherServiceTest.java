@@ -4,10 +4,7 @@ import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
-import io.github.xpax.syllabi.entity.dto.TeacherDetails;
-import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
-import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
-import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.JobRepository;
@@ -51,6 +48,7 @@ class TeacherServiceTest {
     private Teacher teacherWithId7;
     private UpdateTeacherRequest updateTeacherRequest;
     private Job job;
+    private JobSummary jobSummary;
     private UpdateJobRequest updateJobRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
@@ -88,6 +86,8 @@ class TeacherServiceTest {
                 .teacher(teacherWithId7)
                 .name("Researcher")
                 .build();
+
+        jobSummary = factory.createProjection(JobSummary.class, job);
 
         updateJobRequest = new UpdateJobRequest();
         updateJobRequest.setName("Lecturer");
@@ -205,5 +205,27 @@ class TeacherServiceTest {
         assertEquals("Lecturer", updatedJob.getName());
         assertNotNull(updatedJob.getId());
         assertEquals(10, updatedJob.getId());
+    }
+
+    @Test
+    void shouldReturnTeacherJob() {
+        given(jobRepository.getByTeacherUserId(2))
+                .willReturn(Optional.of(jobSummary));
+        injectMocks();
+
+        JobSummary result = teacherService.getTeacherJob(2);
+
+        assertNotNull(result);
+        assertEquals(10, result.getId());
+        assertEquals("Researcher", result.getName());
+    }
+
+    @Test
+    void shouldThrowExceptionIfTeacherJobNotFound() {
+        given(jobRepository.getByTeacherUserId(anyInt()))
+                .willReturn(Optional.empty());
+        injectMocks();
+
+        assertThrows(NotFoundException.class, () -> teacherService.getTeacherJob(2));
     }
 }

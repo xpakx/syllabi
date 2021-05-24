@@ -3,10 +3,7 @@ package io.github.xpax.syllabi.controller;
 import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
-import io.github.xpax.syllabi.entity.dto.TeacherDetails;
-import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
-import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
-import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.TeacherService;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -44,6 +41,7 @@ class TeacherControllerTest {
     private UpdateTeacherRequest updateTeacherRequest;
     private UpdateJobRequest updateJobRequest;
     private Job updatedJob;
+    private JobSummary updatedJobSummary;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -73,6 +71,8 @@ class TeacherControllerTest {
                 .build();
         updateJobRequest = new UpdateJobRequest();
         updateJobRequest.setName("Researcher");
+
+        updatedJobSummary = factory.createProjection(JobSummary.class, updatedJob);
     }
 
     private void injectMocks() {
@@ -284,6 +284,30 @@ class TeacherControllerTest {
                 .body(updateTeacherRequest)
                 .when()
                 .put("/users/{userId}/teacher/job", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(1))
+                .body("name", equalTo("Researcher"));
+    }
+
+    @Test
+    void shouldRespondToGetTeacherJobRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/teacher/job", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceTeacherJob() {
+        BDDMockito.given(teacherService.getTeacherJob(5))
+                .willReturn(updatedJobSummary);
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/teacher/job", 5)
                 .then()
                 .statusCode(OK.value())
                 .body("id", equalTo(1))

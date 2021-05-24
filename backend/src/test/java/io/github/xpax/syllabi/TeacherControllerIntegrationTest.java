@@ -380,4 +380,43 @@ class TeacherControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("job.name", equalTo("Researcher"));
     }
+
+    @Test
+    void shouldRespondWith401ToGetTeacherJobRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher/job", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithTeacherJob() {
+        Integer id = addTeacher();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher/job", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Lecturer"));
+    }
+
+    @Test
+    void shouldRespondWith404IfTeacherJobNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher/job", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
 }

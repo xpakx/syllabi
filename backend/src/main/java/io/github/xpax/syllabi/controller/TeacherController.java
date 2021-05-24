@@ -2,10 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
-import io.github.xpax.syllabi.entity.dto.TeacherDetails;
-import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
-import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
-import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,5 +51,10 @@ public class TeacherController {
     public ResponseEntity<Job> updateTeacherJob(@RequestBody UpdateJobRequest request,
                                                 @PathVariable Integer userId) {
         return new ResponseEntity<>(teacherService.updateTeacherJob(request, userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{userId}/teacher/job")
+    public ResponseEntity<JobSummary> getTeacherJob(@PathVariable Integer userId) {
+        return new ResponseEntity<>(teacherService.getTeacherJob(userId), HttpStatus.OK);
     }
 }

@@ -4,10 +4,7 @@ import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
-import io.github.xpax.syllabi.entity.dto.TeacherDetails;
-import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
-import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
-import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.error.TeacherExistsException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
@@ -90,6 +87,11 @@ public class TeacherService {
         job.setName(request.getName());
         job.setInstitute(getInstituteForJob(request));
         return jobRepository.save(job);
+    }
+
+    public JobSummary getTeacherJob(Integer userId) {
+        return jobRepository.getByTeacherUserId(userId)
+                .orElseThrow(() -> new NotFoundException("No teacher for user with id "+userId+"!"));
     }
 
 
