@@ -192,4 +192,43 @@ class StudyGroupServiceTest {
                 .should(times(1))
                 .deleteById(5);
     }
+
+    @Test
+    void shouldUpdateStudyGroup() {
+        given(studyGroupRepository.findById(5))
+                .willReturn(Optional.of(group));
+        given(courseTypeRepository.getOne(2))
+                .willReturn(courseType);
+        given(teacherRepository.getOne(3))
+                .willReturn(teacher0);
+        given(teacherRepository.getOne(9))
+                .willReturn(teacher1);
+        injectMocks();
+
+        studyGroupService.updateStudyGroup(request, 5);
+
+        ArgumentCaptor<StudyGroup> groupCaptor = ArgumentCaptor.forClass(StudyGroup.class);
+        then(studyGroupRepository)
+                .should(times(1))
+                .save(groupCaptor.capture());
+        StudyGroup addedGroup = groupCaptor.getValue();
+
+        assertNotNull(addedGroup);
+
+        assertNotNull(addedGroup.getType());
+        assertEquals(2, addedGroup.getType().getId());
+        assertEquals("Lecture", addedGroup.getType().getName());
+
+        assertNotNull(addedGroup.getTeachers());
+        assertThat(addedGroup.getTeachers(), hasSize(2));
+        assertThat(addedGroup.getTeachers(), hasItem(hasProperty("id", equalTo(3))));
+        assertThat(addedGroup.getTeachers(), hasItem(hasProperty("id", equalTo(9))));
+        assertThat(addedGroup.getTeachers(), hasItem(hasProperty("surname", equalTo("Chomsky"))));
+        assertThat(addedGroup.getTeachers(), hasItem(hasProperty("surname", equalTo("Taleb"))));
+
+        assertEquals(20, addedGroup.getStudentLimit());
+
+        assertNotNull(addedGroup.getId());
+        assertEquals(5, addedGroup.getId());
+    }
 }

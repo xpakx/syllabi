@@ -58,7 +58,20 @@ public class StudyGroupService {
         studyGroupRepository.deleteById(groupId);
     }
 
+    public StudyGroup updateStudyGroup(StudyGroupRequest studyGroupRequest, Integer groupId) {
+        StudyGroup group = studyGroupRepository.findById(groupId)
+                .orElseThrow(() -> new NotFoundException("No group with id "+groupId+" found!"));
+        CourseType type = getCourseType(studyGroupRequest);
+        Set<Teacher> teachers = getTeacherSet(studyGroupRequest);
 
+        group.setDescription(studyGroupRequest.getDescription());
+        group.setStudentLimit(studyGroupRequest.getStudentLimit());
+        group.setOngoing(studyGroupRequest.getOngoing());
+        group.setName(studyGroupRequest.getName());
+        group.setType(type);
+        group.setTeachers(teachers);
+        return studyGroupRepository.save(group);
+    }
 
     private CourseType getCourseType(StudyGroupRequest studyGroupRequest) {
         if(studyGroupRequest.getCourseTypeId() != null)

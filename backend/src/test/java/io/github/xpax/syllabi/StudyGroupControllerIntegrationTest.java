@@ -8,6 +8,7 @@ import io.github.xpax.syllabi.repo.StudyGroupRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -190,5 +191,62 @@ class StudyGroupControllerIntegrationTest {
                 .get(baseUrl + "/{groupId}", id)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToUpdateGroupRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/{groupId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateGroupRequestIfNotAdmin() {
+        addGroup();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(groupRequest)
+                .when()
+                .put(baseUrl + "/{groupId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedGroup() {
+        Integer id = addGroup();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(groupRequest)
+                .when()
+                .put(baseUrl + "/{groupId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("description", equalTo("Edited Group"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{groupId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("description", equalTo("Edited Group"));
     }
 }
