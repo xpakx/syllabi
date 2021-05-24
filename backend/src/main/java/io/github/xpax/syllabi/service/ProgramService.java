@@ -34,6 +34,9 @@ public class ProgramService {
         return programRepository.save(programToAdd);
     }
 
+    public void deleteProgram(Integer programId) {
+        programRepository.deleteById(programId);
+    }
 
     private Institute getInstitute(ProgramRequest programRequest) {
         if(programRequest.getOrganizerId() != null)

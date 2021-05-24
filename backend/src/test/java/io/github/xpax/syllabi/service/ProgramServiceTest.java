@@ -122,4 +122,12 @@ class ProgramServiceTest {
         assertNull(addedProgram.getId());
     }
 
+    @Test
+    void shouldDeleteProgram() {
+        injectMocks();
+        programService.deleteProgram(3);
+        then(programRepository)
+                .should(times(1))
+                .deleteById(3);
+    }
 }

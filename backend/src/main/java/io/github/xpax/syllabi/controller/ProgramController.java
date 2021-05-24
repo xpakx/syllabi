@@ -41,4 +41,11 @@ public class ProgramController {
                 HttpStatus.OK
         );
     }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @DeleteMapping("/{programId}")
+    public ResponseEntity<?> deleteProgram(@PathVariable Integer programId) {
+        programService.deleteProgram(programId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -201,4 +201,28 @@ public class ProgramControllerTest {
                 .should(times(1))
                 .getAllCoursesByProgramId(0, 20, 5);
     }
+
+    @Test
+    void shouldRespondToDeleteRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/programs/{programId}", 9)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteProgram() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/programs/{programId}", 9)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(programService)
+                .should(times(1))
+                .deleteProgram(9);
+    }
 }

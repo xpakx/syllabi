@@ -123,6 +123,21 @@ class ProgramControllerIntegrationTest {
         return programRepository.save(program).getId();
     }
 
+    private Integer addPrograms() {
+        Program program = Program.builder()
+                .name("Cognitive Science")
+                .build();
+
+        for(int i = 1; i<=25; i++) {
+            Program dummyProgram = Program.builder()
+                    .name("Dummy Course #"+i)
+                    .build();
+            programRepository.save(dummyProgram);
+        }
+
+        return programRepository.save(program).getId();
+    }
+
     @Test
     void shouldRespondWith401ToAddProgramRequestIfUserUnauthorized() {
         given()
@@ -213,5 +228,56 @@ class ProgramControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("content", hasSize(5))
                 .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToDeleteProgramRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/{programId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteProgramRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/{programId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteProgram() {
+        Integer id = addPrograms();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{programId}", id)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldRespondWith404IfCourseToDeleteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{programId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 }
