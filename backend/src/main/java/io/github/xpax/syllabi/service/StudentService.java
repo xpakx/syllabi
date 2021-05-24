@@ -10,6 +10,8 @@ import io.github.xpax.syllabi.error.StudentExistsException;
 import io.github.xpax.syllabi.repo.StudentRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,5 +55,9 @@ public class StudentService {
         student.setName(request.getName());
         student.setSurname(request.getSurname());
         return studentRepository.save(student);
+    }
+
+    public Page<StudentWithUserId> getGroupStudents(Integer groupId, Integer page, Integer size) {
+        return studentRepository.findAllStudentByGroupId(groupId, PageRequest.of(page, size));
     }
 }

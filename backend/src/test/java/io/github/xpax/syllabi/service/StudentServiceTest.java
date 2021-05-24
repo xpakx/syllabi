@@ -14,11 +14,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -38,6 +43,7 @@ class StudentServiceTest {
     private Student student;
     private StudentWithUserId studentProj;
     private UpdateStudentRequest updateStudentRequest;
+    private Page<StudentWithUserId> studentPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -58,6 +64,8 @@ class StudentServiceTest {
         updateStudentRequest = new UpdateStudentRequest();
         updateStudentRequest.setName("Ann");
         updateStudentRequest.setSurname("Smith");
+
+        studentPage = Page.empty();
     }
 
     private void injectMocks() {
@@ -132,5 +140,30 @@ class StudentServiceTest {
         assertNotNull(updatedStudent);
         assertEquals("Ann", updatedStudent.getName());
         assertEquals("Smith", updatedStudent.getSurname());
+    }
+
+    @Test
+    void shouldAskRepositoryForGroupStudents() {
+        given(studentRepository.findAllStudentByGroupId(anyInt(), any(PageRequest.class)))
+                .willReturn(studentPage);
+        injectMocks();
+
+        Page<StudentWithUserId> result = studentService.getGroupStudents(5, 0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        ArgumentCaptor<Integer> integerCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        then(studentRepository)
+                .should(times(1))
+                .findAllStudentByGroupId(integerCaptor.capture(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+        Integer groupId = integerCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+
+        assertThat(result, is(sameInstance(studentPage)));
+
+        assertEquals(5, groupId);
     }
 }

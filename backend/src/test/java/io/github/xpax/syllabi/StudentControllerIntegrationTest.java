@@ -1,8 +1,6 @@
 package io.github.xpax.syllabi;
 
-import io.github.xpax.syllabi.entity.Role;
-import io.github.xpax.syllabi.entity.Student;
-import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.UserToStudentRequest;
 import io.github.xpax.syllabi.repo.*;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
@@ -15,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -122,6 +123,48 @@ class StudentControllerIntegrationTest {
                 .build();
         studentRepository.save(student);
         return user.getId();
+    }
+
+    private Integer addStudyGroup() {
+        Course course = Course.builder()
+                .name("Introduction to Linguistics")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(course);
+
+        CourseYear year = CourseYear.builder()
+                .parent(course)
+                .description("First Year")
+                .coordinatedBy(new HashSet<>())
+                .build();
+        courseYearRepository.save(year);
+
+        List<Student> students = new ArrayList<>();
+        List<User> users =  new ArrayList<>();
+        for(int i = 5; i<30; i++) {
+            User user = User.builder()
+                    .username("user"+i)
+                    .password("password")
+                    .roles(new HashSet<>())
+                    .build();
+            users.add(user);
+            Student student = Student.builder()
+                    .name("Student"+i)
+                    .surname("Student")
+                    .user(user)
+                    .build();
+            students.add(student);
+        }
+
+        userRepository.saveAll(users);
+        studentRepository.saveAll(students);
+
+        StudyGroup group = StudyGroup.builder()
+                .year(year)
+                .students(new HashSet<>(students))
+                .build();
+
+        return studyGroupRepository.save(group).getId();
     }
 
     @Test
@@ -344,5 +387,63 @@ class StudentControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("name", equalTo("Adam"))
                 .body("surname", equalTo("Smith"));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetAllStudentsForStudyGroupRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/groups/{groupId}/students", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetAllStudentsForStudyGroupRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/groups/{groupId}/students", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithStudentsPageAndDefaultPaginationToGetAllStudentsForStudyGroupRequest() {
+        Integer id = addStudyGroup();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin2"))
+                .when()
+                .get(baseUrl + "/groups/{groupId}/students", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithStudentsPageAndCustomPaginationToGetAllStudentsForStudyGroupRequest() {
+        Integer id = addStudyGroup();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin2"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl+ "/groups/{groupId}/students", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("numberOfElements", equalTo(5));
     }
 }

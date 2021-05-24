@@ -18,12 +18,18 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -41,6 +47,7 @@ class StudentControllerTest {
     private Student createdStudent;
     private StudentWithUserId createdStudentProj;
     private UpdateStudentRequest updateStudentRequest;
+    private Page<StudentWithUserId> studentPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -64,6 +71,21 @@ class StudentControllerTest {
         updateStudentRequest = new UpdateStudentRequest();
         updateStudentRequest.setName("John");
         updateStudentRequest.setSurname("Smith");
+
+        User user1 = User.builder()
+                .id(5)
+                .build();
+        Student student1 = Student.builder()
+                .name("John")
+                .surname("Smith")
+                .id(1)
+                .user(user1)
+                .build();
+        StudentWithUserId student1Proj = factory.createProjection(StudentWithUserId.class, student1);
+
+        List<StudentWithUserId> studentList = new ArrayList<>();
+        studentList.add(student1Proj);
+        studentPage = new PageImpl<>(studentList);
     }
 
     private void injectMocks() {
@@ -242,5 +264,63 @@ class StudentControllerTest {
                 .body("id", equalTo(1))
                 .body("name", equalTo("John"))
                 .body("surname", equalTo("Smith"));
+    }
+
+    @Test
+    void shouldRespondToGetStudentsForGroupRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/groups/{groupId}/students", 13)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetStudentsForGroupRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("/groups/{groupId}/students", 13)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(studentService)
+                .should(times(1))
+                .getGroupStudents(13, 2, 15);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetStudentsForGroupRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/groups/{groupId}/students", 13)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(studentService)
+                .should(times(1))
+                .getGroupStudents(13, 0, 20);
+    }
+
+    @Test
+    void shouldProducePageOfStudentsForGroup() {
+        BDDMockito.given(studentService.getGroupStudents(anyInt(), anyInt(), anyInt()))
+                .willReturn(studentPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/groups/{groupId}/students", 13)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(1))
+                .body("content[0].id", equalTo(1))
+                .body("content[0].user.id", equalTo(5))
+                .body("content[0].name", equalTo("John"))
+                .body("content[0].surname", equalTo("Smith"))
+                .body("numberOfElements", equalTo(1));
     }
 }

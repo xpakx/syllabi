@@ -6,10 +6,14 @@ import io.github.xpax.syllabi.entity.dto.UpdateStudentRequest;
 import io.github.xpax.syllabi.entity.dto.UserToStudentRequest;
 import io.github.xpax.syllabi.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 public class StudentController {
@@ -44,5 +48,17 @@ public class StudentController {
     public ResponseEntity<Student> updateStudent(@RequestBody UpdateStudentRequest request,
                                                  @PathVariable Integer userId) {
         return new ResponseEntity<>(studentService.updateStudent(request, userId), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_COURSE_ADMIN') or " +
+            "@permissionEvaluator.canViewStudyGroup(#groupId, authentication.principal.username)")
+    @GetMapping("/groups/{groupId}/students")
+    public ResponseEntity<Page<StudentWithUserId>> getStudentsForStudyGroup(@PathVariable Integer groupId,
+                                                                            @RequestParam Optional<Integer> page,
+                                                                            @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                studentService.getGroupStudents(groupId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
     }
 }
