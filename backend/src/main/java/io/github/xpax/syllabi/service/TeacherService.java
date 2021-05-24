@@ -4,7 +4,9 @@ import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.TeacherDetails;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.error.TeacherExistsException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
@@ -50,6 +52,11 @@ public class TeacherService {
         jobToAdd.setTeacher(teacherToAdd);
 
         return teacherRepository.save(teacherToAdd);
+    }
+
+    public TeacherDetails getTeacher(Integer userId) {
+        return teacherRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("No teacher for user with id "+userId+"!"));
     }
 
 

@@ -1,6 +1,8 @@
 package io.github.xpax.syllabi;
 
+import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Role;
+import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.repo.TeacherRepository;
@@ -88,6 +90,28 @@ class TeacherControllerIntegrationTest {
         return userRepository.save(user).getId();
     }
 
+    private Integer addTeacher() {
+        User user = User.builder()
+                .username("user2")
+                .password("password")
+                .roles(new HashSet<>())
+                .build();
+        user = userRepository.save(user);
+
+        Job job = Job.builder()
+                .name("Lecturer")
+                .build();
+        Teacher teacher = Teacher.builder()
+                .name("John")
+                .surname("Agricola")
+                .user(user)
+                .job(job)
+                .build();
+        teacherRepository.save(teacher);
+
+        return user.getId();
+    }
+
     @Test
     void shouldRespondWith401ToAddTeacherRequestIfUserUnauthorized() {
         given()
@@ -146,5 +170,43 @@ class TeacherControllerIntegrationTest {
                 .body("surname", equalTo("Smith"));
     }
 
+    @Test
+    void shouldRespondWith401ToGetTeacherRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
 
+    @Test
+    void shouldRespondWithTeacher() {
+        Integer id = addTeacher();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("John"))
+                .body("surname", equalTo("Agricola"));
+    }
+
+    @Test
+    void shouldRespondWith404IfTeacherNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
 }

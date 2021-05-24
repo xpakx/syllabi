@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.TeacherDetails;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.service.TeacherService;
 import io.restassured.http.ContentType;
@@ -26,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -35,6 +37,7 @@ class TeacherControllerTest {
 
     private UserToTeacherRequest createTeacherRequest;
     private Teacher createdTeacher;
+    private TeacherDetails createdTeacherDet;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -52,6 +55,7 @@ class TeacherControllerTest {
                 .name("John")
                 .surname("Smith")
                 .build();
+        this.createdTeacherDet = factory.createProjection(TeacherDetails.class, createdTeacher);
     }
 
     private void injectMocks() {
@@ -110,6 +114,31 @@ class TeacherControllerTest {
                 .post("/users/{userId}/teacher", 5)
                 .then()
                 .statusCode(CREATED.value())
+                .body("id", equalTo(1))
+                .body("name", equalTo("John"))
+                .body("surname", equalTo("Smith"));
+    }
+
+    @Test
+    void shouldRespondToGetTeacherRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/teacher", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceTeacher() {
+        BDDMockito.given(teacherService.getTeacher(5))
+                .willReturn(createdTeacherDet);
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/teacher", 5)
+                .then()
+                .statusCode(OK.value())
                 .body("id", equalTo(1))
                 .body("name", equalTo("John"))
                 .body("surname", equalTo("Smith"));
