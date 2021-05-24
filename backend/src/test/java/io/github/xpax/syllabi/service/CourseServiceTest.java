@@ -263,4 +263,28 @@ class CourseServiceTest {
 
         assertThat(result, is(sameInstance(coursePage)));
     }
+
+    @Test
+    void shouldAskRepositoryForCoursesByUserId() {
+        given(courseRepository.findByUserId(anyInt(), any(PageRequest.class)))
+                .willReturn(coursePage);
+        injectMocks();
+
+        Page<CourseForPage> result = courseService.getAllCoursesByUserId(0, 20, 7);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        ArgumentCaptor<Integer> userIdCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        then(courseRepository)
+                .should(times(1))
+                .findByUserId(userIdCaptor.capture(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+        Integer userId = userIdCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+        assertEquals(7, userId);
+
+        assertThat(result, is(sameInstance(coursePage)));
+    }
 }

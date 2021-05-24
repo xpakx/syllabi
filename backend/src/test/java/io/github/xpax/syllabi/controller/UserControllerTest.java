@@ -1,10 +1,13 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.ChangePasswordRequest;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.RoleRequest;
 import io.github.xpax.syllabi.entity.dto.UserWithoutPassword;
+import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.UserAccountService;
 import io.github.xpax.syllabi.service.UserRoleService;
 import io.restassured.http.ContentType;
@@ -45,12 +48,15 @@ class UserControllerTest {
     private UserRoleService userRoleService;
     @Mock
     private UserAccountService userAccountService;
+    @Mock
+    private CourseService courseService;
 
     private RoleRequest roleRequest;
     private User userWithAddedRole;
     private Page<UserWithoutPassword> userPage;
     private UserWithoutPassword user;
     private ChangePasswordRequest changePasswordRequest;
+    private Page<CourseForPage> coursePage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -83,10 +89,27 @@ class UserControllerTest {
         changePasswordRequest.setPassword("password");
         changePasswordRequest.setPasswordRe("password");
         changePasswordRequest.setPasswordOld("oldPassword");
+
+        Course course1 = Course.builder()
+                .id(1)
+                .name("Neuroanatomy")
+                .build();
+        Course course2 = Course.builder()
+                .id(2)
+                .name("Introduction to Cognitive Science")
+                .build();
+
+        CourseForPage courseForPage1 = factory.createProjection(CourseForPage.class, course1);
+        CourseForPage courseForPage2 = factory.createProjection(CourseForPage.class, course2);
+
+        List<CourseForPage> courseList = new ArrayList<>();
+        courseList.add(courseForPage1);
+        courseList.add(courseForPage2);
+        coursePage = new PageImpl<>(courseList);
     }
 
     private void injectMocks() {
-        UserController userController = new UserController(userRoleService, userAccountService);
+        UserController userController = new UserController(userRoleService, userAccountService, courseService);
         RestAssuredMockMvc.standaloneSetup(userController);
         RestAssuredMockMvc.config = new RestAssuredMockMvcConfig()
                 .mockMvcConfig(MockMvcConfig.mockMvcConfig().dontAutomaticallyApplySpringSecurityMockMvcConfigurer());
@@ -287,5 +310,63 @@ class UserControllerTest {
         assertEquals("password", request.getPassword());
         assertEquals("password", request.getPasswordRe());
         assertEquals("oldPassword", request.getPasswordOld());
+    }
+
+    @Test
+    void shouldRespondToGetUserCoursesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/courses", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetUserCoursesRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("/users/{userId}/courses", 3)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getAllCoursesByUserId(2, 15, 3);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetUserCoursesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/courses", 3)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getAllCoursesByUserId(0, 20, 3);
+    }
+
+    @Test
+    void shouldProducePageOfUserCourses() {
+        BDDMockito.given(courseService.getAllCoursesByUserId(anyInt(), anyInt(), anyInt()))
+                .willReturn(coursePage);
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/courses", 3)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(2))
+                .body("content[0].id", equalTo(1))
+                .body("content[0].name", equalTo("Neuroanatomy"))
+                .body("content[1].id", equalTo(2))
+                .body("content[1].name", equalTo("Introduction to Cognitive Science"))
+                .body("numberOfElements", equalTo(2));
     }
 }

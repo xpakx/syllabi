@@ -68,6 +68,10 @@ public class CourseService {
         return courseRepository.findByProgramsId(programId, PageRequest.of(page, size));
     }
 
+    public Page<CourseForPage> getAllCoursesByUserId(Integer page, Integer size, Integer userId) {
+        return courseRepository.findByUserId(userId, PageRequest.of(page, size));
+    }
+
     private Institute getInstitute(CourseRequest courseRequest) {
         if(courseRequest.getOrganizerId() != null)
             return instituteRepository.getOne(courseRequest.getOrganizerId());

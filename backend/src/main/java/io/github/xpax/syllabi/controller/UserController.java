@@ -2,8 +2,10 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.ChangePasswordRequest;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.RoleRequest;
 import io.github.xpax.syllabi.entity.dto.UserWithoutPassword;
+import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.UserAccountService;
 import io.github.xpax.syllabi.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +22,13 @@ import java.util.Optional;
 public class UserController {
     private final UserRoleService userRoleService;
     private final UserAccountService userAccountService;
+    private final CourseService courseService;
 
     @Autowired
-    public UserController(UserRoleService userRoleService, UserAccountService userAccountService) {
+    public UserController(UserRoleService userRoleService, UserAccountService userAccountService, CourseService courseService) {
         this.userRoleService = userRoleService;
         this.userAccountService = userAccountService;
+        this.courseService = courseService;
     }
 
     @Secured("ROLE_USER_ADMIN")
@@ -62,5 +66,16 @@ public class UserController {
                                             @PathVariable Integer userId) {
         userAccountService.changePassword(request, userId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_COURSE_ADMIN') or #userId.toString() == authentication.principal.username")
+    @GetMapping("/users/{userId}/courses")
+    public ResponseEntity<Page<CourseForPage>> getAllCoursesForUser(@RequestParam Optional<Integer> page,
+                                                                    @RequestParam Optional<Integer> size,
+                                                                    @PathVariable Integer userId) {
+        return new ResponseEntity<>(
+                courseService.getAllCoursesByUserId(page.orElse(0), size.orElse(20), userId),
+                HttpStatus.OK
+        );
     }
 }

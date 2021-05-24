@@ -1,12 +1,10 @@
 package io.github.xpax.syllabi;
 
-import io.github.xpax.syllabi.entity.Role;
-import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.AuthenticationRequest;
 import io.github.xpax.syllabi.entity.dto.ChangePasswordRequest;
 import io.github.xpax.syllabi.entity.dto.RoleRequest;
-import io.github.xpax.syllabi.repo.RoleRepository;
-import io.github.xpax.syllabi.repo.UserRepository;
+import io.github.xpax.syllabi.repo.*;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
 import io.restassured.http.ContentType;
@@ -18,9 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,6 +41,16 @@ class UserControllerIntegrationTest {
     JwtTokenUtil jwtTokenUtil;
     @Autowired
     UserService userService;
+
+
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private CourseYearRepository courseYearRepository;
+    @Autowired
+    private StudyGroupRepository studyGroupRepository;
 
 
     private RoleRequest roleRequest;
@@ -96,10 +102,25 @@ class UserControllerIntegrationTest {
         authenticationRequestWithNewPassword = new AuthenticationRequest();
         authenticationRequestWithNewPassword.setUsername("user2");
         authenticationRequestWithNewPassword.setPassword("newPassword");
+
+        Role adminRole2 = new Role();
+        adminRole2.setAuthority("ROLE_COURSE_ADMIN");
+        Set<Role> roles2 = new HashSet<>();
+        roles2.add(adminRole2);
+        User admin2 = User.builder()
+                .username("admin2")
+                .password("password")
+                .roles(roles2)
+                .build();
+        userRepository.save(admin2);
     }
 
     @AfterEach
     void cleanUp() {
+        studyGroupRepository.deleteAll();
+        courseYearRepository.deleteAll();
+        courseRepository.deleteAll();
+        studentRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -127,6 +148,51 @@ class UserControllerIntegrationTest {
                     .build();
             userRepository.save(dummyUser);
         }
+        return userId;
+    }
+
+    private Integer addCourses() {
+        User user = User.builder()
+                .username("user2")
+                .password(passwordEncoder.encode("password"))
+                .roles(new HashSet<>())
+                .build();
+        Integer userId = userRepository.save(user).getId();
+
+        Student student = Student.builder()
+                .user(user)
+                .build();
+        studentRepository.save(student);
+
+        Course linguisticsIntro = Course.builder()
+                .name("Introduction to Linguistics")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(linguisticsIntro);
+
+        Calendar calendarActive = Calendar.getInstance();
+        calendarActive.add(Calendar.YEAR, 1);
+
+        Calendar calendarNotActive = Calendar.getInstance();
+        calendarNotActive.add(Calendar.YEAR, -1);
+
+        CourseYear year = CourseYear.builder()
+                .parent(linguisticsIntro)
+                .description("First Year")
+                .startDate(calendarNotActive.getTime())
+                .endDate(calendarActive.getTime())
+                .build();
+        courseYearRepository.save(year);
+
+        for(int i = 1; i<=25; i++) {
+            StudyGroup dummyStudyGroup = StudyGroup.builder()
+                    .year(year)
+                    .students(Collections.singleton(student))
+                    .description("Dummy Study Group #"+i)
+                    .build();
+            studyGroupRepository.save(dummyStudyGroup);
+        }
+
         return userId;
     }
 
@@ -232,7 +298,7 @@ class UserControllerIntegrationTest {
                 .then()
                 .statusCode(OK.value())
                 .body("content", hasSize(5))
-                .body("content[0].username", equalTo("user15"))
+                .body("content[0].username", equalTo("user14"))
                 .body("numberOfElements", equalTo(5));
     }
 
@@ -433,5 +499,76 @@ class UserControllerIntegrationTest {
                 .put(baseUrl + "/users/{userId}", id)
                 .then()
                 .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetUserCoursesRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/users/{userId}/courses", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetUserCoursesRequestIfWrongUser() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/courses", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithCoursesToGetUserCoursesRequestIfAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin2"))
+                .when()
+                .get(baseUrl + "/users/{userId}/courses", 2)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndDefaultPaginationToGetUserCoursesRequest() {
+        Integer id = addCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user2"))
+                .when()
+                .get(baseUrl + "/users/{userId}/courses", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndCustomPaginationToGetUserCoursesRequest() {
+        Integer id = addCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user2"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/users/{userId}/courses", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("numberOfElements", equalTo(5));
     }
 }

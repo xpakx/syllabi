@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -26,4 +27,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     Page<CourseForPage> findByOrganizerId(Integer organizerId, Pageable page);
 
     Page<CourseForPage> findByProgramsId(Integer programsId, Pageable page);
+
+    @Query("SELECT c FROM StudyGroup sg JOIN sg.year JOIN sg.year.parent c JOIN sg.students s WHERE s.user.id = :userId")
+    Page<CourseForPage> findByUserId(Integer userId, Pageable page);
 }
