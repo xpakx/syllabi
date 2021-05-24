@@ -183,4 +183,13 @@ class StudyGroupServiceTest {
 
         assertThrows(NotFoundException.class, () -> studyGroupService.getStudyGroup(5));
     }
+
+    @Test
+    void shouldDeleteStudyGroup() {
+        injectMocks();
+        studyGroupService.deleteStudyGroup(5);
+        then(studyGroupRepository)
+                .should(times(1))
+                .deleteById(5);
+    }
 }

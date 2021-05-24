@@ -54,6 +54,10 @@ public class StudyGroupService {
                 .orElseThrow(() -> new NotFoundException("No group with id "+groupId+" found!"));
     }
 
+    public void deleteStudyGroup(Integer groupId) {
+        studyGroupRepository.deleteById(groupId);
+    }
+
 
 
     private CourseType getCourseType(StudyGroupRequest studyGroupRequest) {

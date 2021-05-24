@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.times;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,4 +73,27 @@ class StudyGroupControllerTest {
                 .body("studentLimit", equalTo(20));
     }
 
+    @Test
+    void shouldRespondToDeleteRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/groups/{groupId}", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteGroup() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/groups/{groupId}", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(studyGroupService)
+                .should(times(1))
+                .deleteStudyGroup(5);
+    }
 }
