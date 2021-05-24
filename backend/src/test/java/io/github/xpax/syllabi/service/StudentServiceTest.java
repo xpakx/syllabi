@@ -2,7 +2,9 @@ package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.Student;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.StudentWithUserId;
 import io.github.xpax.syllabi.entity.dto.UserToStudentRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.StudentRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +13,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -26,6 +34,10 @@ class StudentServiceTest {
     private StudentService studentService;
     private UserToStudentRequest updateStudentRequest;
     private User user;
+    private Student student;
+    private StudentWithUserId studentProj;
+
+    private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
     @BeforeEach
     void setUp() {
@@ -35,6 +47,12 @@ class StudentServiceTest {
         updateStudentRequest = new UserToStudentRequest();
         updateStudentRequest.setName("Michael");
         updateStudentRequest.setSurname("Garcia");
+
+        student = Student.builder()
+                .id(2)
+                .name("Jane")
+                .build();
+        this.studentProj = factory.createProjection(StudentWithUserId.class, student);
     }
 
     private void injectMocks() {
@@ -59,5 +77,26 @@ class StudentServiceTest {
         assertEquals("Michael", createdStudent.getName());
         assertEquals("Garcia", createdStudent.getSurname());
         assertNull(createdStudent.getId());
+    }
+
+    @Test
+    void shouldReturnStudent() {
+        given(studentRepository.findByUserId(anyInt(), any(Class.class)))
+                .willReturn(Optional.of(studentProj));
+        injectMocks();
+
+        StudentWithUserId result = studentService.getStudent(2);
+
+        assertNotNull(result);
+        assertEquals(2, result.getId());
+        assertEquals("Jane", result.getName());
+    }
+
+    @Test
+    void shouldThrowExceptionIfStudentNotFound() {
+        given(studentRepository.findByUserId(anyInt(), any(Class.class)))
+                .willReturn(Optional.empty());
+        injectMocks();
+        assertThrows(NotFoundException.class, () -> studentService.getStudent(5));
     }
 }

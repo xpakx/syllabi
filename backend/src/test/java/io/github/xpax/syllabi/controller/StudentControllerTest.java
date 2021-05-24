@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Student;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.StudentWithUserId;
 import io.github.xpax.syllabi.entity.dto.UserToStudentRequest;
 import io.github.xpax.syllabi.error.StudentExistsException;
 import io.github.xpax.syllabi.service.StudentService;
@@ -16,6 +17,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -24,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -35,6 +38,9 @@ class StudentControllerTest {
 
     private UserToStudentRequest createStudentRequest;
     private Student createdStudent;
+    private StudentWithUserId createdStudentProj;
+
+    private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
     @BeforeEach
     void setUp() {
@@ -51,6 +57,7 @@ class StudentControllerTest {
                 .name("John")
                 .surname("Smith")
                 .build();
+        createdStudentProj = factory.createProjection(StudentWithUserId.class, createdStudent);
     }
 
     private void injectMocks() {
@@ -126,5 +133,31 @@ class StudentControllerTest {
                 .post("/users/{userId}/student", 5)
                 .then()
                 .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldRespondToGetStudentRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/student", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceStudent() {
+        BDDMockito.given(studentService.getStudent(5))
+                .willReturn(createdStudentProj);
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}/student", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(1))
+                .body("name", equalTo("John"))
+                .body("surname", equalTo("Smith"))
+                .body("user.id", equalTo(5));
     }
 }

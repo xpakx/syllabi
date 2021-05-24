@@ -168,6 +168,18 @@ class StudentControllerIntegrationTest {
                 .statusCode(CREATED.value())
                 .body("name", equalTo("Adam"))
                 .body("surname", equalTo("Smith"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/student", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Adam"))
+                .body("surname", equalTo("Smith"));
     }
 
     @Test
@@ -186,5 +198,45 @@ class StudentControllerIntegrationTest {
                 .post(baseUrl + "/users/{userId}/student", id)
                 .then()
                 .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetStudentRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/users/{userId}/student", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithStudent() {
+        Integer id = addStudent();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/student", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("John"))
+                .body("surname", equalTo("Agricola"));
+    }
+
+    @Test
+    void shouldRespondWith404IfStudentNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/student", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 }
