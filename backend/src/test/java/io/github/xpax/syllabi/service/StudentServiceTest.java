@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Student;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.StudentWithUserId;
+import io.github.xpax.syllabi.entity.dto.UpdateStudentRequest;
 import io.github.xpax.syllabi.entity.dto.UserToStudentRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.StudentRepository;
@@ -32,10 +33,11 @@ class StudentServiceTest {
     @Mock
     private UserRepository userRepository;
     private StudentService studentService;
-    private UserToStudentRequest updateStudentRequest;
+    private UserToStudentRequest addStudentRequest;
     private User user;
     private Student student;
     private StudentWithUserId studentProj;
+    private UpdateStudentRequest updateStudentRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -44,15 +46,18 @@ class StudentServiceTest {
         user = User.builder()
                 .id(1)
                 .build();
-        updateStudentRequest = new UserToStudentRequest();
-        updateStudentRequest.setName("Michael");
-        updateStudentRequest.setSurname("Garcia");
+        addStudentRequest = new UserToStudentRequest();
+        addStudentRequest.setName("Michael");
+        addStudentRequest.setSurname("Garcia");
 
         student = Student.builder()
                 .id(2)
                 .name("Jane")
                 .build();
         this.studentProj = factory.createProjection(StudentWithUserId.class, student);
+        updateStudentRequest = new UpdateStudentRequest();
+        updateStudentRequest.setName("Ann");
+        updateStudentRequest.setSurname("Smith");
     }
 
     private void injectMocks() {
@@ -65,7 +70,7 @@ class StudentServiceTest {
                 .willReturn(user);
         injectMocks();
 
-        studentService.createStudent(updateStudentRequest, 1);
+        studentService.createStudent(addStudentRequest, 1);
 
         ArgumentCaptor<Student> studentCaptor = ArgumentCaptor.forClass(Student.class);
         then(studentRepository)
@@ -108,5 +113,24 @@ class StudentServiceTest {
         then(studentRepository)
                 .should(times(1))
                 .deleteByUserId(153);
+    }
+
+    @Test
+    void shouldUpdateStudent() {
+        given(studentRepository.getByUserId(anyInt()))
+                .willReturn(Optional.of(student));
+        injectMocks();
+
+        studentService.updateStudent(updateStudentRequest, 3);
+
+        ArgumentCaptor<Student> studentCaptor = ArgumentCaptor.forClass(Student.class);
+        then(studentRepository)
+                .should(times(1))
+                .save(studentCaptor.capture());
+        Student updatedStudent = studentCaptor.getValue();
+
+        assertNotNull(updatedStudent);
+        assertEquals("Ann", updatedStudent.getName());
+        assertEquals("Smith", updatedStudent.getSurname());
     }
 }

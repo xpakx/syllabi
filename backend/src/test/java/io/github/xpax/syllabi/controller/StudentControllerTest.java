@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.controller;
 import io.github.xpax.syllabi.entity.Student;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.StudentWithUserId;
+import io.github.xpax.syllabi.entity.dto.UpdateStudentRequest;
 import io.github.xpax.syllabi.entity.dto.UserToStudentRequest;
 import io.github.xpax.syllabi.error.StudentExistsException;
 import io.github.xpax.syllabi.service.StudentService;
@@ -39,6 +40,7 @@ class StudentControllerTest {
     private UserToStudentRequest createStudentRequest;
     private Student createdStudent;
     private StudentWithUserId createdStudentProj;
+    private UpdateStudentRequest updateStudentRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -58,6 +60,10 @@ class StudentControllerTest {
                 .surname("Smith")
                 .build();
         createdStudentProj = factory.createProjection(StudentWithUserId.class, createdStudent);
+
+        updateStudentRequest = new UpdateStudentRequest();
+        updateStudentRequest.setName("John");
+        updateStudentRequest.setSurname("Smith");
     }
 
     private void injectMocks() {
@@ -182,5 +188,59 @@ class StudentControllerTest {
         BDDMockito.then(studentService)
                 .should(times(1))
                 .deleteStudent(5);
+    }
+
+    @Test
+    void shouldRespondToUpdateStudentRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateStudentRequest)
+                .when()
+                .put("/users/{userId}/student", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldUpdateStudent() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateStudentRequest)
+                .when()
+                .put("/users/{userId}/student", 5)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<UpdateStudentRequest> requestCaptor = ArgumentCaptor.forClass(UpdateStudentRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(studentService)
+                .should(times(1))
+                .updateStudent(requestCaptor.capture(), idCaptor.capture());
+        UpdateStudentRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(5, id);
+        assertEquals("John", request.getName());
+        assertEquals("Smith", request.getSurname());
+    }
+
+    @Test
+    void shouldProduceUpdatedStudent() {
+        BDDMockito.given(studentService.updateStudent(any(UpdateStudentRequest.class), anyInt()))
+                .willReturn(createdStudent);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateStudentRequest)
+                .when()
+                .put("/users/{userId}/student", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(1))
+                .body("name", equalTo("John"))
+                .body("surname", equalTo("Smith"));
     }
 }

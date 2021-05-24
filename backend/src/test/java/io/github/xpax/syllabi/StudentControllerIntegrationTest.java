@@ -287,4 +287,62 @@ class StudentControllerIntegrationTest {
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
+
+    @Test
+    void shouldRespondWith401ToUpdateStudentRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/users/{userId}/student", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateStudentRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(addStudentRequest)
+                .when()
+                .put(baseUrl + "/users/{userId}/student", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedStudent() {
+        Integer id = addStudent();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(addStudentRequest)
+                .when()
+                .put(baseUrl + "/users/{userId}/student", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Adam"))
+                .body("surname", equalTo("Smith"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/student", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Adam"))
+                .body("surname", equalTo("Smith"));
+    }
 }

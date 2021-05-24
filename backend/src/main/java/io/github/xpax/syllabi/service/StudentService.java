@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Student;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.StudentWithUserId;
+import io.github.xpax.syllabi.entity.dto.UpdateStudentRequest;
 import io.github.xpax.syllabi.entity.dto.UserToStudentRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.error.StudentExistsException;
@@ -44,5 +45,13 @@ public class StudentService {
     @Transactional
     public void deleteStudent(Integer userId) {
         studentRepository.deleteByUserId(userId);
+    }
+
+    public Student updateStudent(UpdateStudentRequest request, Integer userId) {
+        Student student = studentRepository.getByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("No student for user with id "+userId+"!"));
+        student.setName(request.getName());
+        student.setSurname(request.getSurname());
+        return studentRepository.save(student);
     }
 }
