@@ -4,8 +4,10 @@ import io.github.xpax.syllabi.entity.CourseType;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.StudyGroupDetails;
 import io.github.xpax.syllabi.entity.dto.StudyGroupForPage;
 import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseTypeRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
 import io.github.xpax.syllabi.repo.StudyGroupRepository;
@@ -47,6 +49,10 @@ public class StudyGroupService {
         return studyGroupRepository.findAllByYearId(yearId, PageRequest.of(page, size));
     }
 
+    public StudyGroupDetails getStudyGroup(Integer groupId) {
+        return studyGroupRepository.findProjectedById(groupId)
+                .orElseThrow(() -> new NotFoundException("No group with id "+groupId+" found!"));
+    }
 
 
 

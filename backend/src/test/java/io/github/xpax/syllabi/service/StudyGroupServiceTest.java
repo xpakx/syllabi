@@ -4,8 +4,10 @@ import io.github.xpax.syllabi.entity.CourseType;
 import io.github.xpax.syllabi.entity.CourseYear;
 import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.Teacher;
+import io.github.xpax.syllabi.entity.dto.StudyGroupDetails;
 import io.github.xpax.syllabi.entity.dto.StudyGroupForPage;
 import io.github.xpax.syllabi.entity.dto.StudyGroupRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseTypeRepository;
 import io.github.xpax.syllabi.repo.CourseYearRepository;
 import io.github.xpax.syllabi.repo.StudyGroupRepository;
@@ -23,6 +25,7 @@ import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -46,6 +49,7 @@ class StudyGroupServiceTest {
 
     private StudyGroupService studyGroupService;
     private StudyGroup group;
+    private StudyGroupDetails groupDetails;
     private CourseYear courseYear;
     private CourseType courseType;
     private Teacher teacher0;
@@ -60,6 +64,7 @@ class StudyGroupServiceTest {
         group = StudyGroup.builder()
                 .id(5)
                 .build();
+        this.groupDetails = factory.createProjection(StudyGroupDetails.class, group);
 
         courseYear = CourseYear.builder()
                 .id(1)
@@ -156,5 +161,26 @@ class StudyGroupServiceTest {
         assertThat(result, is(sameInstance(page)));
 
         assertEquals(5, yearId);
+    }
+
+    @Test
+    void shouldReturnStudyGroup() {
+        given(studyGroupRepository.findProjectedById(5))
+                .willReturn(Optional.of(groupDetails));
+        injectMocks();
+
+        StudyGroupDetails result = studyGroupService.getStudyGroup(5);
+
+        assertNotNull(result);
+        assertEquals(5, result.getId());
+    }
+
+    @Test
+    void shouldThrowExceptionIfStudyGroupNotFound() {
+        given(studyGroupRepository.findProjectedById(anyInt()))
+                .willReturn(Optional.empty());
+        injectMocks();
+
+        assertThrows(NotFoundException.class, () -> studyGroupService.getStudyGroup(5));
     }
 }
