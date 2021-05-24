@@ -1,5 +1,7 @@
 package io.github.xpax.syllabi;
 
+import io.github.xpax.syllabi.entity.Course;
+import io.github.xpax.syllabi.entity.Program;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
@@ -16,11 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -81,6 +85,44 @@ class ProgramControllerIntegrationTest {
         return jwtTokenUtil.generateToken(userService.loadUserToLogin(username));
     }
 
+    private Integer addCourses() {
+        Set<Course> courses = new HashSet<>();
+        Course course1 = Course.builder()
+                .name("Introduction to Cognitive Science")
+                .programs(new HashSet<>())
+                .build();
+        courses.add(course1);
+        Course course2 = Course.builder()
+                .name("Pragmatics")
+                .programs(new HashSet<>())
+                .build();
+        courses.add(course2);
+        Course course3 = Course.builder()
+                .name("Logic I")
+                .programs(new HashSet<>())
+                .build();
+        courses.add(course3);
+
+        for(int i = 4; i<=25; i++) {
+            Course dummyCourse = Course.builder()
+                    .name("Dummy Course #"+i)
+                    .programs(new HashSet<>())
+                    .build();
+            courses.add(dummyCourse);
+        }
+
+        Program program = Program.builder()
+                .name("Cognitive Science")
+                .courses(courses)
+                .build();
+        for(Course c : courses) {
+            c.setPrograms(Collections.singleton(program));
+        }
+
+        courseRepository.saveAll(courses);
+        return programRepository.save(program).getId();
+    }
+
     @Test
     void shouldRespondWith401ToAddProgramRequestIfUserUnauthorized() {
         given()
@@ -126,16 +168,50 @@ class ProgramControllerIntegrationTest {
                 .extract()
                 .jsonPath()
                 .getInt("id");
+    }
 
+    @Test
+    void shouldRespondWith401ToGetAllCoursesForProgramRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{programId}/courses", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndDefaultPaginationToGetAllCoursesForProgramRequest() {
+        Integer id = addCourses();
         given()
                 .log()
                 .uri()
                 .auth()
                 .oauth2(tokenFor("user1"))
                 .when()
-                .get(baseUrl + "/{programId}", addedCourseId)
+                .get(baseUrl + "/{programId}/courses", id)
                 .then()
                 .statusCode(OK.value())
-                .body("name", equalTo("Cognitive Science"));
+                .body("content", hasSize(20))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndCustomPaginationToGetAllCoursesForProgramRequest() {
+        Integer id = addCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{programId}/courses", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("numberOfElements", equalTo(5));
     }
 }

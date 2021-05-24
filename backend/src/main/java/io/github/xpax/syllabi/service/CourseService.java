@@ -64,7 +64,9 @@ public class CourseService {
         courseRepository.deleteById(courseId);
     }
 
-
+    public Page<CourseForPage> getAllCoursesByProgramId(Integer page, Integer size, Integer programId) {
+        return courseRepository.findByProgramsId(programId, PageRequest.of(page, size));
+    }
 
     private Institute getInstitute(CourseRequest courseRequest) {
         if(courseRequest.getOrganizerId() != null)

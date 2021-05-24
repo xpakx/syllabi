@@ -1,6 +1,10 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.dto.CourseDetails;
+import io.github.xpax.syllabi.entity.dto.CourseForPage;
+import io.github.xpax.syllabi.entity.dto.CourseSummary;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
 import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.ProgramService;
@@ -15,16 +19,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -37,6 +49,7 @@ public class ProgramControllerTest {
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
     private ProgramRequest programRequest;
     private Program addedProgram;
+    private Page<CourseForPage> coursePage;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +61,28 @@ public class ProgramControllerTest {
                 .name("Philosophy")
                 .description("Philosophy program")
                 .build();
+
+        Course course1 = Course.builder()
+                .id(0)
+                .name("Introduction to Cognitive Science")
+                .build();
+        Course course2 = Course.builder()
+                .id(1)
+                .name("Pragmatics")
+                .build();
+        Course course3 = Course.builder()
+                .id(2)
+                .name("Logic I")
+                .build();
+
+        CourseForPage courseCognitiveScience = factory.createProjection(CourseForPage.class, course1);
+        CourseForPage coursePragmatics = factory.createProjection(CourseForPage.class, course2);
+        CourseForPage courseLogic = factory.createProjection(CourseForPage.class, course3);
+        List<CourseForPage> courseList = new ArrayList<>();
+        courseList.add(courseCognitiveScience);
+        courseList.add(coursePragmatics);
+        courseList.add(courseLogic);
+        coursePage = new PageImpl<>(courseList);
     }
 
     private void injectMocks() {
@@ -105,5 +140,65 @@ public class ProgramControllerTest {
                 .body("id", equalTo(17))
                 .body("name", equalTo("Philosophy"))
                 .body("description", equalTo("Philosophy program"));
+    }
+
+    @Test
+    void shouldRespondToCoursesForProgramRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}/courses", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceListOfCoursesForProgram() {
+        BDDMockito.given(courseService.getAllCoursesByProgramId(anyInt(), anyInt(), anyInt()))
+                .willReturn(coursePage);
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}/courses", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(3))
+                .body("content[0].id", equalTo(0))
+                .body("content[0].name", equalTo("Introduction to Cognitive Science"))
+                .body("content[1].id", equalTo(1))
+                .body("content[1].name", equalTo("Pragmatics"))
+                .body("content[2].id", equalTo(2))
+                .body("content[2].name", equalTo("Logic I"))
+                .body("numberOfElements", equalTo(3));
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetCoursesForProgramRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/programs/{programId}/courses", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getAllCoursesByProgramId(7, 5, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForCoursesForProgramRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}/courses", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(courseService)
+                .should(times(1))
+                .getAllCoursesByProgramId(0, 20, 5);
     }
 }
