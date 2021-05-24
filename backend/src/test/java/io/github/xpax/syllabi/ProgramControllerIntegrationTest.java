@@ -126,5 +126,16 @@ class ProgramControllerIntegrationTest {
                 .extract()
                 .jsonPath()
                 .getInt("id");
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{programId}", addedCourseId)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Cognitive Science"));
     }
 }
