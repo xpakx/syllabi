@@ -183,6 +183,17 @@ class ProgramControllerIntegrationTest {
                 .extract()
                 .jsonPath()
                 .getInt("id");
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{programId}", addedCourseId)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Cognitive Science"));
     }
 
     @Test
@@ -266,6 +277,16 @@ class ProgramControllerIntegrationTest {
                 .delete(baseUrl + "/{programId}", id)
                 .then()
                 .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{programId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 
     @Test
@@ -277,6 +298,45 @@ class ProgramControllerIntegrationTest {
                 .oauth2(tokenFor("admin1"))
                 .when()
                 .delete(baseUrl + "/{programId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetProgramRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{programId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithProgram() {
+        Integer id = addPrograms();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{programId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Cognitive Science"));
+    }
+
+    @Test
+    void shouldRespondWith404IfProgramNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{programId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
     }

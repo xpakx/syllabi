@@ -3,7 +3,9 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
@@ -36,6 +38,11 @@ public class ProgramService {
 
     public void deleteProgram(Integer programId) {
         programRepository.deleteById(programId);
+    }
+
+    public ProgramDetails getProgram(Integer programId) {
+        return programRepository.findProjectedById(programId)
+                .orElseThrow(() -> new NotFoundException("No program with id "+programId+" found!"));
     }
 
     private Institute getInstitute(ProgramRequest programRequest) {

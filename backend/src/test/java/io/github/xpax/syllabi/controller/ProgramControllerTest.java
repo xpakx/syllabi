@@ -2,10 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Program;
-import io.github.xpax.syllabi.entity.dto.CourseDetails;
-import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.CourseSummary;
-import io.github.xpax.syllabi.entity.dto.ProgramRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.ProgramService;
 import io.restassured.http.ContentType;
@@ -50,6 +47,7 @@ public class ProgramControllerTest {
     private ProgramRequest programRequest;
     private Program addedProgram;
     private Page<CourseForPage> coursePage;
+    private ProgramDetails program;
 
     @BeforeEach
     void setUp() {
@@ -83,6 +81,8 @@ public class ProgramControllerTest {
         courseList.add(coursePragmatics);
         courseList.add(courseLogic);
         coursePage = new PageImpl<>(courseList);
+
+        program = factory.createProjection(ProgramDetails.class, addedProgram);
     }
 
     private void injectMocks() {
@@ -224,5 +224,43 @@ public class ProgramControllerTest {
         BDDMockito.then(programService)
                 .should(times(1))
                 .deleteProgram(9);
+    }
+
+    @Test
+    void shouldRespondToGetProgramRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}", 17)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceCourse() {
+        BDDMockito.given(programService.getProgram(17))
+                .willReturn(program);
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}", 17)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(17))
+                .body("name", equalTo("Philosophy"));
+    }
+
+    @Test
+    void shouldAskServiceForCourse() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}", 17)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(programService)
+                .should(times(1))
+                .getProgram(17);
     }
 }

@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Program;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
+import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
 import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.ProgramService;
@@ -47,5 +48,10 @@ public class ProgramController {
     public ResponseEntity<?> deleteProgram(@PathVariable Integer programId) {
         programService.deleteProgram(programId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{programId}")
+    public ResponseEntity<ProgramDetails> getProgram(@PathVariable Integer programId) {
+        return new ResponseEntity<>(programService.getProgram(programId), HttpStatus.OK);
     }
 }

@@ -3,7 +3,9 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
@@ -19,10 +21,12 @@ import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -42,6 +46,7 @@ class ProgramServiceTest {
     private Course course1;
     private Course course2;
     private Course course3;
+    private ProgramDetails programDetails;
 
     private Page<Program> page;
 
@@ -53,6 +58,7 @@ class ProgramServiceTest {
                 .name("Computer Science")
                 .id(1)
                 .build();
+        this.programDetails = factory.createProjection(ProgramDetails.class, program);
         course1 = Course.builder()
                 .id(1)
                 .name("Epistemology")
@@ -129,5 +135,25 @@ class ProgramServiceTest {
         then(programRepository)
                 .should(times(1))
                 .deleteById(3);
+    }
+
+    @Test
+    void shouldReturnProgram() {
+        given(programRepository.findProjectedById(1))
+                .willReturn(Optional.of(programDetails));
+        injectMocks();
+        ProgramDetails result = programService.getProgram(1);
+
+        assertNotNull(result);
+        assertEquals("Computer Science", result.getName());
+        assertEquals(1, result.getId());
+    }
+
+    @Test
+    void shouldThrowExceptionIfProgramNotFound() {
+        given(programRepository.findProjectedById(anyInt()))
+                .willReturn(Optional.empty());
+        injectMocks();
+        assertThrows(NotFoundException.class, () -> programService.getProgram(1));
     }
 }
