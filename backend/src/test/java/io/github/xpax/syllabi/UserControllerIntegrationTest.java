@@ -2,6 +2,8 @@ package io.github.xpax.syllabi;
 
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.AuthenticationRequest;
+import io.github.xpax.syllabi.entity.dto.ChangePasswordRequest;
 import io.github.xpax.syllabi.entity.dto.RoleRequest;
 import io.github.xpax.syllabi.repo.RoleRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
@@ -46,6 +48,11 @@ class UserControllerIntegrationTest {
 
 
     private RoleRequest roleRequest;
+    private ChangePasswordRequest passwordRequest;
+    private ChangePasswordRequest passwordRequestDifferentPasswords;
+    private ChangePasswordRequest passwordRequestBadOldPassword;
+    private AuthenticationRequest authenticationRequestWithNewPassword;
+
 
     @BeforeEach
     void setUp() {
@@ -70,6 +77,25 @@ class UserControllerIntegrationTest {
 
         roleRequest = new RoleRequest();
         roleRequest.setRole("DUMMY_ROLE");
+
+        passwordRequest = new ChangePasswordRequest();
+        passwordRequest.setPasswordOld("password");
+        passwordRequest.setPassword("newPassword");
+        passwordRequest.setPasswordRe("newPassword");
+
+        passwordRequestDifferentPasswords = new ChangePasswordRequest();
+        passwordRequestDifferentPasswords.setPasswordOld("password");
+        passwordRequestDifferentPasswords.setPassword("newPassword");
+        passwordRequestDifferentPasswords.setPasswordRe("badPassword");
+
+        passwordRequestBadOldPassword = new ChangePasswordRequest();
+        passwordRequestBadOldPassword.setPasswordOld("badPassword");
+        passwordRequestBadOldPassword.setPassword("newPassword");
+        passwordRequestBadOldPassword.setPasswordRe("newPassword");
+
+        authenticationRequestWithNewPassword = new AuthenticationRequest();
+        authenticationRequestWithNewPassword.setUsername("user2");
+        authenticationRequestWithNewPassword.setPassword("newPassword");
     }
 
     @AfterEach
@@ -322,5 +348,90 @@ class UserControllerIntegrationTest {
                 .get(baseUrl + "/users/{userId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToChangePasswordRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/users/{userId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToChangePasswordRequestIfWrongUser() {
+        given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(passwordRequest)
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .put(baseUrl + "/users/{userId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldChangePassword() {
+        Integer id = addUsers();
+        given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(passwordRequest)
+                .auth()
+                .oauth2(tokenFor("user2"))
+                .when()
+                .put(baseUrl + "/users/{userId}", id)
+                .then()
+                .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(authenticationRequestWithNewPassword)
+                .when()
+                .post(baseUrl + "/authenticate")
+                .then()
+                .statusCode(OK.value())
+                .body("$", hasKey("token"));
+    }
+
+    @Test
+    void shouldNotChangePasswordIfPasswordsDoNotMatch() {
+        Integer id = addUsers();
+        given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(passwordRequestDifferentPasswords)
+                .auth()
+                .oauth2(tokenFor("user2"))
+                .when()
+                .put(baseUrl + "/users/{userId}", id)
+                .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotChangePasswordIfWrongPassword() {
+        Integer id = addUsers();
+        given()
+                .log()
+                .uri()
+                .contentType(ContentType.JSON)
+                .body(passwordRequestBadOldPassword)
+                .auth()
+                .oauth2(tokenFor("user2"))
+                .when()
+                .put(baseUrl + "/users/{userId}", id)
+                .then()
+                .statusCode(BAD_REQUEST.value());
     }
 }

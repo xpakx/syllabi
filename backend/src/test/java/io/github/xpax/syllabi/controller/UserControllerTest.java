@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.ChangePasswordRequest;
 import io.github.xpax.syllabi.entity.dto.RoleRequest;
 import io.github.xpax.syllabi.entity.dto.UserWithoutPassword;
 import io.github.xpax.syllabi.service.UserAccountService;
@@ -49,6 +50,7 @@ class UserControllerTest {
     private User userWithAddedRole;
     private Page<UserWithoutPassword> userPage;
     private UserWithoutPassword user;
+    private ChangePasswordRequest changePasswordRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -76,6 +78,11 @@ class UserControllerTest {
                 .username("user1")
                 .build();
         this.user = factory.createProjection(UserWithoutPassword.class, user);
+
+        changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setPassword("password");
+        changePasswordRequest.setPasswordRe("password");
+        changePasswordRequest.setPasswordOld("oldPassword");
     }
 
     private void injectMocks() {
@@ -242,5 +249,43 @@ class UserControllerTest {
                 .statusCode(OK.value())
                 .body("id", equalTo(3))
                 .body("username", equalTo("user1"));
+    }
+
+    @Test
+    void shouldRespondToChangePasswordRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(changePasswordRequest)
+                .when()
+                .put("/users/{userId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldChangePassword() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(changePasswordRequest)
+                .when()
+                .put("/users/{userId}", 3)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<ChangePasswordRequest> requestCaptor = ArgumentCaptor.forClass(ChangePasswordRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(userAccountService)
+                .should(times(1))
+                .changePassword(requestCaptor.capture(), idCaptor.capture());
+        ChangePasswordRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(3, id);
+        assertEquals("password", request.getPassword());
+        assertEquals("password", request.getPasswordRe());
+        assertEquals("oldPassword", request.getPasswordOld());
     }
 }

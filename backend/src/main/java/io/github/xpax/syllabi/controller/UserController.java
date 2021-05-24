@@ -1,6 +1,7 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.ChangePasswordRequest;
 import io.github.xpax.syllabi.entity.dto.RoleRequest;
 import io.github.xpax.syllabi.entity.dto.UserWithoutPassword;
 import io.github.xpax.syllabi.service.UserAccountService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -52,5 +54,13 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<UserWithoutPassword> getUser(@PathVariable Integer userId) {
         return new ResponseEntity<>(userAccountService.getUser(userId), HttpStatus.OK);
+    }
+
+    @PreAuthorize("#userId.toString() == authentication.principal.username")
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
+                                            @PathVariable Integer userId) {
+        userAccountService.changePassword(request, userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
