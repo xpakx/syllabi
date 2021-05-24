@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.controller;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.TeacherDetails;
+import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.service.TeacherService;
 import io.restassured.http.ContentType;
@@ -38,6 +39,7 @@ class TeacherControllerTest {
     private UserToTeacherRequest createTeacherRequest;
     private Teacher createdTeacher;
     private TeacherDetails createdTeacherDet;
+    private UpdateTeacherRequest updateTeacherRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -56,6 +58,10 @@ class TeacherControllerTest {
                 .surname("Smith")
                 .build();
         this.createdTeacherDet = factory.createProjection(TeacherDetails.class, createdTeacher);
+
+        updateTeacherRequest = new UpdateTeacherRequest();
+        updateTeacherRequest.setName("John");
+        updateTeacherRequest.setSurname("Smith");
     }
 
     private void injectMocks() {
@@ -165,5 +171,59 @@ class TeacherControllerTest {
         BDDMockito.then(teacherService)
                 .should(times(1))
                 .deleteTeacher(5);
+    }
+
+    @Test
+    void shouldRespondToUpdateTeacherRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateTeacherRequest)
+                .when()
+                .put("/users/{userId}/teacher", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldUpdateTeacher() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateTeacherRequest)
+                .when()
+                .put("/users/{userId}/teacher", 5)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<UpdateTeacherRequest> requestCaptor = ArgumentCaptor.forClass(UpdateTeacherRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(teacherService)
+                .should(times(1))
+                .updateTeacher(requestCaptor.capture(), idCaptor.capture());
+        UpdateTeacherRequest request = requestCaptor.getValue();
+        Integer id = idCaptor.getValue();
+
+        assertEquals(5, id);
+        assertEquals("John", request.getName());
+        assertEquals("Smith", request.getSurname());
+    }
+
+    @Test
+    void shouldProduceUpdatedTeacher() {
+        BDDMockito.given(teacherService.updateTeacher(any(UpdateTeacherRequest.class), anyInt()))
+                .willReturn(createdTeacher);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateTeacherRequest)
+                .when()
+                .put("/users/{userId}/teacher", 5)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(1))
+                .body("name", equalTo("John"))
+                .body("surname", equalTo("Smith"));
     }
 }

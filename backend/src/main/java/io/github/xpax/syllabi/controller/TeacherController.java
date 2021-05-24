@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.dto.TeacherDetails;
+import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,12 @@ public class TeacherController {
     public ResponseEntity<?> deleteTeacher(@PathVariable Integer userId) {
         teacherService.deleteTeacher(userId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured("ROLE_USER_ADMIN")
+    @PutMapping("/users/{userId}/teacher")
+    public ResponseEntity<Teacher> updateTeacher(@RequestBody UpdateTeacherRequest request,
+                                                 @PathVariable Integer userId) {
+        return new ResponseEntity<>(teacherService.updateTeacher(request, userId), HttpStatus.OK);
     }
 }

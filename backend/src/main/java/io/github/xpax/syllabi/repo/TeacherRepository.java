@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
     boolean existsTeacherByUserId(Integer userId);
     Optional<TeacherDetails> findByUserId(Integer userId);
+    Optional<Teacher> getByUserId(Integer userId);
     Long deleteByUserId(Integer userId);
 }

@@ -4,6 +4,7 @@ import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.TeacherDetails;
+import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
@@ -43,6 +44,7 @@ class TeacherServiceTest {
     private UserToTeacherRequest request;
     private TeacherDetails teacherWithId7Det;
     private Teacher teacherWithId7;
+    private UpdateTeacherRequest updateTeacherRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -69,6 +71,10 @@ class TeacherServiceTest {
                 .surname("Chomsky")
                 .build();
         teacherWithId7Det = factory.createProjection(TeacherDetails.class, teacherWithId7);
+
+        updateTeacherRequest = new UpdateTeacherRequest();
+        updateTeacherRequest.setName("Nim");
+        updateTeacherRequest.setSurname("Chimpsky");
     }
 
     private void injectMocks() {
@@ -137,5 +143,28 @@ class TeacherServiceTest {
         then(teacherRepository)
                 .should(times(1))
                 .deleteByUserId(5);
+    }
+
+    @Test
+    void shouldUpdateTeacher() {
+        given(teacherRepository.getByUserId(1))
+                .willReturn(Optional.of(teacherWithId7));
+        injectMocks();
+
+        teacherService.updateTeacher(updateTeacherRequest, 1);
+
+        ArgumentCaptor<Teacher> teacherCaptor = ArgumentCaptor.forClass(Teacher.class);
+
+        then(teacherRepository)
+                .should(times(1))
+                .save(teacherCaptor.capture());
+
+        Teacher updatedTeacher = teacherCaptor.getValue();
+
+        assertNotNull(updatedTeacher);
+        assertEquals("Nim", updatedTeacher.getName());
+        assertEquals("Chimpsky", updatedTeacher.getSurname());
+        assertNotNull(updatedTeacher.getId());
+        assertEquals(7, updatedTeacher.getId());
     }
 }

@@ -257,4 +257,62 @@ class TeacherControllerIntegrationTest {
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
+
+    @Test
+    void shouldRespondWith401ToUpdateTeacherRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/users/{userId}/teacher", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateTeacherRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(addTeacherRequest)
+                .when()
+                .put(baseUrl + "/users/{userId}/teacher", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedTeacher() {
+        Integer id = addTeacher();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(addTeacherRequest)
+                .when()
+                .put(baseUrl + "/users/{userId}/teacher", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Adam"))
+                .body("surname", equalTo("Smith"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Adam"))
+                .body("surname", equalTo("Smith"));
+    }
 }
