@@ -60,4 +60,8 @@ public class StudentService {
     public Page<StudentWithUserId> getGroupStudents(Integer groupId, Integer page, Integer size) {
         return studentRepository.findAllStudentByGroupId(groupId, PageRequest.of(page, size));
     }
+
+    public Page<StudentWithUserId> getStudents(Integer yearId, Integer page, Integer size) {
+        return studentRepository.findAllStudentByYearId(yearId, PageRequest.of(page, size));
+    }
 }

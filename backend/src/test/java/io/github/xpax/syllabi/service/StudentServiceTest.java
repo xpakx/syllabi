@@ -166,4 +166,28 @@ class StudentServiceTest {
 
         assertEquals(5, groupId);
     }
+
+    @Test
+    void shouldAskRepositoryForYearStudents() {
+        given(studentRepository.findAllStudentByYearId(anyInt(), any(PageRequest.class)))
+                .willReturn(studentPage);
+        injectMocks();
+
+        Page<StudentWithUserId> result = studentService.getStudents(5, 0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        ArgumentCaptor<Integer> integerCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        then(studentRepository)
+                .should(times(1))
+                .findAllStudentByYearId(integerCaptor.capture(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+        Integer yearId = integerCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+        assertEquals(5, yearId);
+
+        assertThat(result, is(sameInstance(studentPage)));
+    }
 }

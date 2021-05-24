@@ -19,4 +19,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     @Query("SELECT s FROM StudyGroup sg JOIN sg.students s WHERE sg.id = :id")
     Page<StudentWithUserId> findAllStudentByGroupId(Integer id, Pageable page);
+
+    @Query("SELECT s FROM StudyGroup sg JOIN sg.year y JOIN sg.students s WHERE y.id = :yearId")
+    Page<StudentWithUserId> findAllStudentByYearId(Integer yearId, Pageable page);
 }

@@ -61,4 +61,16 @@ public class StudentController {
                 HttpStatus.OK
         );
     }
+
+    @PreAuthorize("hasRole('ROLE_COURSE_ADMIN') or " +
+            "@permissionEvaluator.canViewCourseYear(#yearId, authentication.principal.username)")
+    @GetMapping("/years/{yearId}/students")
+    public ResponseEntity<Page<StudentWithUserId>> getStudentsForCourseYear(@PathVariable Integer yearId,
+                                                                            @RequestParam Optional<Integer> page,
+                                                                            @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                studentService.getStudents(yearId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
 }

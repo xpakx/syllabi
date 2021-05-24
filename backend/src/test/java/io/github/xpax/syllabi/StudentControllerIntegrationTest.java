@@ -167,6 +167,50 @@ class StudentControllerIntegrationTest {
         return studyGroupRepository.save(group).getId();
     }
 
+    private Integer addCourseYear() {
+        Course course = Course.builder()
+                .name("Introduction to Linguistics")
+                .programs(new HashSet<>())
+                .build();
+        courseRepository.save(course);
+
+        CourseYear year = CourseYear.builder()
+                .parent(course)
+                .description("First Year")
+                .coordinatedBy(new HashSet<>())
+                .build();
+        Integer yearId = courseYearRepository.save(year).getId();
+
+        List<Student> students = new ArrayList<>();
+        List<User> users =  new ArrayList<>();
+        for(int i = 5; i<30; i++) {
+            User user = User.builder()
+                    .username("user"+i)
+                    .password("password")
+                    .roles(new HashSet<>())
+                    .build();
+            users.add(user);
+            Student student = Student.builder()
+                    .name("Student"+i)
+                    .surname("Student")
+                    .user(user)
+                    .build();
+            students.add(student);
+        }
+
+        userRepository.saveAll(users);
+        studentRepository.saveAll(students);
+
+        StudyGroup group = StudyGroup.builder()
+                .year(year)
+                .students(new HashSet<>(students))
+                .build();
+
+        studyGroupRepository.save(group);
+
+        return yearId;
+    }
+
     @Test
     void shouldRespondWith401ToAddStudentRequestIfUserUnauthorized() {
         given()
@@ -441,6 +485,64 @@ class StudentControllerIntegrationTest {
                 .queryParam("size", 5)
                 .when()
                 .get(baseUrl+ "/groups/{groupId}/students", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetAllStudentsForCourseYearRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/years/{yearId}/students", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetAllStudentsForCourseYearRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/years/{yearId}/students", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithStudentsPageAndDefaultPaginationToGetAllStudentsForCourseYearRequest() {
+        Integer id = addCourseYear();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin2"))
+                .when()
+                .get(baseUrl + "/years/{yearId}/students", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithStudentsPageAndCustomPaginationToGetAllStudentsForCourseYearRequest() {
+        Integer id = addCourseYear();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin2"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl+ "/years/{yearId}/students", id)
                 .then()
                 .statusCode(OK.value())
                 .body("content", hasSize(5))
