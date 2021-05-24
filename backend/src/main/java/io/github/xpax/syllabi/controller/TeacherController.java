@@ -1,7 +1,9 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.dto.TeacherDetails;
+import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
 import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.service.TeacherService;
@@ -45,5 +47,12 @@ public class TeacherController {
     public ResponseEntity<Teacher> updateTeacher(@RequestBody UpdateTeacherRequest request,
                                                  @PathVariable Integer userId) {
         return new ResponseEntity<>(teacherService.updateTeacher(request, userId), HttpStatus.OK);
+    }
+
+    @Secured("ROLE_USER_ADMIN")
+    @PutMapping("/users/{userId}/teacher/job")
+    public ResponseEntity<Job> updateTeacherJob(@RequestBody UpdateJobRequest request,
+                                                @PathVariable Integer userId) {
+        return new ResponseEntity<>(teacherService.updateTeacherJob(request, userId), HttpStatus.OK);
     }
 }

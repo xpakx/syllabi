@@ -1,13 +1,16 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.Institute;
+import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.TeacherDetails;
+import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
 import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
+import io.github.xpax.syllabi.repo.JobRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +39,8 @@ class TeacherServiceTest {
     private UserRepository userRepository;
     @Mock
     private InstituteRepository instituteRepository;
+    @Mock
+    private JobRepository jobRepository;
 
     private TeacherService teacherService;
 
@@ -45,6 +50,8 @@ class TeacherServiceTest {
     private TeacherDetails teacherWithId7Det;
     private Teacher teacherWithId7;
     private UpdateTeacherRequest updateTeacherRequest;
+    private Job job;
+    private UpdateJobRequest updateJobRequest;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -75,10 +82,20 @@ class TeacherServiceTest {
         updateTeacherRequest = new UpdateTeacherRequest();
         updateTeacherRequest.setName("Nim");
         updateTeacherRequest.setSurname("Chimpsky");
+
+        job = Job.builder()
+                .id(10)
+                .teacher(teacherWithId7)
+                .name("Researcher")
+                .build();
+
+        updateJobRequest = new UpdateJobRequest();
+        updateJobRequest.setName("Lecturer");
+        updateJobRequest.setInstituteId(5);
     }
 
     private void injectMocks() {
-        teacherService = new TeacherService(teacherRepository, userRepository, instituteRepository);
+        teacherService = new TeacherService(teacherRepository, userRepository, instituteRepository, jobRepository);
     }
 
     @Test
@@ -166,5 +183,27 @@ class TeacherServiceTest {
         assertEquals("Chimpsky", updatedTeacher.getSurname());
         assertNotNull(updatedTeacher.getId());
         assertEquals(7, updatedTeacher.getId());
+    }
+
+    @Test
+    void shouldUpdateJob() {
+        given(jobRepository.findByTeacherUserId(1))
+                .willReturn(Optional.of(job));
+        injectMocks();
+
+        teacherService.updateTeacherJob(updateJobRequest, 1);
+
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+
+        then(jobRepository)
+                .should(times(1))
+                .save(jobCaptor.capture());
+
+        Job updatedJob = jobCaptor.getValue();
+
+        assertNotNull(updatedJob);
+        assertEquals("Lecturer", updatedJob.getName());
+        assertNotNull(updatedJob.getId());
+        assertEquals(10, updatedJob.getId());
     }
 }

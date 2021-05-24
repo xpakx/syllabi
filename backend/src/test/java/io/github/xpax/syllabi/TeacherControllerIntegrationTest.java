@@ -4,7 +4,9 @@ import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
+import io.github.xpax.syllabi.repo.JobRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
@@ -41,8 +43,11 @@ class TeacherControllerIntegrationTest {
     UserService userService;
     @Autowired
     TeacherRepository teacherRepository;
+    @Autowired
+    JobRepository jobRepository;
 
     private UserToTeacherRequest addTeacherRequest;
+    private UpdateJobRequest jobRequest;
 
     @BeforeEach
     void setUp() {
@@ -69,10 +74,14 @@ class TeacherControllerIntegrationTest {
         addTeacherRequest = new UserToTeacherRequest();
         addTeacherRequest.setName("Adam");
         addTeacherRequest.setSurname("Smith");
+
+        jobRequest = new UpdateJobRequest();
+        jobRequest.setName("Researcher");
     }
 
     @AfterEach
     void cleanUp() {
+        jobRepository.deleteAll();
         teacherRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -314,5 +323,61 @@ class TeacherControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("name", equalTo("Adam"))
                 .body("surname", equalTo("Smith"));
+    }
+
+    @Test
+    void shouldRespondWith401ToUpdateJobRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/users/{userId}/teacher/job", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateJobRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(jobRequest)
+                .when()
+                .put(baseUrl + "/users/{userId}/teacher/job", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedJob() {
+        Integer id = addTeacher();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(jobRequest)
+                .when()
+                .put(baseUrl + "/users/{userId}/teacher/job", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Researcher"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}/teacher", id)
+                .then()
+                .statusCode(OK.value())
+                .body("job.name", equalTo("Researcher"));
     }
 }

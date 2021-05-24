@@ -5,11 +5,13 @@ import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.TeacherDetails;
+import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
 import io.github.xpax.syllabi.entity.dto.UpdateTeacherRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.error.TeacherExistsException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
+import io.github.xpax.syllabi.repo.JobRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,14 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
     private final InstituteRepository instituteRepository;
+    private final JobRepository jobRepository;
 
     public TeacherService(TeacherRepository teacherRepository, UserRepository userRepository,
-                          InstituteRepository instituteRepository) {
+                          InstituteRepository instituteRepository, JobRepository jobRepository) {
         this.teacherRepository = teacherRepository;
         this.userRepository = userRepository;
         this.instituteRepository = instituteRepository;
+        this.jobRepository = jobRepository;
     }
 
     public Teacher createTeacher(UserToTeacherRequest request, Integer userId) {
@@ -80,8 +84,24 @@ public class TeacherService {
         return teacherRepository.save(teacher);
     }
 
+    public Job updateTeacherJob(UpdateJobRequest request, Integer userId) {
+        Job job = jobRepository.findByTeacherUserId(userId)
+                .orElseThrow(() -> new NotFoundException("No teacher for user with id "+userId+"!"));
+        job.setName(request.getName());
+        job.setInstitute(getInstituteForJob(request));
+        return jobRepository.save(job);
+    }
+
+
 
     private Institute getInstitute(UserToTeacherRequest teacherRequest) {
+        if(teacherRequest.getInstituteId() != null)
+            return instituteRepository.getOne(teacherRequest.getInstituteId());
+        else
+            return null;
+    }
+
+    private Institute getInstituteForJob(UpdateJobRequest teacherRequest) {
         if(teacherRequest.getInstituteId() != null)
             return instituteRepository.getOne(teacherRequest.getInstituteId());
         else
