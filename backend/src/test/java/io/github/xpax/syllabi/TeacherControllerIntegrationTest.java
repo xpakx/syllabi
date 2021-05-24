@@ -1,9 +1,6 @@
 package io.github.xpax.syllabi;
 
-import io.github.xpax.syllabi.entity.Job;
-import io.github.xpax.syllabi.entity.Role;
-import io.github.xpax.syllabi.entity.Teacher;
-import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.UpdateJobRequest;
 import io.github.xpax.syllabi.entity.dto.UserToTeacherRequest;
 import io.github.xpax.syllabi.repo.JobRepository;
@@ -24,6 +21,7 @@ import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -119,6 +117,28 @@ class TeacherControllerIntegrationTest {
         teacherRepository.save(teacher);
 
         return user.getId();
+    }
+
+    private void addTeachers() {
+        Teacher course1 = Teacher.builder()
+                .name("John")
+                .build();
+        teacherRepository.save(course1);
+        Teacher course2 = Teacher.builder()
+                .name("George")
+                .build();
+        teacherRepository.save(course2);
+        Teacher course3 = Teacher.builder()
+                .name("Michael")
+                .build();
+        teacherRepository.save(course3);
+
+        for (int i = 4; i <= 25; i++) {
+            Teacher dummyCourse = Teacher.builder()
+                    .name("Dummy Teacher #" + i)
+                    .build();
+            teacherRepository.save(dummyCourse);
+        }
     }
 
     @Test
@@ -418,5 +438,54 @@ class TeacherControllerIntegrationTest {
                 .get(baseUrl + "/users/{userId}/teacher/job", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetAllTeachersRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl+"/teachers")
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithTeachersPageAndDefaultPaginationToGetAllTeachersRequest() {
+        addTeachers();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .get(baseUrl +"/teachers")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].name", equalTo("John"))
+                .body("content[1].name", equalTo("George"))
+                .body("content[2].name", equalTo("Michael"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithTeachersPageAndCustomPaginationToGetAllTeachersRequest() {
+        addTeachers();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl+"/teachers")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].name", equalTo("Dummy Teacher #16"))
+                .body("numberOfElements", equalTo(5));
     }
 }

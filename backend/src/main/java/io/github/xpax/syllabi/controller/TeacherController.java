@@ -5,10 +5,13 @@ import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 public class TeacherController {
@@ -56,5 +59,15 @@ public class TeacherController {
     @GetMapping("/users/{userId}/teacher/job")
     public ResponseEntity<JobSummary> getTeacherJob(@PathVariable Integer userId) {
         return new ResponseEntity<>(teacherService.getTeacherJob(userId), HttpStatus.OK);
+    }
+
+    @Secured({"ROLE_USER_ADMIN", "ROLE_COURSE_ADMIN"})
+    @GetMapping("/teachers")
+    public ResponseEntity<Page<TeacherSummary>> getAllTeachers(@RequestParam Optional<Integer> page,
+                                                               @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                teacherService.getTeachers(page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
     }
 }

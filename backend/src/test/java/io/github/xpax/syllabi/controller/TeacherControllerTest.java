@@ -1,5 +1,6 @@
 package io.github.xpax.syllabi.controller;
 
+import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Job;
 import io.github.xpax.syllabi.entity.Teacher;
 import io.github.xpax.syllabi.entity.User;
@@ -16,12 +17,18 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -42,6 +49,7 @@ class TeacherControllerTest {
     private UpdateJobRequest updateJobRequest;
     private Job updatedJob;
     private JobSummary updatedJobSummary;
+    private Page<TeacherSummary> teacherPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -73,6 +81,30 @@ class TeacherControllerTest {
         updateJobRequest.setName("Researcher");
 
         updatedJobSummary = factory.createProjection(JobSummary.class, updatedJob);
+
+
+        Teacher teacher1 = Teacher.builder()
+                .id(0)
+                .name("John")
+                .build();
+        Teacher teacher2 = Teacher.builder()
+                .id(1)
+                .name("George")
+                .build();
+        Teacher teacher3 = Teacher.builder()
+                .id(2)
+                .name("Michael")
+                .build();
+
+        TeacherSummary teacher1Det = factory.createProjection(TeacherSummary.class, teacher1);
+        TeacherSummary teacher2Det = factory.createProjection(TeacherSummary.class, teacher2);
+        TeacherSummary teacher3Det = factory.createProjection(TeacherSummary.class, teacher3);
+        List<TeacherSummary> teacherList = new ArrayList<>();
+        teacherList.add(teacher1Det);
+        teacherList.add(teacher2Det);
+        teacherList.add(teacher3Det);
+        teacherPage = new PageImpl<>(teacherList);
+
     }
 
     private void injectMocks() {
@@ -312,5 +344,65 @@ class TeacherControllerTest {
                 .statusCode(OK.value())
                 .body("id", equalTo(1))
                 .body("name", equalTo("Researcher"));
+    }
+
+    @Test
+    void shouldRespondToAllRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/teachers")
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceListOfCourses() {
+        BDDMockito.given(teacherService.getTeachers(anyInt(), anyInt()))
+                .willReturn(teacherPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/teachers")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(3))
+                .body("content[0].id", equalTo(0))
+                .body("content[0].name", equalTo("John"))
+                .body("content[1].id", equalTo(1))
+                .body("content[1].name", equalTo("George"))
+                .body("content[2].id", equalTo(2))
+                .body("content[2].name", equalTo("Michael"))
+                .body("numberOfElements", equalTo(3));
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetCoursesRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/teachers")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(teacherService)
+                .should(times(1))
+                .getTeachers(7, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForCoursesRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/teachers")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(teacherService)
+                .should(times(1))
+                .getTeachers(0, 20);
     }
 }

@@ -16,13 +16,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -50,6 +56,7 @@ class TeacherServiceTest {
     private Job job;
     private JobSummary jobSummary;
     private UpdateJobRequest updateJobRequest;
+    private Page<TeacherSummary> teacherPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -92,6 +99,8 @@ class TeacherServiceTest {
         updateJobRequest = new UpdateJobRequest();
         updateJobRequest.setName("Lecturer");
         updateJobRequest.setInstituteId(5);
+
+        teacherPage = Page.empty();
     }
 
     private void injectMocks() {
@@ -227,5 +236,26 @@ class TeacherServiceTest {
         injectMocks();
 
         assertThrows(NotFoundException.class, () -> teacherService.getTeacherJob(2));
+    }
+
+    @Test
+    void shouldAskRepositoryForTeachers() {
+        given(teacherRepository.findAllProjectedBy(any(PageRequest.class)))
+                .willReturn(teacherPage);
+        injectMocks();
+
+        Page<TeacherSummary> result = teacherService.getTeachers(0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+
+        then(teacherRepository)
+                .should(times(1))
+                .findAllProjectedBy(pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+
+        assertThat(result, is(sameInstance(teacherPage)));
     }
 }

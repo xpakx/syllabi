@@ -11,6 +11,8 @@ import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.JobRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,7 +96,9 @@ public class TeacherService {
                 .orElseThrow(() -> new NotFoundException("No teacher for user with id "+userId+"!"));
     }
 
-
+    public Page<TeacherSummary> getTeachers(Integer page, Integer size) {
+        return teacherRepository.findAllProjectedBy(PageRequest.of(page, size));
+    }
 
     private Institute getInstitute(UserToTeacherRequest teacherRequest) {
         if(teacherRequest.getInstituteId() != null)
