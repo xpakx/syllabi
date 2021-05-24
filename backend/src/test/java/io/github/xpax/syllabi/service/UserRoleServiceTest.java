@@ -35,7 +35,7 @@ class UserRoleServiceTest {
     private UserRoleService userRoleService;
 
     private RoleRequest roleRequest;
-    private Role userAdminrole;
+    private Role userAdminRole;
     private User userWithId0;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
@@ -44,9 +44,9 @@ class UserRoleServiceTest {
     void setUp() {
         roleRequest = new RoleRequest();
         roleRequest.setRole("USER_ADMIN");
-        userAdminrole = new Role();
-        userAdminrole.setAuthority("USER_ADMIN");
-        userAdminrole.setId(0);
+        userAdminRole = new Role();
+        userAdminRole.setAuthority("USER_ADMIN");
+        userAdminRole.setId(0);
         userWithId0 = User.builder()
                 .id(0)
                 .username("marvinminsky")
@@ -62,7 +62,7 @@ class UserRoleServiceTest {
     @Test
     void shouldGrantUserNewRole() {
         given(roleRepository.findByAuthority("USER_ADMIN"))
-                .willReturn(Optional.of(userAdminrole));
+                .willReturn(Optional.of(userAdminRole));
         given(userRepository.findById(0))
                 .willReturn(Optional.of(userWithId0));
         injectMocks();

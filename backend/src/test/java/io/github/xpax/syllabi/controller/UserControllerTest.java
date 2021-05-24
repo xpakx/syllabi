@@ -3,6 +3,8 @@ package io.github.xpax.syllabi.controller;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.User;
 import io.github.xpax.syllabi.entity.dto.RoleRequest;
+import io.github.xpax.syllabi.entity.dto.UserWithoutPassword;
+import io.github.xpax.syllabi.service.UserAccountService;
 import io.github.xpax.syllabi.service.UserRoleService;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -15,11 +17,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -36,9 +42,12 @@ import static org.springframework.http.HttpStatus.OK;
 class UserControllerTest {
     @Mock
     private UserRoleService userRoleService;
+    @Mock
+    private UserAccountService userAccountService;
 
     private RoleRequest roleRequest;
     private User userWithAddedRole;
+    private Page<UserWithoutPassword> userPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -57,10 +66,13 @@ class UserControllerTest {
                 .username("username")
                 .roles(roleList)
                 .build();
+        List<UserWithoutPassword> userList = new ArrayList<>();
+        userList.add(factory.createProjection(UserWithoutPassword.class, userWithAddedRole));
+        userPage = new PageImpl<>(userList);
     }
 
     private void injectMocks() {
-        UserController userController = new UserController(userRoleService);
+        UserController userController = new UserController(userRoleService, userAccountService);
         RestAssuredMockMvc.standaloneSetup(userController);
         RestAssuredMockMvc.config = new RestAssuredMockMvcConfig()
                 .mockMvcConfig(MockMvcConfig.mockMvcConfig().dontAutomaticallyApplySpringSecurityMockMvcConfigurer());
@@ -121,5 +133,59 @@ class UserControllerTest {
                 .body("roles[0].authority", equalTo(Role.COURSE_ADMIN));
     }
 
+    @Test
+    void shouldRespondToGetAllUsersRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users")
+                .then()
+                .statusCode(OK.value());
+    }
 
+    @Test
+    void shouldTakePageAndSizeFromGetAllUsersRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("/users")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(userAccountService)
+                .should(times(1))
+                .getAllUsers(2, 15);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllUsersRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(userAccountService)
+                .should(times(1))
+                .getAllUsers(0, 20);
+    }
+
+    @Test
+    void shouldProducePageOfAllUsers() {
+        BDDMockito.given(userAccountService.getAllUsers(anyInt(), anyInt()))
+                .willReturn(userPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/users")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(1))
+                .body("content[0].id", equalTo(3))
+                .body("content[0].username", equalTo("username"))
+                .body("numberOfElements", equalTo(1));
+    }
 }

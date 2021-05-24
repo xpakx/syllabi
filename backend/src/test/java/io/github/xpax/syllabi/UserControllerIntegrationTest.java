@@ -150,4 +150,63 @@ class UserControllerIntegrationTest {
         assertThat(user.get().getRoles(), contains(hasProperty("authority", equalTo("DUMMY_ROLE"))));
     }
 
+    @Test
+    void shouldRespondWith401ToGetAllUsersRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/users")
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetAllUsersRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users")
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndDefaultPaginationToGetAllCoursesRequest() {
+        addUsers();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .get(baseUrl + "/users")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].username", equalTo("user1"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndCustomPaginationToGetAllCoursesRequest() {
+        addUsers();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/users")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].username", equalTo("user15"))
+                .body("numberOfElements", equalTo(5));
+    }
 }
