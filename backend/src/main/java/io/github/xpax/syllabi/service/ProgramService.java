@@ -45,6 +45,16 @@ public class ProgramService {
                 .orElseThrow(() -> new NotFoundException("No program with id "+programId+" found!"));
     }
 
+    public Program updateProgram(ProgramRequest programRequest, Integer programId) {
+        Institute institute = getInstitute(programRequest);
+        Set<Course> courseSet = getCourseSet(programRequest);
+        Program programToUpdate = buildProgram(institute, courseSet, programRequest.getName())
+                .description(programRequest.getDescription())
+                .id(programId)
+                .build();
+        return programRepository.save(programToUpdate);
+    }
+
     private Institute getInstitute(ProgramRequest programRequest) {
         if(programRequest.getOrganizerId() != null)
             return instituteRepository.getOne(programRequest.getOrganizerId());

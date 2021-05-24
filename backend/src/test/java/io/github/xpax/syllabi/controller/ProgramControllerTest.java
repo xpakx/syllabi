@@ -263,4 +263,61 @@ public class ProgramControllerTest {
                 .should(times(1))
                 .getProgram(17);
     }
+
+    @Test
+    void shouldRespondToUpdateCourseRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(programRequest)
+                .when()
+                .put("/programs/{programId}", 17)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldUpdateCourse() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(programRequest)
+                .when()
+                .put("/programs/{programId}", 17)
+                .then()
+                .statusCode(OK.value());
+
+        ArgumentCaptor<ProgramRequest> requestCaptor = ArgumentCaptor.forClass(ProgramRequest.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        BDDMockito.then(programService)
+                .should(times(1))
+                .updateProgram(requestCaptor.capture(), idCaptor.capture());
+
+        Integer id = idCaptor.getValue();
+        assertEquals(17, id);
+
+        ProgramRequest capturedRequest = requestCaptor.getValue();
+        assertEquals("Philosophy", capturedRequest.getName());
+        assertEquals("Philosophy program", capturedRequest.getDescription());
+    }
+
+    @Test
+    void shouldReturnUpdatedCourse() {
+        BDDMockito.given(programService.updateProgram(any(ProgramRequest.class), anyInt()))
+                .willReturn(addedProgram);
+        injectMocks();
+
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(programRequest)
+                .when()
+                .put("/programs/{programId}", 1)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(17))
+                .body("name", equalTo("Philosophy"))
+                .body("description", equalTo("Philosophy program"));
+    }
 }

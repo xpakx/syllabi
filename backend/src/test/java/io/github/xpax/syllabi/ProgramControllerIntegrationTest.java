@@ -340,4 +340,61 @@ class ProgramControllerIntegrationTest {
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
+
+    @Test
+    void shouldRespondWith401ToUpdateProgramRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/{programId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateProgramRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(programRequest)
+                .when()
+                .put(baseUrl + "/{programId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedProgram() {
+        Integer id = addPrograms();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(programRequest)
+                .when()
+                .put(baseUrl + "/{programId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(id))
+                .body("name", equalTo("Cognitive Science"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{programId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Cognitive Science"));
+    }
 }

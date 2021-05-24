@@ -54,4 +54,14 @@ public class ProgramController {
     public ResponseEntity<ProgramDetails> getProgram(@PathVariable Integer programId) {
         return new ResponseEntity<>(programService.getProgram(programId), HttpStatus.OK);
     }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @PutMapping("/{programId}")
+    public ResponseEntity<Program> editProgram(@RequestBody ProgramRequest programRequest,
+                                               @PathVariable Integer programId) {
+        return new ResponseEntity<>(
+                programService.updateProgram(programRequest, programId),
+                HttpStatus.OK
+        );
+    }
 }

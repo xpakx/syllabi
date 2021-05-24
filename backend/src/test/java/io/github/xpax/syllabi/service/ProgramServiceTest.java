@@ -156,4 +156,43 @@ class ProgramServiceTest {
         injectMocks();
         assertThrows(NotFoundException.class, () -> programService.getProgram(1));
     }
+
+    @Test
+    void shouldUpdateProgram() {
+        given(courseRepository.getOne(1))
+                .willReturn(course1);
+        given(courseRepository.getOne(2))
+                .willReturn(course2);
+        given(courseRepository.getOne(3))
+                .willReturn(course3);
+        given(instituteRepository.getOne(9))
+                .willReturn(organizer);
+        injectMocks();
+
+        programService.updateProgram(request, 3);
+
+        ArgumentCaptor<Program> programCaptor = ArgumentCaptor.forClass(Program.class);
+        then(programRepository)
+                .should(times(1))
+                .save(programCaptor.capture());
+        Program addedProgram = programCaptor.getValue();
+
+        assertNotNull(addedProgram);
+        assertNotNull(addedProgram.getOrganizer());
+        assertEquals(9, addedProgram.getOrganizer().getId());
+        assertEquals("Institute of Philosophy", addedProgram.getOrganizer().getName());
+
+        assertNotNull(addedProgram.getCourses());
+        assertThat(addedProgram.getCourses(), hasSize(3));
+        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(1))));
+        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(2))));
+        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(3))));
+        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Ethics"))));
+        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Epistemology"))));
+        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Metaphysics"))));
+
+        assertEquals("Philosophy", addedProgram.getName());
+        assertNotNull(addedProgram.getId());
+        assertEquals(3, addedProgram.getId());
+    }
 }
