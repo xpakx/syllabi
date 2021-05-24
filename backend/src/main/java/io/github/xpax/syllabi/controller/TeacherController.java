@@ -31,4 +31,11 @@ public class TeacherController {
     public ResponseEntity<TeacherDetails> getTeacher(@PathVariable Integer userId) {
         return new ResponseEntity<>(teacherService.getTeacher(userId), HttpStatus.OK);
     }
+
+    @Secured("ROLE_USER_ADMIN")
+    @DeleteMapping("/users/{userId}/teacher")
+    public ResponseEntity<?> deleteTeacher(@PathVariable Integer userId) {
+        teacherService.deleteTeacher(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

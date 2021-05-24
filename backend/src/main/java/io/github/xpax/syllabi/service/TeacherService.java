@@ -12,6 +12,7 @@ import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.TeacherRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TeacherService {
@@ -57,6 +58,11 @@ public class TeacherService {
     public TeacherDetails getTeacher(Integer userId) {
         return teacherRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException("No teacher for user with id "+userId+"!"));
+    }
+
+    @Transactional
+    public void deleteTeacher(Integer userId) {
+        teacherRepository.deleteByUserId(userId);
     }
 
 

@@ -143,4 +143,27 @@ class TeacherControllerTest {
                 .body("name", equalTo("John"))
                 .body("surname", equalTo("Smith"));
     }
+
+    @Test
+    void shouldRespondToDeleteTeacherRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/users/{userId}/teacher", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteTeacher() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/users/{userId}/teacher", 5)
+                .then()
+                .statusCode(OK.value());
+        BDDMockito.then(teacherService)
+                .should(times(1))
+                .deleteTeacher(5);
+    }
 }

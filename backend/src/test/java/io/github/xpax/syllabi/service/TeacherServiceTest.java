@@ -129,4 +129,13 @@ class TeacherServiceTest {
 
         assertThrows(NotFoundException.class, () -> teacherService.getTeacher(2));
     }
+
+    @Test
+    void shouldDeleteTeacher() {
+        injectMocks();
+        teacherService.deleteTeacher(5);
+        then(teacherRepository)
+                .should(times(1))
+                .deleteByUserId(5);
+    }
 }
