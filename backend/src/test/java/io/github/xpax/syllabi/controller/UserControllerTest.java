@@ -188,4 +188,28 @@ class UserControllerTest {
                 .body("content[0].username", equalTo("username"))
                 .body("numberOfElements", equalTo(1));
     }
+
+    @Test
+    void shouldRespondToDeleteUserRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/users/{userId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteUser() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/users/{userId}", 3)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(userAccountService)
+                .should(times(1))
+                .deleteUser(3);
+    }
 }

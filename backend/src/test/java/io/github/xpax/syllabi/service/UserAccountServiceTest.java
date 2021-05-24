@@ -63,4 +63,13 @@ public class UserAccountServiceTest {
 
         assertThat(result, is(sameInstance(userPage)));
     }
+
+    @Test
+    void shouldDeleteUser() {
+        injectMocks();
+        userAccountService.deleteUser(5);
+        then(userRepository)
+                .should(times(1))
+                .deleteById(5);
+    }
 }

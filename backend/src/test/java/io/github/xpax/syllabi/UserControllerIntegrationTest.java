@@ -209,4 +209,55 @@ class UserControllerIntegrationTest {
                 .body("content[0].username", equalTo("user15"))
                 .body("numberOfElements", equalTo(5));
     }
+
+    @Test
+    void shouldRespondWith401ToDeleteUserRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/users/{userId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteUserRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/users/{userId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteUser() {
+        Integer id = addUsers();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/users/{userId}", id)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldRespondWith404IfUserToDeleteNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/users/{userId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
 }

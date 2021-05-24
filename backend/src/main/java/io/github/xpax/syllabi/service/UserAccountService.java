@@ -19,4 +19,8 @@ public class UserAccountService {
     public Page<UserWithoutPassword> getAllUsers(Integer page, Integer size) {
         return userRepository.findAllProjectedBy(PageRequest.of(page, size));
     }
+
+    public void deleteUser(Integer userId) {
+        userRepository.deleteById(userId);
+    }
 }

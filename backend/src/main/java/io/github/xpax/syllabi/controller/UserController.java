@@ -40,4 +40,11 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+    @Secured("ROLE_USER_ADMIN")
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer userId) {
+        userAccountService.deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
