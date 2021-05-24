@@ -99,4 +99,14 @@ class StudentServiceTest {
         injectMocks();
         assertThrows(NotFoundException.class, () -> studentService.getStudent(5));
     }
+
+    @Test
+    void shouldDeleteStudent() {
+        injectMocks();
+
+        studentService.deleteStudent(153);
+        then(studentRepository)
+                .should(times(1))
+                .deleteByUserId(153);
+    }
 }

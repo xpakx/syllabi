@@ -10,6 +10,7 @@ import io.github.xpax.syllabi.repo.StudentRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StudentService {
@@ -38,5 +39,10 @@ public class StudentService {
     public StudentWithUserId getStudent(Integer userId) {
         return studentRepository.findByUserId(userId, StudentWithUserId.class)
                 .orElseThrow(() -> new NotFoundException("No student for user with id "+userId+"!"));
+    }
+
+    @Transactional
+    public void deleteStudent(Integer userId) {
+        studentRepository.deleteByUserId(userId);
     }
 }

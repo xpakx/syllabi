@@ -160,4 +160,27 @@ class StudentControllerTest {
                 .body("surname", equalTo("Smith"))
                 .body("user.id", equalTo(5));
     }
+
+    @Test
+    void shouldRespondToDeleteStudentRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/users/{userId}/student", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteStudent() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/users/{userId}/student", 5)
+                .then()
+                .statusCode(OK.value());
+        BDDMockito.then(studentService)
+                .should(times(1))
+                .deleteStudent(5);
+    }
 }

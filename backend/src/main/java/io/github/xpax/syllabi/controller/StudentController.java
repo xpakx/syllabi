@@ -30,4 +30,11 @@ public class StudentController {
     public ResponseEntity<StudentWithUserId> getStudent(@PathVariable Integer userId) {
         return new ResponseEntity<>(studentService.getStudent(userId), HttpStatus.OK);
     }
+
+    @Secured("ROLE_USER_ADMIN")
+    @DeleteMapping("/users/{userId}/student")
+    public ResponseEntity<?> deleteStudent(@PathVariable Integer userId) {
+        studentService.deleteStudent(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
