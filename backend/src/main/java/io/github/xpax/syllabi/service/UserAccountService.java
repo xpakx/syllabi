@@ -1,6 +1,7 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.dto.UserWithoutPassword;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,5 +23,10 @@ public class UserAccountService {
 
     public void deleteUser(Integer userId) {
         userRepository.deleteById(userId);
+    }
+
+    public UserWithoutPassword getUser(Integer userId) {
+        return userRepository.findAllProjectedById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id "+userId+" not found!"));
     }
 }

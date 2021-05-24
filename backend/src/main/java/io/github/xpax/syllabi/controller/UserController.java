@@ -47,4 +47,10 @@ public class UserController {
         userAccountService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Secured("ROLE_USER_ADMIN")
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserWithoutPassword> getUser(@PathVariable Integer userId) {
+        return new ResponseEntity<>(userAccountService.getUser(userId), HttpStatus.OK);
+    }
 }

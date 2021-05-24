@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUsername(String username);
     Page<UserWithoutPassword> findAllProjectedBy(Pageable page);
+    Optional<UserWithoutPassword> findAllProjectedById(Integer id);
 }

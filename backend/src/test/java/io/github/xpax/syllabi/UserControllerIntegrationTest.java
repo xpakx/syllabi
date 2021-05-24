@@ -246,6 +246,16 @@ class UserControllerIntegrationTest {
                 .delete(baseUrl + "/users/{userId}", id)
                 .then()
                 .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .get(baseUrl + "/users/{userId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 
     @Test
@@ -257,6 +267,59 @@ class UserControllerIntegrationTest {
                 .oauth2(tokenFor("admin1"))
                 .when()
                 .delete(baseUrl + "/users/{userId}", 404)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetUserRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/users/{userId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetUserRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/users/{userId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUser() {
+        Integer id = addUsers();
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .get(baseUrl + "/users/{userId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("username", equalTo("user2"));
+    }
+
+    @Test
+    void shouldRespondWith404IfUserNotFound() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .get(baseUrl + "/users/{userId}", 404)
                 .then()
                 .statusCode(NOT_FOUND.value());
     }

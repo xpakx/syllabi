@@ -48,6 +48,7 @@ class UserControllerTest {
     private RoleRequest roleRequest;
     private User userWithAddedRole;
     private Page<UserWithoutPassword> userPage;
+    private UserWithoutPassword user;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -69,6 +70,12 @@ class UserControllerTest {
         List<UserWithoutPassword> userList = new ArrayList<>();
         userList.add(factory.createProjection(UserWithoutPassword.class, userWithAddedRole));
         userPage = new PageImpl<>(userList);
+
+        User user = User.builder()
+                .id(3)
+                .username("user1")
+                .build();
+        this.user = factory.createProjection(UserWithoutPassword.class, user);
     }
 
     private void injectMocks() {
@@ -211,5 +218,29 @@ class UserControllerTest {
         BDDMockito.then(userAccountService)
                 .should(times(1))
                 .deleteUser(3);
+    }
+
+    @Test
+    void shouldRespondToGetUserRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}", 3)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceUser() {
+        BDDMockito.given(userAccountService.getUser(3))
+                .willReturn(user);
+        injectMocks();
+        given()
+                .when()
+                .get("/users/{userId}", 3)
+                .then()
+                .statusCode(OK.value())
+                .body("id", equalTo(3))
+                .body("username", equalTo("user1"));
     }
 }
