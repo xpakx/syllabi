@@ -69,7 +69,17 @@ public class StudentController {
                                                                             @RequestParam Optional<Integer> page,
                                                                             @RequestParam Optional<Integer> size) {
         return new ResponseEntity<>(
-                studentService.getStudents(yearId, page.orElse(0), size.orElse(20)),
+                studentService.getYearStudents(yearId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
+
+    @Secured("ROLE_USER_ADMIN")
+    @GetMapping("/students")
+    public ResponseEntity<Page<StudentWithUserId>> getAllStudents(@RequestParam Optional<Integer> page,
+                                                                  @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                studentService.getAllStudents(page.orElse(0), size.orElse(20)),
                 HttpStatus.OK
         );
     }

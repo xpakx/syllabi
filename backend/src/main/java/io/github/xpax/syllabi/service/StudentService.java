@@ -61,7 +61,11 @@ public class StudentService {
         return studentRepository.findAllStudentByGroupId(groupId, PageRequest.of(page, size));
     }
 
-    public Page<StudentWithUserId> getStudents(Integer yearId, Integer page, Integer size) {
+    public Page<StudentWithUserId> getYearStudents(Integer yearId, Integer page, Integer size) {
         return studentRepository.findAllStudentByYearId(yearId, PageRequest.of(page, size));
+    }
+
+    public Page<StudentWithUserId> getAllStudents(Integer page, Integer size) {
+        return studentRepository.findAllProjectedBy(PageRequest.of(page, size));
     }
 }

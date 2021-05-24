@@ -347,7 +347,7 @@ class StudentControllerTest {
 
         BDDMockito.then(studentService)
                 .should(times(1))
-                .getStudents(13, 2, 15);
+                .getYearStudents(13, 2, 15);
     }
 
     @Test
@@ -361,17 +361,75 @@ class StudentControllerTest {
 
         BDDMockito.then(studentService)
                 .should(times(1))
-                .getStudents(13, 0, 20);
+                .getYearStudents(13, 0, 20);
     }
 
     @Test
     void shouldProducePageOfStudentsFromYear() {
-        BDDMockito.given(studentService.getStudents(anyInt(), anyInt(), anyInt()))
+        BDDMockito.given(studentService.getYearStudents(anyInt(), anyInt(), anyInt()))
                 .willReturn(studentPage);
         injectMocks();
         given()
                 .when()
                 .get("/years/{groupId}/students", 13)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(1))
+                .body("content[0].id", equalTo(1))
+                .body("content[0].user.id", equalTo(5))
+                .body("content[0].name", equalTo("John"))
+                .body("content[0].surname", equalTo("Smith"))
+                .body("numberOfElements", equalTo(1));
+    }
+
+    @Test
+    void shouldRespondToGetAllStudentsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/students")
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetAllStudentsRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 2)
+                .queryParam("size", 15)
+                .when()
+                .get("/students")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(studentService)
+                .should(times(1))
+                .getAllStudents(2, 15);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForGetAllStudentsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/students")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(studentService)
+                .should(times(1))
+                .getAllStudents(0, 20);
+    }
+
+    @Test
+    void shouldProducePageOfAllStudents() {
+        BDDMockito.given(studentService.getAllStudents(anyInt(), anyInt()))
+                .willReturn(studentPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/students")
                 .then()
                 .statusCode(OK.value())
                 .body("content", hasSize(1))

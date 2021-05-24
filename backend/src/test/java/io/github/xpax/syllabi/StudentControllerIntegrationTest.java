@@ -211,6 +211,28 @@ class StudentControllerIntegrationTest {
         return yearId;
     }
 
+    private void addStudents() {
+        List<Student> students = new ArrayList<>();
+        List<User> users =  new ArrayList<>();
+        for(int i = 5; i<30; i++) {
+            User user = User.builder()
+                    .username("user"+i)
+                    .password("password")
+                    .roles(new HashSet<>())
+                    .build();
+            users.add(user);
+            Student student = Student.builder()
+                    .name("Student"+i)
+                    .surname("Student")
+                    .user(user)
+                    .build();
+            students.add(student);
+        }
+
+        userRepository.saveAll(users);
+        studentRepository.saveAll(students);
+    }
+
     @Test
     void shouldRespondWith401ToAddStudentRequestIfUserUnauthorized() {
         given()
@@ -543,6 +565,64 @@ class StudentControllerIntegrationTest {
                 .queryParam("size", 5)
                 .when()
                 .get(baseUrl+ "/years/{yearId}/students", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetAllStudentsRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/students")
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetAllStudentsRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/students")
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithStudentsPageAndDefaultPaginationToGetAllStudentsRequest() {
+        addStudents();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .get(baseUrl + "/students")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithStudentsPageAndCustomPaginationToGetAllStudentsRequest() {
+        addStudents();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl+ "/students")
                 .then()
                 .statusCode(OK.value())
                 .body("content", hasSize(5))

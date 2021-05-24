@@ -173,7 +173,7 @@ class StudentServiceTest {
                 .willReturn(studentPage);
         injectMocks();
 
-        Page<StudentWithUserId> result = studentService.getStudents(5, 0, 20);
+        Page<StudentWithUserId> result = studentService.getYearStudents(5, 0, 20);
 
         ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
         ArgumentCaptor<Integer> integerCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -187,6 +187,27 @@ class StudentServiceTest {
         assertEquals(0, pageRequest.getPageNumber());
         assertEquals(20, pageRequest.getPageSize());
         assertEquals(5, yearId);
+
+        assertThat(result, is(sameInstance(studentPage)));
+    }
+
+    @Test
+    void shouldAskRepositoryForStudents() {
+        given(studentRepository.findAllProjectedBy(any(PageRequest.class)))
+                .willReturn(studentPage);
+        injectMocks();
+
+        Page<StudentWithUserId> result = studentService.getAllStudents(0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+
+        then(studentRepository)
+                .should(times(1))
+                .findAllProjectedBy(pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
 
         assertThat(result, is(sameInstance(studentPage)));
     }
