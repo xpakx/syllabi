@@ -48,6 +48,7 @@ public class ProgramControllerTest {
     private Program addedProgram;
     private Page<CourseForPage> coursePage;
     private ProgramDetails program;
+    private Page<Program> programPage;
 
     @BeforeEach
     void setUp() {
@@ -83,6 +84,24 @@ public class ProgramControllerTest {
         coursePage = new PageImpl<>(courseList);
 
         program = factory.createProjection(ProgramDetails.class, addedProgram);
+
+        Program program1 = Program.builder()
+                .id(0)
+                .name("Cognitive Science")
+                .build();
+        Program program2 = Program.builder()
+                .id(1)
+                .name("Philosophy")
+                .build();
+        Program program3 = Program.builder()
+                .id(2)
+                .name("Computer Science")
+                .build();
+        List<Program> programList = new ArrayList<>();
+        programList.add(program1);
+        programList.add(program2);
+        programList.add(program3);
+        programPage = new PageImpl<>(programList);
     }
 
     private void injectMocks() {
@@ -319,5 +338,65 @@ public class ProgramControllerTest {
                 .body("id", equalTo(17))
                 .body("name", equalTo("Philosophy"))
                 .body("description", equalTo("Philosophy program"));
+    }
+
+    @Test
+    void shouldRespondToAllProgramsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs")
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceListOfPrograms() {
+        BDDMockito.given(programService.getAllPrograms(anyInt(), anyInt()))
+                .willReturn(programPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/programs")
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(3))
+                .body("content[0].id", equalTo(0))
+                .body("content[0].name", equalTo("Cognitive Science"))
+                .body("content[1].id", equalTo(1))
+                .body("content[1].name", equalTo("Philosophy"))
+                .body("content[2].id", equalTo(2))
+                .body("content[2].name", equalTo("Computer Science"))
+                .body("numberOfElements", equalTo(3));
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetProgramsRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/programs")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(programService)
+                .should(times(1))
+                .getAllPrograms(7, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForProgramsRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs")
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(programService)
+                .should(times(1))
+                .getAllPrograms(0, 20);
     }
 }

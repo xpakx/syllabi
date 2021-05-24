@@ -10,6 +10,8 @@ import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,6 +55,10 @@ public class ProgramService {
                 .id(programId)
                 .build();
         return programRepository.save(programToUpdate);
+    }
+
+    public Page<Program> getAllPrograms(Integer page, Integer size) {
+        return programRepository.findAll(PageRequest.of(page, size));
     }
 
     private Institute getInstitute(ProgramRequest programRequest) {

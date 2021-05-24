@@ -64,4 +64,13 @@ public class ProgramController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping
+    public ResponseEntity<Page<Program>> getAllPrograms(@RequestParam Optional<Integer> page,
+                                                        @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                programService.getAllPrograms(page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
 }

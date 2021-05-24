@@ -397,4 +397,49 @@ class ProgramControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("name", equalTo("Cognitive Science"));
     }
+
+    @Test
+    void shouldRespondWith401ToGetAllProgramsRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithProgramsPageAndDefaultPaginationToGetAllProgramsRequest() {
+        addPrograms();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithProgramsPageAndCustomPaginationToGetAllProgramsRequest() {
+        addPrograms();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("numberOfElements", equalTo(5));
+    }
 }

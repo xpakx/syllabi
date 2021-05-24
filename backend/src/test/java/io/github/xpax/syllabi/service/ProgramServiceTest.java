@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
@@ -26,6 +27,7 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -194,5 +196,26 @@ class ProgramServiceTest {
         assertEquals("Philosophy", addedProgram.getName());
         assertNotNull(addedProgram.getId());
         assertEquals(3, addedProgram.getId());
+    }
+
+    @Test
+    void shouldAskRepositoryForPrograms() {
+        given(programRepository.findAll(any(PageRequest.class)))
+                .willReturn(page);
+        injectMocks();
+
+        Page<Program> result = programService.getAllPrograms(0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+
+        then(programRepository)
+                .should(times(1))
+                .findAll(pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+
+        assertThat(result, is(sameInstance(page)));
     }
 }
