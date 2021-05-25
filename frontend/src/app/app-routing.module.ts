@@ -25,6 +25,7 @@ import { EditStudyGroupComponent } from './component/edit-study-group/edit-study
 import { EditTeacherJobComponent } from './component/edit-teacher-job/edit-teacher-job.component';
 import { EditTeacherComponent } from './component/edit-teacher/edit-teacher.component';
 import { LoginComponent } from './component/login/login.component';
+import { NotFoundComponent } from './component/not-found/not-found.component';
 import { RegisterComponent } from './component/register/register.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
 import { ShowAllGroupLiteratureComponent } from './component/show-all-group-literature/show-all-group-literature.component';
@@ -261,6 +262,14 @@ const routes: Routes = [
   {
     path: 'changepassword',
     component: ChangePasswordComponent
+  },
+  {
+    path: '404',
+    component: NotFoundComponent
+  },
+  {
+    path: '**',
+    redirectTo: '/404'
   }
 ];
 
