@@ -31,6 +31,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AddCourseComponent } from './component/add-course/add-course.component';
+import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -44,7 +45,8 @@ export function tokenGetter() {
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    AddCourseComponent
+    AddCourseComponent,
+    AllCoursesComponent
   ],
   imports: [
     BrowserModule,

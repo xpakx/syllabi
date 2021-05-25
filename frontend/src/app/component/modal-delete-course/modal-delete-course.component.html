@@ -1,0 +1,27 @@
+<title mat-dialog-title>
+    Delete course
+</title>
+
+<mat-dialog-content>
+    Do you want to remove course {{name}}?
+
+    
+    <mat-error *ngIf="deletingFailed">
+        <div class='textWithIcon'>
+            <mat-icon>
+                error
+            </mat-icon>
+            <span>Error: {{message}}</span>
+        </div>
+    </mat-error>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
+
+    <button mat-button color="primary" (click)="delete()">
+        <mat-icon>delete</mat-icon>
+        REMOVE
+    </button>
+</mat-dialog-actions>
