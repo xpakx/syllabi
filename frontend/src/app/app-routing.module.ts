@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AddCourseLiteratureComponent } from './component/add-course-literature/add-course-literature.component';
+import { AddCourseTypeComponent } from './component/add-course-type/add-course-type.component';
 import { AddCourseYearComponent } from './component/add-course-year/add-course-year.component';
 import { AddCourseComponent } from './component/add-course/add-course.component';
 import { AddGroupLiteratureComponent } from './component/add-group-literature/add-group-literature.component';
@@ -126,7 +127,11 @@ const routes: Routes = [
   {
     path: 'types',
     component: ShowCourseTypesComponent
-  }
+  },
+  {
+    path: 'types/add',
+    component: AddCourseTypeComponent
+  },
 ];
 
 @NgModule({
