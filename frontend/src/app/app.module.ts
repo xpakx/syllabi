@@ -46,6 +46,7 @@ import { ModalProgramChoiceComponent } from './component/modal-program-choice/mo
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
 import { ModalDeleteCourseLiteratureComponent } from './component/modal-delete-course-literature/modal-delete-course-literature.component';
 import { AddCourseLiteratureComponent } from './component/add-course-literature/add-course-literature.component';
+import { ShowCourseLiteratureComponent } from './component/show-course-literature/show-course-literature.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -74,7 +75,8 @@ export function tokenGetter() {
     ModalProgramChoiceComponent,
     ShowAllCourseLiteratureComponent,
     ModalDeleteCourseLiteratureComponent,
-    AddCourseLiteratureComponent
+    AddCourseLiteratureComponent,
+    ShowCourseLiteratureComponent
   ],
   imports: [
     BrowserModule,

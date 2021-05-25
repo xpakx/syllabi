@@ -1,0 +1,42 @@
+<mat-card *ngIf="literature && course">
+    <mat-card-header>
+        <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+            book
+        </mat-icon>
+        <mat-card-title class='title'>
+            {{literature.title}}
+            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item [routerLink]="'/courses/literature/' + literature.id + '/edit'">
+                    <mat-icon>edit</mat-icon>
+                    Edit
+                </button>
+                <button mat-menu-item (click)="delete(literature.id, literature.title, course.name)">
+                    <mat-icon>delete</mat-icon>
+                    Remove
+                </button>
+            </mat-menu>
+        </mat-card-title>
+        <mat-card-subtitle>{{literature.author}}</mat-card-subtitle>
+
+    </mat-card-header>  
+            
+    <mat-card-content>
+        <p *ngIf="literature.obligatory"><strong>Obligatory</strong></p>
+
+        <p *ngIf="literature.edition">Edition: {{literature.edition}}</p>
+        <p *ngIf="literature.pages">Pages: {{literature.pages}}</p>
+
+        <h2 *ngIf="literature.description">Description</h2>
+        <span *ngIf="literature.description">{{literature.description}}</span>
+        
+        
+    </mat-card-content>
+
+    <mat-card-actions>
+    </mat-card-actions>
+
+
+</mat-card>

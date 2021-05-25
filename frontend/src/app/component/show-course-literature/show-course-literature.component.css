@@ -1,0 +1,12 @@
+.more-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+ }
+
+.circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
