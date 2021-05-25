@@ -1,0 +1,62 @@
+<mat-card *ngIf="institute">
+    <mat-card-header>
+        <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+            work
+        </mat-icon>
+        <mat-card-title class='title'>
+            {{institute.name}}
+            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item [routerLink]="'/institutes/' + institute.id + '/edit'">
+                    <mat-icon>edit</mat-icon>
+                    Edit
+                </button>
+                <button mat-menu-item (click)="delete(institute.id, institute.name)">
+                    <mat-icon>delete</mat-icon>
+                    Remove
+                </button>
+            </mat-menu>
+        </mat-card-title>
+        <mat-card-subtitle>Institute</mat-card-subtitle>
+
+    </mat-card-header>  
+            
+    <mat-card-content>
+
+        <p>Code: {{institute.code}}</p>
+        <p>Url: {{institute.url}}</p>
+        <p>Phone: {{institute.phone}}</p>
+        <p>Address: {{institute.address}}</p>
+        <p *ngIf="institute.parent">Parent: 
+            <button mat-button>{{institute.parent.name}}</button>
+        </p>
+       
+        
+        
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-button color="primary" [routerLink]="'/institutes/' + institute.id + '/courses'">
+            <mat-icon>
+                school
+            </mat-icon>
+            COURSES
+        </button>
+        <button mat-button color="primary" [routerLink]="'/institutes/' + institute.id + '/programs'">
+            <mat-icon>
+                list
+            </mat-icon>
+            PROGRAMS
+        </button>
+        <button mat-button color="primary" [routerLink]="'/institutes/' + institute.id + '/children'">
+            <mat-icon>
+                work
+            </mat-icon>
+            CHILDREN
+        </button>
+    </mat-card-actions>
+
+
+</mat-card>

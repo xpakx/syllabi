@@ -76,6 +76,7 @@ import { ShowProgramCoursesComponent } from './component/show-program-courses/sh
 import { ShowInstitutesComponent } from './component/show-institutes/show-institutes.component';
 import { ModalDeleteInstituteComponent } from './component/modal-delete-institute/modal-delete-institute.component';
 import { AddInstituteComponent } from './component/add-institute/add-institute.component';
+import { ShowInstituteComponent } from './component/show-institute/show-institute.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -134,7 +135,8 @@ export function tokenGetter() {
     ShowProgramCoursesComponent,
     ShowInstitutesComponent,
     ModalDeleteInstituteComponent,
-    AddInstituteComponent
+    AddInstituteComponent,
+    ShowInstituteComponent
   ],
   imports: [
     BrowserModule,

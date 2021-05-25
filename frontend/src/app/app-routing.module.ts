@@ -27,6 +27,7 @@ import { ShowCourseYearsComponent } from './component/show-course-years/show-cou
 import { ShowCourseComponent } from './component/show-course/show-course.component';
 import { ShowGroupLiteratureComponent } from './component/show-group-literature/show-group-literature.component';
 import { ShowGroupStudentsComponent } from './component/show-group-students/show-group-students.component';
+import { ShowInstituteComponent } from './component/show-institute/show-institute.component';
 import { ShowInstitutesComponent } from './component/show-institutes/show-institutes.component';
 import { ShowProgramCoursesComponent } from './component/show-program-courses/show-program-courses.component';
 import { ShowProgramComponent } from './component/show-program/show-program.component';
@@ -171,6 +172,10 @@ const routes: Routes = [
   {
     path: 'institutes/add',
     component: AddInstituteComponent
+  },
+  {
+    path: 'institutes/:id',
+    component: ShowInstituteComponent
   }
 ];
 
