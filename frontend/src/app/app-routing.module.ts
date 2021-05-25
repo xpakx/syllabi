@@ -14,6 +14,7 @@ import { ShowCourseLiteratureComponent } from './component/show-course-literatur
 import { ShowCourseYearComponent } from './component/show-course-year/show-course-year.component';
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
 import { ShowCourseComponent } from './component/show-course/show-course.component';
+import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
 
 const routes: Routes = [
   {
@@ -71,6 +72,10 @@ const routes: Routes = [
   {
     path: 'years/:id',
     component: ShowCourseYearComponent
+  },
+  {
+    path: 'years/:id/groups',
+    component: ShowStudyGroupsComponent
   }
 ];
 

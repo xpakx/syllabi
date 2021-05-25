@@ -1,0 +1,169 @@
+<h2>Study Groups for course {{parentName}} {{parentDate}}</h2> 
+
+<button mat-button [routerLink]="'/years/'+ parentId">
+    <mat-icon>arrow_left</mat-icon>
+    Back to year
+</button>
+
+<button mat-button [routerLink]="'/years/'+ parentId +'/groups/add'">
+    <mat-icon>add_circle</mat-icon>
+    Add new group 
+</button>
+<div *ngIf="message">
+    <div>Error</div>
+</div>
+
+
+<div class="pageNav">
+    <span>
+        <button mat-button color="secondary" (click)="getPage(0)" *ngIf="!first">
+            First
+        </button>
+        <button mat-button color="secondary" [disabled]="true" (click)="getPage(0)" *ngIf="first">
+            First
+        </button>
+    </span>
+    <span fxShow="false" fxShow.gt-sm>
+        <button mat-button color="secondary" (click)="getPage(page-1)" *ngIf="!first">
+            « Prev
+        </button>
+        <button mat-button color="secondary" [disabled]="true" (click)="getPage(page-1)" *ngIf="first">
+            « Prev
+        </button>
+    </span>
+    <span fxHide = "false" fxHide.gt-sm>
+        <button mat-icon-button color="secondary" (click)="getPage(page-1)" *ngIf="!first">
+            «
+        </button>
+        <button mat-icon-button color="secondary" [disabled]="true" (click)="getPage(page-1)" *ngIf="first">
+            «
+        </button>
+    </span>
+
+
+    <span *ngFor="let num of getPagesFull()" fxShow="false" fxShow.gt-sm>
+        <button mat-button color="primary" (click)="getPage(num)" *ngIf="num!=page">
+            {{num+1}}
+        </button>
+        <button mat-raised-button color="primary" (click)="getPage(page)" *ngIf="num==page">
+            {{page+1}}
+        </button>
+    </span>
+
+    <span *ngFor="let num of getPagesMin()" fxHide = "false" fxHide.gt-sm>
+        <button mat-icon-button color="primary" (click)="getPage(num)" *ngIf="num!=page">
+            {{num+1}}
+        </button>
+        <button mat-icon-button color="accent" (click)="getPage(page)" *ngIf="num==page">
+            {{page+1}}
+        </button>
+    </span>
+
+    <span fxShow="false" fxShow.gt-sm>
+        <button mat-button color="secondary" (click)="getPage(page+1)" *ngIf="!last">
+            Next »
+        </button>
+        <button mat-button color="secondary" [disabled]="true" (click)="getPage(page+1)" *ngIf="last">
+            Next »
+        </button>
+    </span> 
+    <span fxHide = "false" fxHide.gt-sm>
+        <button mat-icon-button color="secondary" (click)="getPage(page+1)" *ngIf="!last">
+            »
+        </button>
+        <button mat-icon-button color="secondary" [disabled]="true" (click)="getPage(page+1)" *ngIf="last">
+            »
+        </button>
+    </span>
+
+    <span>
+        <button mat-button color="secondary" (click)="getPage(totalPages-1)" *ngIf="!last">
+            Last
+        </button>
+        <button mat-button color="secondary" [disabled]="true" (click)="getPage(totalPages-1)" *ngIf="last">
+            Last
+        </button>
+    </span>
+</div>
+
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="groups.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let group of groups">
+        <mat-card class="mat-card-grid">
+            <mat-card-header>
+                <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+                    people
+                </mat-icon>
+                <mat-card-title class='title'>
+                    Group {{group.name}}
+                    <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" xPosition="before">
+						<button mat-menu-item [routerLink]="'/groups/' + group.id + '/edit'">
+							<mat-icon>edit</mat-icon>
+							Edit
+						</button>
+						<button mat-menu-item (click)="delete(group.id, group.name)">
+							<mat-icon>delete</mat-icon>
+							Remove
+						</button>
+					</mat-menu>
+                </mat-card-title>
+                <mat-card-subtitle>{{group.type.name}}</mat-card-subtitle>
+                
+                
+            </mat-card-header>  
+            
+            <mat-card-content>
+                <div *ngIf="group.ongoing">Ongoing</div>
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button mat-button color="primary" [routerLink]="'/groups/' + group.id">DETAILS</button>
+            </mat-card-actions>
+
+        </mat-card>
+    </mat-grid-tile>
+</mat-grid-list>
+
+<div fxHide = "false" fxHide.gt-sm>
+    <mat-card *ngFor="let group of groups">
+        <mat-card-header>
+            <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+                people
+            </mat-icon>
+            <mat-card-title class='title'>
+                Group {{group.id}}
+                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" xPosition="before">
+                    <button mat-menu-item [routerLink]="'/groups/' + group.id + '/edit'">
+                        <mat-icon>edit</mat-icon>
+                        Edit
+                    </button>
+                    <button mat-menu-item (click)="delete(group.id, group.name)">
+                        <mat-icon>delete</mat-icon>
+                        Remove
+                    </button>
+                </mat-menu>
+            </mat-card-title>
+            <mat-card-subtitle>{{group.type.name}}</mat-card-subtitle>
+            
+            
+        </mat-card-header>  
+        
+        <mat-card-content>
+            <div *ngIf="group.ongoing">Ongoing</div>
+        </mat-card-content>
+
+        <mat-card-actions>
+            <button mat-button color="primary" [routerLink]="'/groups/' + group.id">DETAILS</button>
+        </mat-card-actions>
+
+    </mat-card>
+</div>
+
+<div *ngIf="groups.length == 0">
+    <div>No groups for this year!</div>
+</div>
