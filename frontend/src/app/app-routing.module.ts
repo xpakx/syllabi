@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AddCourseLiteratureComponent } from './component/add-course-literature/add-course-literature.component';
 import { AddCourseYearComponent } from './component/add-course-year/add-course-year.component';
 import { AddCourseComponent } from './component/add-course/add-course.component';
+import { AddStudyGroupComponent } from './component/add-study-group/add-study-group.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
 import { EditCourseYearComponent } from './component/edit-course-year/edit-course-year.component';
@@ -76,6 +77,10 @@ const routes: Routes = [
   {
     path: 'years/:id/groups',
     component: ShowStudyGroupsComponent
+  },
+  {
+    path: 'years/:id/groups/add',
+    component: AddStudyGroupComponent
   }
 ];
 

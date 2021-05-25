@@ -1,0 +1,43 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="addStudyGroup()">
+            <h2>Add new study group for course {{parentName}}</h2>
+            <mat-error *ngIf="loginInvalid">
+                Error: {{message}}
+            </mat-error>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Name" formControlName="name" required>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <textarea matInput placeholder="Description" formControlName="description">
+                </textarea>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Limit" formControlName="studentLimit" required>
+            </mat-form-field>
+            
+            <mat-list>
+                <h3 mat-subheader>Ongoing</h3>
+                <mat-checkbox formControlName="ongoing">Ongoing</mat-checkbox>
+            </mat-list>
+
+
+            <mat-list>
+                <h3 mat-subheader>Teachers</h3>
+
+                <button mat-button type="button" (click)="addTeachers()">Add teachers</button>
+                <div *ngFor="let teacher of teachers">
+                    {{teacher.name}} {{teacher.surname}}
+                </div>
+            </mat-list>
+
+            <mat-list>
+                <h3 mat-subheader>Type *</h3>
+                <button mat-button type="button" (click)="addType()">{{typeName}}</button>
+            </mat-list>
+
+            <button mat-raised-button color="secondary">Add</button>
+        </form>
+    </mat-card-content>
+</mat-card>    
+
