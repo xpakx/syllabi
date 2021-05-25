@@ -97,7 +97,6 @@ import { AddUserRoleComponent } from './component/add-user-role/add-user-role.co
 import { ShowUserCoursesComponent } from './component/show-user-courses/show-user-courses.component';
 import { ChangePasswordComponent } from './component/change-password/change-password.component';
 import { NotFoundComponent } from './component/not-found/not-found.component';
-import { PageableComponent } from './component/pageable/pageable.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -177,8 +176,7 @@ export function tokenGetter() {
     AddUserRoleComponent,
     ShowUserCoursesComponent,
     ChangePasswordComponent,
-    NotFoundComponent,
-    PageableComponent
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,

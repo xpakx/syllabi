@@ -1,12 +1,6 @@
-import { Component } from '@angular/core';
 import { Page } from 'src/app/entity/page';
 
-@Component({
-  selector: 'app-pageable',
-  templateUrl: './pageable.component.html',
-  styleUrls: ['./pageable.component.css']
-})
-export class PageableComponent<T> {
+export abstract class PageableComponent<T> {
   message: string = '';
   totalPages: number = 0;
   page: number = 0;
