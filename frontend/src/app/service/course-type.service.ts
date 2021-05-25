@@ -10,32 +10,32 @@ import { Page } from '../entity/page';
   providedIn: 'root'
 })
 export class CourseTypeService {
-  private apiServerUrl = environment.apiServerUrl;
+  private url = environment.apiServerUrl + "/types";
 
   constructor(private http: HttpClient) { }
 
   public getAllCourseTypes(): Observable<Page<CourseType>> {
-    return this.http.get<Page<CourseType>>(`${this.apiServerUrl}/types`);
+    return this.http.get<Page<CourseType>>(`${this.url}`);
   }
 
   public getAllCourseTypesForPage(page: number): Observable<Page<CourseType>> {
-    return this.http.get<Page<CourseType>>(`${this.apiServerUrl}/types?page=${page}`);
+    return this.http.get<Page<CourseType>>(`${this.url}?page=${page}`);
   }
 
   public addNewCourseType(type: CourseTypeRequest): Observable<CourseType> {
-    return this.http.post<CourseType>(`${this.apiServerUrl}/types`, type);
+    return this.http.post<CourseType>(`${this.url}`, type);
   }
 
   public getCourseTypeById(id: number): Observable<CourseType> {
-    return this.http.get<CourseType>(`${this.apiServerUrl}/types/${id}`);
+    return this.http.get<CourseType>(`${this.url}/${id}`);
   }
 
   public deleteCourseType(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiServerUrl}/types/${id}`);
+    return this.http.delete<any>(`${this.url}/${id}`);
   }
 
   public editCourseType(id: number, type: CourseTypeRequest): Observable<CourseType> {
-    return this.http.put<CourseType>(`${this.apiServerUrl}/types/${id}`, type);
+    return this.http.put<CourseType>(`${this.url}/${id}`, type);
   }
 
 }
