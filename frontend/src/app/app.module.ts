@@ -43,6 +43,8 @@ import { EditCourseYearComponent } from './component/edit-course-year/edit-cours
 import { EditCourseComponent } from './component/edit-course/edit-course.component';
 import { ModalPrerequisiteChoiceComponent } from './component/modal-prerequisite-choice/modal-prerequisite-choice.component';
 import { ModalProgramChoiceComponent } from './component/modal-program-choice/modal-program-choice.component';
+import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
+import { ModalDeleteCourseLiteratureComponent } from './component/modal-delete-course-literature/modal-delete-course-literature.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -68,7 +70,9 @@ export function tokenGetter() {
     EditCourseYearComponent,
     EditCourseComponent,
     ModalPrerequisiteChoiceComponent,
-    ModalProgramChoiceComponent
+    ModalProgramChoiceComponent,
+    ShowAllCourseLiteratureComponent,
+    ModalDeleteCourseLiteratureComponent
   ],
   imports: [
     BrowserModule,
