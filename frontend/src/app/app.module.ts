@@ -34,6 +34,7 @@ import { AddCourseComponent } from './component/add-course/add-course.component'
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { ModalOrganizerChoiceComponent } from './component/modal-organizer-choice/modal-organizer-choice.component';
 import { ModalDeleteCourseComponent } from './component/modal-delete-course/modal-delete-course.component';
+import { ShowCourseComponent } from './component/show-course/show-course.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -50,7 +51,8 @@ export function tokenGetter() {
     AddCourseComponent,
     AllCoursesComponent,
     ModalOrganizerChoiceComponent,
-    ModalDeleteCourseComponent
+    ModalDeleteCourseComponent,
+    ShowCourseComponent
   ],
   imports: [
     BrowserModule,
