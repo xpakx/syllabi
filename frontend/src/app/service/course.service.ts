@@ -9,7 +9,6 @@ import { Page } from '../entity/page';
 import { CourseYearForPage } from '../entity/course-year-for-page';
 import { CourseEdit } from '../entity/course-edit';
 import { CourseYear } from '../entity/course-year';
-import { CourseYearDetails } from '../entity/course-year-details';
 import { CourseYearRequest } from '../entity/course-year-request';
 import { CourseSummary } from '../entity/course-summary';
 
