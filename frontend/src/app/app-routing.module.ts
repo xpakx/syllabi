@@ -5,6 +5,7 @@ import { AddCourseTypeComponent } from './component/add-course-type/add-course-t
 import { AddCourseYearComponent } from './component/add-course-year/add-course-year.component';
 import { AddCourseComponent } from './component/add-course/add-course.component';
 import { AddGroupLiteratureComponent } from './component/add-group-literature/add-group-literature.component';
+import { AddInstituteComponent } from './component/add-institute/add-institute.component';
 import { AddProgramComponent } from './component/add-program/add-program.component';
 import { AddStudyGroupComponent } from './component/add-study-group/add-study-group.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
@@ -166,6 +167,10 @@ const routes: Routes = [
   {
     path: 'institutes',
     component: ShowInstitutesComponent
+  },
+  {
+    path: 'institutes/add',
+    component: AddInstituteComponent
   }
 ];
 
