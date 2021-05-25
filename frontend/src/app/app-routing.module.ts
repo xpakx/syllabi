@@ -18,6 +18,7 @@ import { ShowCourseLiteratureComponent } from './component/show-course-literatur
 import { ShowCourseYearComponent } from './component/show-course-year/show-course-year.component';
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
 import { ShowCourseComponent } from './component/show-course/show-course.component';
+import { ShowGroupLiteratureComponent } from './component/show-group-literature/show-group-literature.component';
 import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
@@ -106,6 +107,10 @@ const routes: Routes = [
   {
     path: 'groups/:id/literature/add',
     component: AddGroupLiteratureComponent
+  },
+  {
+    path: 'groups/literature/:id',
+    component: ShowGroupLiteratureComponent
   }
 ];
 
