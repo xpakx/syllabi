@@ -12,6 +12,7 @@ import { AddStudyGroupComponent } from './component/add-study-group/add-study-gr
 import { AddTeacherComponent } from './component/add-teacher/add-teacher.component';
 import { AddUserRoleComponent } from './component/add-user-role/add-user-role.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
+import { ChangePasswordComponent } from './component/change-password/change-password.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
 import { EditCourseTypeComponent } from './component/edit-course-type/edit-course-type.component';
 import { EditCourseYearComponent } from './component/edit-course-year/edit-course-year.component';
@@ -256,6 +257,10 @@ const routes: Routes = [
   {
     path: 'users/:id/courses',
     component: ShowUserCoursesComponent
+  },
+  {
+    path: 'changepassword',
+    component: ChangePasswordComponent
   }
 ];
 

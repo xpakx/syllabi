@@ -95,6 +95,7 @@ import { ModalUserDeleteComponent } from './component/modal-user-delete/modal-us
 import { ShowUserComponent } from './component/show-user/show-user.component';
 import { AddUserRoleComponent } from './component/add-user-role/add-user-role.component';
 import { ShowUserCoursesComponent } from './component/show-user-courses/show-user-courses.component';
+import { ChangePasswordComponent } from './component/change-password/change-password.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -172,7 +173,8 @@ export function tokenGetter() {
     ModalUserDeleteComponent,
     ShowUserComponent,
     AddUserRoleComponent,
-    ShowUserCoursesComponent
+    ShowUserCoursesComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
