@@ -70,6 +70,7 @@ import { EditCourseTypeComponent } from './component/edit-course-type/edit-cours
 import { ShowProgramsComponent } from './component/show-programs/show-programs.component';
 import { ModalProgramDeleteComponent } from './component/modal-program-delete/modal-program-delete.component';
 import { AddProgramComponent } from './component/add-program/add-program.component';
+import { ShowProgramComponent } from './component/show-program/show-program.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -122,7 +123,8 @@ export function tokenGetter() {
     EditCourseTypeComponent,
     ShowProgramsComponent,
     ModalProgramDeleteComponent,
-    AddProgramComponent
+    AddProgramComponent,
+    ShowProgramComponent
   ],
   imports: [
     BrowserModule,

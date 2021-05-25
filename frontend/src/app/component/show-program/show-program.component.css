@@ -1,0 +1,18 @@
+.more-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+ }
+
+.circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+mat-card-actions {
+    display: flex;
+    align-items: right;
+    justify-content: right;
+}
