@@ -39,6 +39,7 @@ import { ShowCourseYearsComponent } from './component/show-course-years/show-cou
 import { ModalDeleteCourseYearComponent } from './component/modal-delete-course-year/modal-delete-course-year.component';
 import { AddCourseYearComponent } from './component/add-course-year/add-course-year.component';
 import { ModalCoordinatorsChoiceComponent } from './component/modal-coordinators-choice/modal-coordinators-choice.component';
+import { EditCourseYearComponent } from './component/edit-course-year/edit-course-year.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -60,7 +61,8 @@ export function tokenGetter() {
     ShowCourseYearsComponent,
     ModalDeleteCourseYearComponent,
     AddCourseYearComponent,
-    ModalCoordinatorsChoiceComponent
+    ModalCoordinatorsChoiceComponent,
+    EditCourseYearComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,53 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="editCourseYear()" *ngIf="year">
+            <h2>Edit course year for {{year.parent.name}}</h2>
+            <mat-error *ngIf="error">
+                Error: {{message}}
+            </mat-error>
+            <mat-form-field class="full-width-input">
+                <textarea matInput placeholder="Description" formControlName="description">
+                </textarea>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <textarea matInput placeholder="Assesment Rules" formControlName="assessmentRules">
+                </textarea>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <textarea matInput placeholder="Commentary" formControlName="commentary">
+                </textarea>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Choose a start date</mat-label>
+                <input matInput [matDatepicker]="pickerStart" formControlName="startDate">
+                <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                <mat-datepicker #pickerStart></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Choose an end date</mat-label>
+                <input matInput [matDatepicker]="pickerEnd" formControlName="endDate">
+                <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerEnd></mat-datepicker>
+            </mat-form-field>
+            
+            <div>
+                <button mat-button type="button" class="choice" (click)="addCoordinators()">
+                    <span>Add coordinators</span>
+                    <mat-icon>
+                        add_task
+                    </mat-icon>
+                </button>
+
+                <div *ngFor="let teacher of coordinators">
+                    {{teacher.name}} {{teacher.surname}}
+                </div>
+       
+            </div>
+
+            <button mat-raised-button color="secondary">Edit</button>
+        </form>
+    </mat-card-content>
+</mat-card>    
+
