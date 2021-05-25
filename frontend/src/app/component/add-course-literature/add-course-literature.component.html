@@ -1,0 +1,32 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="addLiterature()">
+            <h2>Add new literature</h2>
+            <mat-error *ngIf="loginInvalid">
+                Error: {{message}}
+            </mat-error>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Title" formControlName="title" required>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Author" formControlName="author" required>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Pages" formControlName="pages">
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Edition" formControlName="edition">
+            </mat-form-field>
+            
+            
+            <mat-form-field class="full-width-input">
+                <textarea matInput placeholder="Description" formControlName="description">
+                </textarea>
+            </mat-form-field>
+            
+            <mat-checkbox formControlName="obligatory"> Obligatory</mat-checkbox>
+            <button mat-raised-button color="secondary">Add</button>
+        </form>
+    </mat-card-content>
+</mat-card>    
+
