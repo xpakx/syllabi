@@ -1,0 +1,17 @@
+<title mat-dialog-title>
+    Delete course type
+</title>
+
+<mat-dialog-content>
+    Do you want to remove course type {{name}}?
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
+
+    <button mat-button color="primary" (click)="delete()">
+        <mat-icon>delete</mat-icon>
+        REMOVE
+    </button>
+</mat-dialog-actions>

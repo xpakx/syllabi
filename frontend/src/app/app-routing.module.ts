@@ -16,6 +16,7 @@ import { RegisterComponent } from './component/register/register.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
 import { ShowAllGroupLiteratureComponent } from './component/show-all-group-literature/show-all-group-literature.component';
 import { ShowCourseLiteratureComponent } from './component/show-course-literature/show-course-literature.component';
+import { ShowCourseTypesComponent } from './component/show-course-types/show-course-types.component';
 import { ShowCourseYearComponent } from './component/show-course-year/show-course-year.component';
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
 import { ShowCourseComponent } from './component/show-course/show-course.component';
@@ -121,6 +122,10 @@ const routes: Routes = [
   {
     path: 'groups/:id/students',
     component: ShowGroupStudentsComponent
+  },
+  {
+    path: 'types',
+    component: ShowCourseTypesComponent
   }
 ];
 
