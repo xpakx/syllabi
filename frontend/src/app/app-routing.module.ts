@@ -24,6 +24,7 @@ import { ShowCourseYearsComponent } from './component/show-course-years/show-cou
 import { ShowCourseComponent } from './component/show-course/show-course.component';
 import { ShowGroupLiteratureComponent } from './component/show-group-literature/show-group-literature.component';
 import { ShowGroupStudentsComponent } from './component/show-group-students/show-group-students.component';
+import { ShowProgramsComponent } from './component/show-programs/show-programs.component';
 import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
@@ -136,6 +137,10 @@ const routes: Routes = [
   {
     path: 'types/:id/edit',
     component: EditCourseTypeComponent
+  },
+  {
+    path: 'programs',
+    component: ShowProgramsComponent
   }
 ];
 
