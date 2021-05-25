@@ -44,6 +44,7 @@ import { ShowProgramsComponent } from './component/show-programs/show-programs.c
 import { ShowStudentComponent } from './component/show-student/show-student.component';
 import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
+import { ShowTeacherComponent } from './component/show-teacher/show-teacher.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
 
 const routes: Routes = [
@@ -226,6 +227,10 @@ const routes: Routes = [
   {
     path: 'users/:id/teacher/job/edit',
     component: EditTeacherJobComponent
+  },
+  {
+    path: 'users/:id/teacher',
+    component: ShowTeacherComponent
   }
 ];
 
