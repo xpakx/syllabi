@@ -93,6 +93,7 @@ import { ShowTeachersComponent } from './component/show-teachers/show-teachers.c
 import { ShowUsersComponent } from './component/show-users/show-users.component';
 import { ModalUserDeleteComponent } from './component/modal-user-delete/modal-user-delete.component';
 import { ShowUserComponent } from './component/show-user/show-user.component';
+import { AddUserRoleComponent } from './component/add-user-role/add-user-role.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -168,7 +169,8 @@ export function tokenGetter() {
     ShowTeachersComponent,
     ShowUsersComponent,
     ModalUserDeleteComponent,
-    ShowUserComponent
+    ShowUserComponent,
+    AddUserRoleComponent
   ],
   imports: [
     BrowserModule,
