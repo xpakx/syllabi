@@ -4,6 +4,7 @@ import { AddCourseComponent } from './component/add-course/add-course.component'
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
+import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
 import { ShowCourseComponent } from './component/show-course/show-course.component';
 
 const routes: Routes = [
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'courses/:id',
     component: ShowCourseComponent
+  },
+  {
+    path: 'courses/:id/years',
+    component: ShowCourseYearsComponent
   }
 ];
 
