@@ -11,12 +11,13 @@ import { CourseEdit } from '../entity/course-edit';
 import { CourseYear } from '../entity/course-year';
 import { CourseYearRequest } from '../entity/course-year-request';
 import { CourseSummary } from '../entity/course-summary';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
-  private apiServerUrl = 'http://192.168.1.204:8080';
+  private apiServerUrl = environment.apiServerUrl;
 
   constructor(private http: HttpClient) { }
 

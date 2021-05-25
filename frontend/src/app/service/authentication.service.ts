@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { AuthenticationToken } from '../entity/authentication-token';
 import { AuthenticationRequest } from '../entity/authentication-request';
 import { RegistrationRequest } from '../entity/registration-request';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private apiServerUrl = 'http://192.168.1.204:8080';
+  private apiServerUrl = environment.apiServerUrl;
 
   constructor(private http: HttpClient) { }
 
