@@ -28,6 +28,7 @@ import { ShowCourseYearsComponent } from './component/show-course-years/show-cou
 import { ShowCourseComponent } from './component/show-course/show-course.component';
 import { ShowGroupLiteratureComponent } from './component/show-group-literature/show-group-literature.component';
 import { ShowGroupStudentsComponent } from './component/show-group-students/show-group-students.component';
+import { ShowInstituteChildrenComponent } from './component/show-institute-children/show-institute-children.component';
 import { ShowInstituteCoursesComponent } from './component/show-institute-courses/show-institute-courses.component';
 import { ShowInstituteProgramsComponent } from './component/show-institute-programs/show-institute-programs.component';
 import { ShowInstituteComponent } from './component/show-institute/show-institute.component';
@@ -191,6 +192,10 @@ const routes: Routes = [
   {
     path: 'institutes/:id/programs',
     component: ShowInstituteProgramsComponent
+  },
+  {
+    path: 'institutes/:id/children',
+    component: ShowInstituteChildrenComponent
   }
 ];
 
