@@ -85,6 +85,7 @@ import { ShowStudentComponent } from './component/show-student/show-student.comp
 import { AddStudentComponent } from './component/add-student/add-student.component';
 import { EditStudentComponent } from './component/edit-student/edit-student.component';
 import { AddTeacherComponent } from './component/add-teacher/add-teacher.component';
+import { EditTeacherComponent } from './component/edit-teacher/edit-teacher.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -152,7 +153,8 @@ export function tokenGetter() {
     ShowStudentComponent,
     AddStudentComponent,
     EditStudentComponent,
-    AddTeacherComponent
+    AddTeacherComponent,
+    EditTeacherComponent
   ],
   imports: [
     BrowserModule,
