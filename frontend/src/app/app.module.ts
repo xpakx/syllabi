@@ -55,6 +55,7 @@ import { AddStudyGroupComponent } from './component/add-study-group/add-study-gr
 import { ModalCourseTypeChoiceComponent } from './component/modal-course-type-choice/modal-course-type-choice.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
 import { ModalStudentDeleteComponent } from './component/modal-student-delete/modal-student-delete.component';
+import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -92,7 +93,8 @@ export function tokenGetter() {
     AddStudyGroupComponent,
     ModalCourseTypeChoiceComponent,
     ShowYearStudentsComponent,
-    ModalStudentDeleteComponent
+    ModalStudentDeleteComponent,
+    ShowStudyGroupComponent
   ],
   imports: [
     BrowserModule,
