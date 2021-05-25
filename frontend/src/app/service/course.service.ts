@@ -26,7 +26,7 @@ export class CourseService {
   }
 
   public getAllCourses(): Observable<Page<CourseForPage>> {
-    return this.http.get<Page<CourseForPage>>(`${this.url}/all`);
+    return this.http.get<Page<CourseForPage>>(`${this.url}`);
   }
 
   public getAllCoursesForPage(page: number): Observable<Page<CourseForPage>> {
