@@ -57,6 +57,8 @@ import { ShowYearStudentsComponent } from './component/show-year-students/show-y
 import { ModalStudentDeleteComponent } from './component/modal-student-delete/modal-student-delete.component';
 import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
 import { EditStudyGroupComponent } from './component/edit-study-group/edit-study-group.component';
+import { ShowAllGroupLiteratureComponent } from './component/show-all-group-literature/show-all-group-literature.component';
+import { ModalDeleteGroupLiteratureComponent } from './component/modal-delete-group-literature/modal-delete-group-literature.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -96,7 +98,9 @@ export function tokenGetter() {
     ShowYearStudentsComponent,
     ModalStudentDeleteComponent,
     ShowStudyGroupComponent,
-    EditStudyGroupComponent
+    EditStudyGroupComponent,
+    ShowAllGroupLiteratureComponent,
+    ModalDeleteGroupLiteratureComponent
   ],
   imports: [
     BrowserModule,

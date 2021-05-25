@@ -12,6 +12,7 @@ import { EditStudyGroupComponent } from './component/edit-study-group/edit-study
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
+import { ShowAllGroupLiteratureComponent } from './component/show-all-group-literature/show-all-group-literature.component';
 import { ShowCourseLiteratureComponent } from './component/show-course-literature/show-course-literature.component';
 import { ShowCourseYearComponent } from './component/show-course-year/show-course-year.component';
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
@@ -96,6 +97,10 @@ const routes: Routes = [
   {
     path: 'groups/:id/edit',
     component: EditStudyGroupComponent
+  },
+  {
+    path: 'groups/:id/literature',
+    component: ShowAllGroupLiteratureComponent
   }
 ];
 
