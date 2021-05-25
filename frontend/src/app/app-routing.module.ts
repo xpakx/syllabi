@@ -9,6 +9,7 @@ import { AddInstituteComponent } from './component/add-institute/add-institute.c
 import { AddProgramComponent } from './component/add-program/add-program.component';
 import { AddStudentComponent } from './component/add-student/add-student.component';
 import { AddStudyGroupComponent } from './component/add-study-group/add-study-group.component';
+import { AddTeacherComponent } from './component/add-teacher/add-teacher.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
 import { EditCourseTypeComponent } from './component/edit-course-type/edit-course-type.component';
@@ -211,6 +212,10 @@ const routes: Routes = [
   {
     path: 'users/:id/student/edit',
     component: EditStudentComponent
+  },
+  {
+    path: 'users/:id/teacher/add',
+    component: AddTeacherComponent
   }
 ];
 
