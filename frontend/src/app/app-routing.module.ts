@@ -8,6 +8,7 @@ import { AllCoursesComponent } from './component/all-courses/all-courses.compone
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
 import { EditCourseYearComponent } from './component/edit-course-year/edit-course-year.component';
 import { EditCourseComponent } from './component/edit-course/edit-course.component';
+import { EditStudyGroupComponent } from './component/edit-study-group/edit-study-group.component';
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
@@ -91,6 +92,10 @@ const routes: Routes = [
   {
     path: 'groups/:id',
     component: ShowStudyGroupComponent
+  },
+  {
+    path: 'groups/:id/edit',
+    component: EditStudyGroupComponent
   }
 ];
 
