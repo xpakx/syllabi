@@ -59,6 +59,7 @@ import { ShowStudyGroupComponent } from './component/show-study-group/show-study
 import { EditStudyGroupComponent } from './component/edit-study-group/edit-study-group.component';
 import { ShowAllGroupLiteratureComponent } from './component/show-all-group-literature/show-all-group-literature.component';
 import { ModalDeleteGroupLiteratureComponent } from './component/modal-delete-group-literature/modal-delete-group-literature.component';
+import { AddGroupLiteratureComponent } from './component/add-group-literature/add-group-literature.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -100,7 +101,8 @@ export function tokenGetter() {
     ShowStudyGroupComponent,
     EditStudyGroupComponent,
     ShowAllGroupLiteratureComponent,
-    ModalDeleteGroupLiteratureComponent
+    ModalDeleteGroupLiteratureComponent,
+    AddGroupLiteratureComponent
   ],
   imports: [
     BrowserModule,

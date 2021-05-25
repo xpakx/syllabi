@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AddCourseLiteratureComponent } from './component/add-course-literature/add-course-literature.component';
 import { AddCourseYearComponent } from './component/add-course-year/add-course-year.component';
 import { AddCourseComponent } from './component/add-course/add-course.component';
+import { AddGroupLiteratureComponent } from './component/add-group-literature/add-group-literature.component';
 import { AddStudyGroupComponent } from './component/add-study-group/add-study-group.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
@@ -101,6 +102,10 @@ const routes: Routes = [
   {
     path: 'groups/:id/literature',
     component: ShowAllGroupLiteratureComponent
+  },
+  {
+    path: 'groups/:id/literature/add',
+    component: AddGroupLiteratureComponent
   }
 ];
 
