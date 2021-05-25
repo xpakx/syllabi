@@ -47,6 +47,7 @@ import { ShowStudyGroupComponent } from './component/show-study-group/show-study
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
 import { ShowTeacherComponent } from './component/show-teacher/show-teacher.component';
 import { ShowTeachersComponent } from './component/show-teachers/show-teachers.component';
+import { ShowUserCoursesComponent } from './component/show-user-courses/show-user-courses.component';
 import { ShowUserComponent } from './component/show-user/show-user.component';
 import { ShowUsersComponent } from './component/show-users/show-users.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
@@ -251,6 +252,10 @@ const routes: Routes = [
   {
     path: 'users/:id/role/add',
     component: AddUserRoleComponent
+  },
+  {
+    path: 'users/:id/courses',
+    component: ShowUserCoursesComponent
   }
 ];
 
