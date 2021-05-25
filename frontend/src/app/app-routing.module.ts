@@ -7,6 +7,7 @@ import { AddCourseComponent } from './component/add-course/add-course.component'
 import { AddGroupLiteratureComponent } from './component/add-group-literature/add-group-literature.component';
 import { AddInstituteComponent } from './component/add-institute/add-institute.component';
 import { AddProgramComponent } from './component/add-program/add-program.component';
+import { AddStudentComponent } from './component/add-student/add-student.component';
 import { AddStudyGroupComponent } from './component/add-study-group/add-study-group.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
@@ -36,6 +37,7 @@ import { ShowInstitutesComponent } from './component/show-institutes/show-instit
 import { ShowProgramCoursesComponent } from './component/show-program-courses/show-program-courses.component';
 import { ShowProgramComponent } from './component/show-program/show-program.component';
 import { ShowProgramsComponent } from './component/show-programs/show-programs.component';
+import { ShowStudentComponent } from './component/show-student/show-student.component';
 import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
@@ -196,6 +198,14 @@ const routes: Routes = [
   {
     path: 'institutes/:id/children',
     component: ShowInstituteChildrenComponent
+  },
+  {
+    path: 'users/:id/student',
+    component: ShowStudentComponent
+  },
+  {
+    path: 'users/:id/student/add',
+    component: AddStudentComponent
   }
 ];
 
