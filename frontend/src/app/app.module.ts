@@ -66,6 +66,7 @@ import { ShowGroupStudentsComponent } from './component/show-group-students/show
 import { ShowCourseTypesComponent } from './component/show-course-types/show-course-types.component';
 import { ModalDeleteCourseTypeComponent } from './component/modal-delete-course-type/modal-delete-course-type.component';
 import { AddCourseTypeComponent } from './component/add-course-type/add-course-type.component';
+import { EditCourseTypeComponent } from './component/edit-course-type/edit-course-type.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -114,7 +115,8 @@ export function tokenGetter() {
     ShowGroupStudentsComponent,
     ShowCourseTypesComponent,
     ModalDeleteCourseTypeComponent,
-    AddCourseTypeComponent
+    AddCourseTypeComponent,
+    EditCourseTypeComponent
   ],
   imports: [
     BrowserModule,

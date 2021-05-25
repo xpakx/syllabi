@@ -8,6 +8,7 @@ import { AddGroupLiteratureComponent } from './component/add-group-literature/ad
 import { AddStudyGroupComponent } from './component/add-study-group/add-study-group.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
+import { EditCourseTypeComponent } from './component/edit-course-type/edit-course-type.component';
 import { EditCourseYearComponent } from './component/edit-course-year/edit-course-year.component';
 import { EditCourseComponent } from './component/edit-course/edit-course.component';
 import { EditGroupLiteratureComponent } from './component/edit-group-literature/edit-group-literature.component';
@@ -132,6 +133,10 @@ const routes: Routes = [
     path: 'types/add',
     component: AddCourseTypeComponent
   },
+  {
+    path: 'types/:id/edit',
+    component: EditCourseTypeComponent
+  }
 ];
 
 @NgModule({
