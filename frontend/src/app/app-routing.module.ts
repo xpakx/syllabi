@@ -17,6 +17,7 @@ import { EditCourseComponent } from './component/edit-course/edit-course.compone
 import { EditGroupLiteratureComponent } from './component/edit-group-literature/edit-group-literature.component';
 import { EditInstituteComponent } from './component/edit-institute/edit-institute.component';
 import { EditProgramComponent } from './component/edit-program/edit-program.component';
+import { EditStudentComponent } from './component/edit-student/edit-student.component';
 import { EditStudyGroupComponent } from './component/edit-study-group/edit-study-group.component';
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
@@ -206,6 +207,10 @@ const routes: Routes = [
   {
     path: 'users/:id/student/add',
     component: AddStudentComponent
+  },
+  {
+    path: 'users/:id/student/edit',
+    component: EditStudentComponent
   }
 ];
 
