@@ -16,6 +16,7 @@ import { ShowCourseYearComponent } from './component/show-course-year/show-cours
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
 import { ShowCourseComponent } from './component/show-course/show-course.component';
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
+import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
 
 const routes: Routes = [
   {
@@ -81,6 +82,10 @@ const routes: Routes = [
   {
     path: 'years/:id/groups/add',
     component: AddStudyGroupComponent
+  },
+  {
+    path: 'years/:id/students',
+    component: ShowYearStudentsComponent
   }
 ];
 
