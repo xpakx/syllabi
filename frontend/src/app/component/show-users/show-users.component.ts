@@ -6,24 +6,21 @@ import { Page } from 'src/app/entity/page';
 import { User } from 'src/app/entity/user';
 import { UserService } from 'src/app/service/user.service';
 import { ModalUserDeleteComponent } from '../modal-user-delete/modal-user-delete.component';
+import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-users',
   templateUrl: './show-users.component.html',
   styleUrls: ['./show-users.component.css']
 })
-export class ShowUsersComponent implements OnInit {
-  users: User[] = [];
-  message: string = '';
-  totalPages: number = 0;
-  page: number = 0;
-  last: boolean = true;
-  first: boolean = true;
-  empty: boolean = true;
+export class ShowUsersComponent extends PageableComponent<User> implements OnInit {
+  
 
   constructor(private userService: UserService,
     private dialog: MatDialog, private route: ActivatedRoute, 
-    private router: Router) {  }
+    private router: Router) {  
+      super();
+    }
 
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe(
@@ -53,41 +50,6 @@ export class ShowUsersComponent implements OnInit {
         this.message = error.error.message;
       }
     )
-  }
-
-  printPage(response: Page<User>): void {
-    this.users = response.content;
-    this.totalPages = response.totalPages;
-    this.page = response.number;
-    this.last = response.last;
-    this.first = response.first;
-    this.empty = response.empty;
-  }
-
-  getPagesFull(): number[] {
-    return this.getNPages(7);
-  }
-
-  getPagesMin(): number[] {
-    return this.getNPages(3);
-  }
-
-  getNPages(pages: number): number[] {
-    let result = [];
-
-    let pagesToShow = Math.min(this.totalPages, pages);
-  
-
-    let leftOffset = this.page - Math.floor(pagesToShow/2);
-    leftOffset = leftOffset - Math.min(0, 0+leftOffset);
-
-    let rightOffset = Math.max(0, this.page + Math.ceil(pagesToShow/2)-this.totalPages);
-
-    for(var i=0; i<pagesToShow; i++) {
-      result.push(i+leftOffset-rightOffset);
-    }
-
-    return result;
   }
 
   delete(id: number, name: string) {

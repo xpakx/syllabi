@@ -8,27 +8,21 @@ import { Page } from 'src/app/entity/page';
 import { StudyGroupForPage } from 'src/app/entity/study-group-for-page';
 import { CourseYearService } from 'src/app/service/course-year.service';
 import { ModalDeleteStudyGroupComponent } from '../modal-delete-study-group/modal-delete-study-group.component';
+import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-study-groups',
   templateUrl: './show-study-groups.component.html',
   styleUrls: ['./show-study-groups.component.css']
 })
-export class ShowStudyGroupsComponent implements OnInit {
-  groups: StudyGroupForPage[] = [];
-  message: string = '';
-  totalPages: number = 0;
-  page: number = 0;
-  last: boolean = true;
-  first: boolean = true;
-  empty: boolean = true;
-  active: boolean = true;
+export class ShowStudyGroupsComponent extends PageableComponent<StudyGroupForPage> implements OnInit {
   parentId: number;
   parentName: string = '';
   parentDate: string = '';
 
   constructor(private yearService: CourseYearService, private dialog: MatDialog, 
     private route: ActivatedRoute, private router: Router) { 
+      super();
       this.parentId = Number(this.route.snapshot.paramMap.get('id'));
     }
 
@@ -63,15 +57,6 @@ export class ShowStudyGroupsComponent implements OnInit {
     )
   }
 
-  printPage(response: Page<StudyGroupForPage>): void {
-    this.groups = response.content;
-    this.totalPages = response.totalPages;
-    this.page = response.number;
-    this.last = response.last;
-    this.first = response.first;
-    this.empty = response.empty;
-  }
-
   getPage(page: number): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.yearService.getAllGroupsForYearForPage(id, page).subscribe(
@@ -88,32 +73,6 @@ export class ShowStudyGroupsComponent implements OnInit {
     )
   }
   
-  getPagesFull(): number[] {
-    return this.getNPages(7);
-  }
-
-  getPagesMin(): number[] {
-    return this.getNPages(3);
-  }
-
-  getNPages(pages: number): number[] {
-    let result = [];
-
-    let pagesToShow = Math.min(this.totalPages, pages);
-  
-
-    let leftOffset = this.page - Math.floor(pagesToShow/2);
-    leftOffset = leftOffset - Math.min(0, 0+leftOffset);
-
-    let rightOffset = Math.max(0, this.page + Math.ceil(pagesToShow/2)-this.totalPages);
-
-    for(var i=0; i<pagesToShow; i++) {
-      result.push(i+leftOffset-rightOffset);
-    }
-
-    return result;
-  }
-
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
@@ -126,5 +85,4 @@ export class ShowStudyGroupsComponent implements OnInit {
       }
     );
   }
-
 }

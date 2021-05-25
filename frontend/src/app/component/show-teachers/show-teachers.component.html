@@ -77,8 +77,8 @@
     </span>
 </div>
 
-<mat-grid-list cols="3" rowHeight="15em" *ngIf="teachers.length > 0"  fxShow="false" fxShow.gt-sm>
-    <mat-grid-tile *ngFor="let teacher of teachers">
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let teacher of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
                 <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
@@ -117,7 +117,7 @@
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
-    <mat-card *ngFor="let teacher of teachers">
+    <mat-card *ngFor="let teacher of elems">
         <mat-card-header>
             <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
                 person
@@ -153,6 +153,6 @@
     </mat-card>
 </div>
 
-<div *ngIf="teachers.length == 0">
+<div *ngIf="elems.length == 0">
     <div>No teachers!</div>
 </div>

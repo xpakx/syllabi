@@ -86,8 +86,8 @@
     </span>
 </div>
 
-<mat-grid-list cols="3" rowHeight="15em" *ngIf="groups.length > 0"  fxShow="false" fxShow.gt-sm>
-    <mat-grid-tile *ngFor="let group of groups">
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let group of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
                 <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
@@ -127,7 +127,7 @@
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
-    <mat-card *ngFor="let group of groups">
+    <mat-card *ngFor="let group of elems">
         <mat-card-header>
             <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
                 people
@@ -164,6 +164,6 @@
     </mat-card>
 </div>
 
-<div *ngIf="groups.length == 0">
+<div *ngIf="elems.length == 0">
     <div>No groups for this year!</div>
 </div>

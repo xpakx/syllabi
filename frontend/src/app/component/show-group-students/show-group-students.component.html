@@ -82,8 +82,8 @@
     </span>
 </div>
 
-<mat-grid-list cols="3" rowHeight="15em" *ngIf="students.length > 0"  fxShow="false" fxShow.gt-sm>
-    <mat-grid-tile *ngFor="let student of students">
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let student of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
                 <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
@@ -122,7 +122,7 @@
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
-    <mat-card *ngFor="let student of students">
+    <mat-card *ngFor="let student of elems">
         <mat-card-header>
             <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
                 book
@@ -158,6 +158,6 @@
     </mat-card>
 </div>
 
-<div *ngIf="students.length == 0">
+<div *ngIf="elems.length == 0">
     <div>No students for this group!</div>
 </div>

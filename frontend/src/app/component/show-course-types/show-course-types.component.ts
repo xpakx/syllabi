@@ -6,24 +6,19 @@ import { CourseType } from 'src/app/entity/course-type';
 import { Page } from 'src/app/entity/page';
 import { CourseTypeService } from 'src/app/service/course-type.service';
 import { ModalDeleteCourseTypeComponent } from '../modal-delete-course-type/modal-delete-course-type.component';
+import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-course-types',
   templateUrl: './show-course-types.component.html',
   styleUrls: ['./show-course-types.component.css']
 })
-export class ShowCourseTypesComponent implements OnInit {
-  types: CourseType[] = [];
-  message: string = '';
-  totalPages: number = 0;
-  page: number = 0;
-  last: boolean = true;
-  first: boolean = true;
-  empty: boolean = true;
-  active: boolean = true;
-
+export class ShowCourseTypesComponent extends PageableComponent<CourseType> implements OnInit {
+  
   constructor(private typeService: CourseTypeService, private dialog: MatDialog,
-    private router: Router) { }
+    private router: Router) {
+      super();
+    }
 
   ngOnInit(): void {
     this.typeService.getAllCourseTypes().subscribe(
@@ -38,15 +33,6 @@ export class ShowCourseTypesComponent implements OnInit {
         this.message = error.error.message;
       }
     )
-  }
-
-  printPage(response: Page<CourseType>): void {
-    this.types = response.content;
-    this.totalPages = response.totalPages;
-    this.page = response.number;
-    this.last = response.last;
-    this.first = response.first;
-    this.empty = response.empty;
   }
 
   getPage(page: number): void {
@@ -64,32 +50,6 @@ export class ShowCourseTypesComponent implements OnInit {
     )
   }
   
-  getPagesFull(): number[] {
-    return this.getNPages(7);
-  }
-
-  getPagesMin(): number[] {
-    return this.getNPages(3);
-  }
-
-  getNPages(pages: number): number[] {
-    let result = [];
-
-    let pagesToShow = Math.min(this.totalPages, pages);
-  
-
-    let leftOffset = this.page - Math.floor(pagesToShow/2);
-    leftOffset = leftOffset - Math.min(0, 0+leftOffset);
-
-    let rightOffset = Math.max(0, this.page + Math.ceil(pagesToShow/2)-this.totalPages);
-
-    for(var i=0; i<pagesToShow; i++) {
-      result.push(i+leftOffset-rightOffset);
-    }
-
-    return result;
-  }
-
   delete(id: number) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;

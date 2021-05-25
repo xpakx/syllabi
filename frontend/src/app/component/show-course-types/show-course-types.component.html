@@ -80,8 +80,8 @@
     </span>
 </div>
 
-<mat-grid-list cols="3" rowHeight="15em" *ngIf="types.length > 0"  fxShow="false" fxShow.gt-sm>
-    <mat-grid-tile *ngFor="let type of types">
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let type of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
                 <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
@@ -104,13 +104,12 @@
 					</mat-menu>
                 </mat-card-title>
             </mat-card-header>  
-
         </mat-card>
     </mat-grid-tile>
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
-    <mat-card *ngFor="let type of types">
+    <mat-card *ngFor="let type of elems">
         <mat-card-header>
             <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
                 label
@@ -131,13 +130,10 @@
                     </button>
                 </mat-menu>
             </mat-card-title>
-            
-            
         </mat-card-header>  
-
     </mat-card>
 </div>
 
-<div *ngIf="types.length == 0">
+<div *ngIf="elems.length == 0">
     <div>No types in database!</div>
 </div>

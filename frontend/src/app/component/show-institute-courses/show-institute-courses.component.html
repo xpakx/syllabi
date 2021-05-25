@@ -77,8 +77,8 @@
     </span>
 </div>
 
-<mat-grid-list cols="3" rowHeight="15em" *ngIf="courses.length > 0"  fxShow="false" fxShow.gt-sm>
-    <mat-grid-tile *ngFor="let course of courses">
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let course of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
                 <div class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
@@ -120,7 +120,7 @@
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
-    <mat-card *ngFor="let course of courses">
+    <mat-card *ngFor="let course of elems">
         <mat-card-header>
             <div class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
                 <div class="initials">{{course.name.charAt(0)}}</div>
@@ -155,6 +155,6 @@
     </mat-card>
 </div>
 
-<div *ngIf="courses.length == 0">
+<div *ngIf="elems.length == 0">
     <div>No courses!</div>
 </div>

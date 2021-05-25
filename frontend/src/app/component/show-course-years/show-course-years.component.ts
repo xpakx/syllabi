@@ -7,26 +7,21 @@ import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
 import { Page } from 'src/app/entity/page';
 import { CourseService } from 'src/app/service/course.service';
 import { ModalDeleteCourseYearComponent } from '../modal-delete-course-year/modal-delete-course-year.component';
+import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-course-years',
   templateUrl: './show-course-years.component.html',
   styleUrls: ['./show-course-years.component.css']
 })
-export class ShowCourseYearsComponent implements OnInit {
-  years: CourseYearForPage[] = [];
-  message: string = '';
-  totalPages: number = 0;
-  page: number = 0;
-  last: boolean = true;
-  first: boolean = true;
-  empty: boolean = true;
+export class ShowCourseYearsComponent extends PageableComponent<CourseYearForPage> implements OnInit {
   active: boolean = true;
   parentId: number;
   parentName: string = '';
 
   constructor(private courseService: CourseService, private dialog: MatDialog, 
     private route: ActivatedRoute, private router: Router) { 
+      super();
       this.parentId = Number(this.route.snapshot.paramMap.get('id'));
     }
 
@@ -58,15 +53,6 @@ export class ShowCourseYearsComponent implements OnInit {
     )
   }
 
-  printPage(response: Page<CourseYearForPage>): void {
-    this.years = response.content;
-    this.totalPages = response.totalPages;
-    this.page = response.number;
-    this.last = response.last;
-    this.first = response.first;
-    this.empty = response.empty;
-  }
-
   getActivePage(id: number, page: number): void {
     this.courseService.getAllActiveYearsForCourseForPage(id, page).subscribe(
       (response: Page<CourseYearForPage>) => {
@@ -96,7 +82,6 @@ export class ShowCourseYearsComponent implements OnInit {
       }
     )
   }
-  
 
   switchActive(): void {
     this.active = !this.active;
@@ -111,32 +96,6 @@ export class ShowCourseYearsComponent implements OnInit {
     else {
       this.getAllPage(id, page);
     }
-  }
-
-  getPagesFull(): number[] {
-    return this.getNPages(7);
-  }
-
-  getPagesMin(): number[] {
-    return this.getNPages(3);
-  }
-
-  getNPages(pages: number): number[] {
-    let result = [];
-
-    let pagesToShow = Math.min(this.totalPages, pages);
-  
-
-    let leftOffset = this.page - Math.floor(pagesToShow/2);
-    leftOffset = leftOffset - Math.min(0, 0+leftOffset);
-
-    let rightOffset = Math.max(0, this.page + Math.ceil(pagesToShow/2)-this.totalPages);
-
-    for(var i=0; i<pagesToShow; i++) {
-      result.push(i+leftOffset-rightOffset);
-    }
-
-    return result;
   }
 
   delete(id: number) {

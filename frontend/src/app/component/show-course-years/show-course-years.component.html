@@ -89,8 +89,8 @@
     </span>
 </div>
 
-<mat-grid-list cols="3" rowHeight="15em" *ngIf="years.length > 0"  fxShow="false" fxShow.gt-sm>
-    <mat-grid-tile *ngFor="let year of years">
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let year of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
                 <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
@@ -130,7 +130,7 @@
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
-    <mat-card *ngFor="let year of years">
+    <mat-card *ngFor="let year of elems">
         <mat-card-header>
             <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
                 school
@@ -167,6 +167,6 @@
     </mat-card>
 </div>
 
-<div *ngIf="years.length == 0">
+<div *ngIf="elems.length == 0">
     <div>No years for this course!</div>
 </div>

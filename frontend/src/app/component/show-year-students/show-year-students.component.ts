@@ -8,27 +8,23 @@ import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { CourseYearService } from 'src/app/service/course-year.service';
 import { StudentService } from 'src/app/service/student.service';
 import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
+import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-year-students',
   templateUrl: './show-year-students.component.html',
   styleUrls: ['./show-year-students.component.css']
 })
-export class ShowYearStudentsComponent implements OnInit {
-  students: StudentWithUserId[] = [];
+export class ShowYearStudentsComponent extends PageableComponent<StudentWithUserId> implements OnInit {
   yearName: string = '';
   yearDate: string = '';
   yearId!: number;
-  message: string = '';
-  totalPages: number = 0;
-  page: number = 0;
-  last: boolean = true;
-  first: boolean = true;
-  empty: boolean = true;
 
   constructor(private studentService: StudentService, private yearService: CourseYearService,
     private dialog: MatDialog, private route: ActivatedRoute, 
-    private router: Router) {  }
+    private router: Router) {  
+      super();
+    }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -76,41 +72,6 @@ export class ShowYearStudentsComponent implements OnInit {
         this.message = error.error.message;
       }
     )
-  }
-
-  printPage(response: Page<StudentWithUserId>): void {
-    this.students = response.content;
-    this.totalPages = response.totalPages;
-    this.page = response.number;
-    this.last = response.last;
-    this.first = response.first;
-    this.empty = response.empty;
-  }
-
-  getPagesFull(): number[] {
-    return this.getNPages(7);
-  }
-
-  getPagesMin(): number[] {
-    return this.getNPages(3);
-  }
-
-  getNPages(pages: number): number[] {
-    let result = [];
-
-    let pagesToShow = Math.min(this.totalPages, pages);
-  
-
-    let leftOffset = this.page - Math.floor(pagesToShow/2);
-    leftOffset = leftOffset - Math.min(0, 0+leftOffset);
-
-    let rightOffset = Math.max(0, this.page + Math.ceil(pagesToShow/2)-this.totalPages);
-
-    for(var i=0; i<pagesToShow; i++) {
-      result.push(i+leftOffset-rightOffset);
-    }
-
-    return result;
   }
 
   delete(id: number, name: string) {
