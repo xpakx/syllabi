@@ -4,6 +4,7 @@ import { AddCourseYearComponent } from './component/add-course-year/add-course-y
 import { AddCourseComponent } from './component/add-course/add-course.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { EditCourseYearComponent } from './component/edit-course-year/edit-course-year.component';
+import { EditCourseComponent } from './component/edit-course/edit-course.component';
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
@@ -42,6 +43,10 @@ const routes: Routes = [
     path: 'years/:id/edit',
     component: EditCourseYearComponent
   },
+  {
+    path: 'courses/:id/edit',
+    component: EditCourseComponent
+  }
 ];
 
 @NgModule({

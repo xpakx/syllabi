@@ -1,0 +1,89 @@
+<title mat-dialog-title>
+    Choose prerequisites
+</title>
+
+<mat-dialog-content>
+    <span *ngFor="let course of courses">
+        <button mat-button color="primary" 
+        *ngIf="choiceNum.includes(course.id)" 
+        (click)="cancel(course.id)">{{course.name}}</button>
+        <button mat-button *ngIf="!choiceNum.includes(course.id)" (click)="choose(course)">{{course.name}}</button>
+    </span>
+
+    <div class="pageNav">
+        <span>
+            <button mat-button color="secondary" (click)="getPage(0)" *ngIf="!first">
+                First
+            </button>
+            <button mat-button color="secondary" [disabled]="true" (click)="getPage(0)" *ngIf="first">
+                First
+            </button>
+        </span>
+        <span fxShow="false" fxShow.gt-sm>
+            <button mat-button color="secondary" (click)="getPage(page-1)" *ngIf="!first">
+                « Prev
+            </button>
+            <button mat-button color="secondary" [disabled]="true" (click)="getPage(page-1)" *ngIf="first">
+                « Prev
+            </button>
+        </span>
+        <span fxHide = "false" fxHide.gt-sm>
+            <button mat-icon-button color="secondary" (click)="getPage(page-1)" *ngIf="!first">
+                «
+            </button>
+            <button mat-icon-button color="secondary" [disabled]="true" (click)="getPage(page-1)" *ngIf="first">
+                «
+            </button>
+        </span>
+
+
+        <span *ngFor="let num of getPagesFull()" fxShow="false" fxShow.gt-sm>
+            <button mat-button color="primary" (click)="getPage(num)" *ngIf="num!=page">
+                {{num+1}}
+            </button>
+            <button mat-raised-button color="primary" (click)="getPage(page)" *ngIf="num==page">
+                {{page+1}}
+            </button>
+        </span>
+
+        <span *ngFor="let num of getPagesMin()" fxHide = "false" fxHide.gt-sm>
+            <button mat-icon-button color="primary" (click)="getPage(num)" *ngIf="num!=page">
+                {{num+1}}
+            </button>
+            <button mat-icon-button color="accent" (click)="getPage(page)" *ngIf="num==page">
+                {{page+1}}
+            </button>
+        </span>
+
+        <span fxShow="false" fxShow.gt-sm>
+            <button mat-button color="secondary" (click)="getPage(page+1)" *ngIf="!last">
+                Next »
+            </button>
+            <button mat-button color="secondary" [disabled]="true" (click)="getPage(page+1)" *ngIf="last">
+                Next »
+            </button>
+        </span> 
+        <span fxHide = "false" fxHide.gt-sm>
+            <button mat-icon-button color="secondary" (click)="getPage(page+1)" *ngIf="!last">
+                »
+            </button>
+            <button mat-icon-button color="secondary" [disabled]="true" (click)="getPage(page+1)" *ngIf="last">
+                »
+            </button>
+        </span>
+
+        <span>
+            <button mat-button color="secondary" (click)="getPage(totalPages-1)" *ngIf="!last">
+                Last
+            </button>
+            <button mat-button color="secondary" [disabled]="true" (click)="getPage(totalPages-1)" *ngIf="last">
+                Last
+            </button>
+        </span>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button color="primary" (click)="cancelAll()">CANCEL</button>
+    <button mat-button color="primary" (click)="close()">OK</button>
+</mat-dialog-actions>
