@@ -58,6 +58,4 @@ export class AllCoursesComponent extends PageableComponent<CourseForPage> implem
       }
     );
   }
-  
-
 }

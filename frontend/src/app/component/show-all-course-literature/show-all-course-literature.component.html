@@ -91,9 +91,9 @@
     <mat-grid-tile *ngFor="let lit of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
-                <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+                <mat-icon class="circle" mat-card-avatar>
                     book
-                </mat-icon>
+                </mat-icon> 
                 <mat-card-title class='title'>
                     {{lit.title}}
                     <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
@@ -132,7 +132,7 @@
 <div fxHide = "false" fxHide.gt-sm>
     <mat-card *ngFor="let lit of elems">
         <mat-card-header>
-            <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+            <mat-icon class="circle" mat-card-avatar>
                 book
             </mat-icon>
             <mat-card-title class='title'>

@@ -86,7 +86,7 @@
     <mat-grid-tile *ngFor="let course of elems">
         <mat-card class="mat-card-grid">
             <mat-card-header>
-                <div class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+                <div class="circle" mat-card-avatar>
                     <div class="initials">{{course.name.charAt(0)}}</div>
                 </div>
                 <mat-card-title class='title'>
@@ -132,7 +132,7 @@
 <div fxHide = "false" fxHide.gt-sm>
     <mat-card *ngFor="let course of elems">
         <mat-card-header>
-            <div class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
+            <div class="circle" mat-card-avatar>
                 <div class="initials">{{course.name.charAt(0)}}</div>
             </div>
             <mat-card-title class='title'>
