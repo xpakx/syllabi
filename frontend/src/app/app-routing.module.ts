@@ -11,6 +11,7 @@ import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
 import { ShowCourseLiteratureComponent } from './component/show-course-literature/show-course-literature.component';
+import { ShowCourseYearComponent } from './component/show-course-year/show-course-year.component';
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
 import { ShowCourseComponent } from './component/show-course/show-course.component';
 
@@ -66,6 +67,10 @@ const routes: Routes = [
   {
     path: 'courses/literature/:id/edit',
     component: EditCourseLiteratureComponent
+  },
+  {
+    path: 'years/:id',
+    component: ShowCourseYearComponent
   }
 ];
 

@@ -48,6 +48,7 @@ import { ModalDeleteCourseLiteratureComponent } from './component/modal-delete-c
 import { AddCourseLiteratureComponent } from './component/add-course-literature/add-course-literature.component';
 import { ShowCourseLiteratureComponent } from './component/show-course-literature/show-course-literature.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
+import { ShowCourseYearComponent } from './component/show-course-year/show-course-year.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -78,7 +79,8 @@ export function tokenGetter() {
     ModalDeleteCourseLiteratureComponent,
     AddCourseLiteratureComponent,
     ShowCourseLiteratureComponent,
-    EditCourseLiteratureComponent
+    EditCourseLiteratureComponent,
+    ShowCourseYearComponent
   ],
   imports: [
     BrowserModule,
