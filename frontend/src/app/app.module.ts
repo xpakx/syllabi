@@ -81,6 +81,7 @@ import { EditInstituteComponent } from './component/edit-institute/edit-institut
 import { ShowInstituteCoursesComponent } from './component/show-institute-courses/show-institute-courses.component';
 import { ShowInstituteProgramsComponent } from './component/show-institute-programs/show-institute-programs.component';
 import { ShowInstituteChildrenComponent } from './component/show-institute-children/show-institute-children.component';
+import { ShowStudentComponent } from './component/show-student/show-student.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -144,7 +145,8 @@ export function tokenGetter() {
     EditInstituteComponent,
     ShowInstituteCoursesComponent,
     ShowInstituteProgramsComponent,
-    ShowInstituteChildrenComponent
+    ShowInstituteChildrenComponent,
+    ShowStudentComponent
   ],
   imports: [
     BrowserModule,
