@@ -13,6 +13,7 @@ import { EditCourseTypeComponent } from './component/edit-course-type/edit-cours
 import { EditCourseYearComponent } from './component/edit-course-year/edit-course-year.component';
 import { EditCourseComponent } from './component/edit-course/edit-course.component';
 import { EditGroupLiteratureComponent } from './component/edit-group-literature/edit-group-literature.component';
+import { EditProgramComponent } from './component/edit-program/edit-program.component';
 import { EditStudyGroupComponent } from './component/edit-study-group/edit-study-group.component';
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
@@ -151,6 +152,10 @@ const routes: Routes = [
   {
     path: 'programs/:id',
     component: ShowProgramComponent
+  },
+  {
+    path: 'programs/:id/edit',
+    component: EditProgramComponent
   }
 ];
 
