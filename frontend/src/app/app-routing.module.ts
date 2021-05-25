@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AddCourseYearComponent } from './component/add-course-year/add-course-year.component';
 import { AddCourseComponent } from './component/add-course/add-course.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { LoginComponent } from './component/login/login.component';
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'courses/:id/years',
     component: ShowCourseYearsComponent
+  },
+  {
+    path: 'courses/:id/years/add',
+    component: AddCourseYearComponent
   }
 ];
 
