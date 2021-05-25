@@ -46,6 +46,7 @@ import { ShowStudyGroupComponent } from './component/show-study-group/show-study
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
 import { ShowTeacherComponent } from './component/show-teacher/show-teacher.component';
 import { ShowTeachersComponent } from './component/show-teachers/show-teachers.component';
+import { ShowUsersComponent } from './component/show-users/show-users.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
 
 const routes: Routes = [
@@ -236,6 +237,10 @@ const routes: Routes = [
   {
     path: 'teachers',
     component: ShowTeachersComponent
+  },
+  {
+    path: 'users',
+    component: ShowUsersComponent
   }
 ];
 

@@ -90,6 +90,8 @@ import { EditTeacherJobComponent } from './component/edit-teacher-job/edit-teach
 import { ShowTeacherComponent } from './component/show-teacher/show-teacher.component';
 import { ModalTeacherDeleteComponent } from './component/modal-teacher-delete/modal-teacher-delete.component';
 import { ShowTeachersComponent } from './component/show-teachers/show-teachers.component';
+import { ShowUsersComponent } from './component/show-users/show-users.component';
+import { ModalUserDeleteComponent } from './component/modal-user-delete/modal-user-delete.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -162,7 +164,9 @@ export function tokenGetter() {
     EditTeacherJobComponent,
     ShowTeacherComponent,
     ModalTeacherDeleteComponent,
-    ShowTeachersComponent
+    ShowTeachersComponent,
+    ShowUsersComponent,
+    ModalUserDeleteComponent
   ],
   imports: [
     BrowserModule,
