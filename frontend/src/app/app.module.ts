@@ -72,6 +72,7 @@ import { ModalProgramDeleteComponent } from './component/modal-program-delete/mo
 import { AddProgramComponent } from './component/add-program/add-program.component';
 import { ShowProgramComponent } from './component/show-program/show-program.component';
 import { EditProgramComponent } from './component/edit-program/edit-program.component';
+import { ShowProgramCoursesComponent } from './component/show-program-courses/show-program-courses.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -126,7 +127,8 @@ export function tokenGetter() {
     ModalProgramDeleteComponent,
     AddProgramComponent,
     ShowProgramComponent,
-    EditProgramComponent
+    EditProgramComponent,
+    ShowProgramCoursesComponent
   ],
   imports: [
     BrowserModule,
