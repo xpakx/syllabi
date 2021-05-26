@@ -28,12 +28,6 @@
     justify-content: center;
 }
 
-.pageNav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 mat-card-actions {
     display: flex;
     align-items: right;
