@@ -6,6 +6,7 @@ import { InstituteForPage } from 'src/app/entity/institute-for-page';
 import { Page } from 'src/app/entity/page';
 import { InstituteService } from 'src/app/service/institute.service';
 import { ModalDeleteInstituteComponent } from '../modal-delete-institute/modal-delete-institute.component';
+import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -13,41 +14,15 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-institutes.component.html',
   styleUrls: ['./show-institutes.component.css']
 })
-export class ShowInstitutesComponent extends PageableComponent<InstituteForPage> implements OnInit {
+export class ShowInstitutesComponent extends PageableGetAllComponent<InstituteForPage> implements OnInit {
   
-  constructor(private instituteService: InstituteService, private dialog: MatDialog,
-    private router: Router) { 
-      super();
+  constructor(protected service: InstituteService, private dialog: MatDialog,
+    protected router: Router) { 
+      super(service, router);
     }
 
   ngOnInit(): void {
-    this.instituteService.getAll().subscribe(
-      (response: Page<InstituteForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
-  }
-
-  getPage(page: number): void {
-    this.instituteService.getAllForPage(page).subscribe(
-      (response: Page<InstituteForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
+    this.getFirstPage();
   }
   
   delete(id: number, name: string) {

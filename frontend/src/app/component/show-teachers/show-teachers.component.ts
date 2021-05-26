@@ -6,6 +6,7 @@ import { Page } from 'src/app/entity/page';
 import { TeacherSummary } from 'src/app/entity/teacher-summary';
 import { TeacherService } from 'src/app/service/teacher.service';
 import { ModalTeacherDeleteComponent } from '../modal-teacher-delete/modal-teacher-delete.component';
+import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -13,42 +14,15 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-teachers.component.html',
   styleUrls: ['./show-teachers.component.css']
 })
-export class ShowTeachersComponent extends PageableComponent<TeacherSummary> implements OnInit {
+export class ShowTeachersComponent extends PageableGetAllComponent<TeacherSummary> implements OnInit {
 
-  constructor(private teacherService: TeacherService,
-    private dialog: MatDialog, private route: ActivatedRoute, 
-    private router: Router) {  
-      super();
-    }
-
-  ngOnInit(): void {
-    this.teacherService.getAll().subscribe(
-      (response: Page<TeacherSummary>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+  constructor(protected service: TeacherService, private dialog: MatDialog,
+  protected router: Router) {  
+    super(service, router);
   }
 
-  getPage(page: number): void {
-    this.teacherService.getAllForPage(page).subscribe(
-      (response: Page<TeacherSummary>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
+  ngOnInit(): void {
+    this.getFirstPage();
   }
 
   delete(id: number, name: string) {

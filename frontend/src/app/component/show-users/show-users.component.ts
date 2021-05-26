@@ -6,6 +6,7 @@ import { Page } from 'src/app/entity/page';
 import { User } from 'src/app/entity/user';
 import { UserService } from 'src/app/service/user.service';
 import { ModalUserDeleteComponent } from '../modal-user-delete/modal-user-delete.component';
+import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -13,43 +14,16 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-users.component.html',
   styleUrls: ['./show-users.component.css']
 })
-export class ShowUsersComponent extends PageableComponent<User> implements OnInit {
+export class ShowUsersComponent extends PageableGetAllComponent<User> implements OnInit {
   
 
-  constructor(private userService: UserService,
-    private dialog: MatDialog, private route: ActivatedRoute, 
-    private router: Router) {  
-      super();
-    }
-
-  ngOnInit(): void {
-    this.userService.getAll().subscribe(
-      (response: Page<User>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+  constructor(protected service: UserService,private dialog: MatDialog, 
+  protected router: Router) {  
+    super(service, router);
   }
 
-  getPage(page: number): void {
-    this.userService.getAllForPage(page).subscribe(
-      (response: Page<User>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
+  ngOnInit(): void {
+    this.getFirstPage();
   }
 
   delete(id: number, name: string) {

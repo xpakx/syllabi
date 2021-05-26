@@ -6,6 +6,7 @@ import { Page } from 'src/app/entity/page';
 import { ProgramForPage } from 'src/app/entity/program-for-page';
 import { ProgramService } from 'src/app/service/program.service';
 import { ModalProgramDeleteComponent } from '../modal-program-delete/modal-program-delete.component';
+import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -13,41 +14,15 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-programs.component.html',
   styleUrls: ['./show-programs.component.css']
 })
-export class ShowProgramsComponent extends PageableComponent<ProgramForPage> implements OnInit {
+export class ShowProgramsComponent extends PageableGetAllComponent<ProgramForPage> implements OnInit {
   
-  constructor(private programService: ProgramService, private dialog: MatDialog,
-    private router: Router) { 
-      super();
+  constructor(protected service: ProgramService, private dialog: MatDialog,
+    protected router: Router) { 
+      super(service, router);
     }
 
   ngOnInit(): void {
-    this.programService.getAll().subscribe(
-      (response: Page<ProgramForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
-  }
-
-  getPage(page: number): void {
-    this.programService.getAllForPage(page).subscribe(
-      (response: Page<ProgramForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
+    this.getFirstPage();
   }
 
   delete(id: number, name: string) {

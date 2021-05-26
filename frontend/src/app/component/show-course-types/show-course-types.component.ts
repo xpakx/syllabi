@@ -6,6 +6,7 @@ import { CourseType } from 'src/app/entity/course-type';
 import { Page } from 'src/app/entity/page';
 import { CourseTypeService } from 'src/app/service/course-type.service';
 import { ModalDeleteCourseTypeComponent } from '../modal-delete-course-type/modal-delete-course-type.component';
+import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -13,41 +14,15 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-course-types.component.html',
   styleUrls: ['./show-course-types.component.css']
 })
-export class ShowCourseTypesComponent extends PageableComponent<CourseType> implements OnInit {
+export class ShowCourseTypesComponent extends PageableGetAllComponent<CourseType> implements OnInit {
   
-  constructor(private typeService: CourseTypeService, private dialog: MatDialog,
-    private router: Router) {
-      super();
+  constructor(protected service: CourseTypeService, private dialog: MatDialog,
+    protected router: Router) {
+      super(service, router);
     }
 
   ngOnInit(): void {
-    this.typeService.getAll().subscribe(
-      (response: Page<CourseType>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
-  }
-
-  getPage(page: number): void {
-    this.typeService.getAllForPage(page).subscribe(
-      (response: Page<CourseType>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
+    this.getFirstPage();
   }
   
   delete(id: number) {
