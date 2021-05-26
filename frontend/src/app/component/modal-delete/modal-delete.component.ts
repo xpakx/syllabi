@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { HostListener } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ServiceWithDelete } from 'src/app/service/service-with-delete';
 
@@ -35,4 +36,8 @@ export abstract class ModalDeleteComponent {
     this.dialogRef.close(false);
   }
 
+  @HostListener("keydown.esc")
+  onEsc() {
+    this.cancel();
+  }
 }
