@@ -11,78 +11,14 @@
 <mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
     <mat-grid-tile *ngFor="let course of elems">
         <mat-card class="mat-card-grid">
-            <mat-card-header>
-                <div class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
-                    <div class="initials">{{course.name.charAt(0)}}</div>
-                </div>
-                <mat-card-title class='title'>
-                    {{course.name}}
-                    <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu" xPosition="before">
-						<button mat-menu-item [routerLink]="'/courses/' + course.id + '/edit'">
-							<mat-icon>edit</mat-icon>
-							Edit
-						</button>
-						<button mat-menu-item (click)="delete(course.id, course.name)">
-							<mat-icon>delete</mat-icon>
-							Remove
-						</button>
-					</mat-menu>
-                </mat-card-title>
-                <mat-card-subtitle>code: <strong>{{course.courseCode}}</strong></mat-card-subtitle>
-                
-                
-            </mat-card-header>  
-            
-            <mat-card-content>
-                <mat-icon *ngIf="!course.stationary">laptop</mat-icon>
-                <mat-icon *ngIf="course.stationary">home</mat-icon>
-                <mat-icon>account_box</mat-icon>
-            </mat-card-content>
-
-            <mat-card-actions>
-                <button mat-button color="primary" [routerLink]="'/courses/' + course.id">DETAILS</button>
-            </mat-card-actions>
-
+            <app-course-summary [course]="course" (deleteEvent)="delete(course.id, course.name)"></app-course-summary>
         </mat-card>
     </mat-grid-tile>
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
     <mat-card *ngFor="let course of elems">
-        <mat-card-header>
-            <div class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
-                <div class="initials">{{course.name.charAt(0)}}</div>
-            </div>
-            <mat-card-title class='title'>
-                {{course.name}}
-                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu" xPosition="before">
-                    <button mat-menu-item [routerLink]="'/courses/' + course.id + '/edit'">
-						<mat-icon>edit</mat-icon>
-						Edit
-					</button>
-                    <button mat-menu-item (click)="delete(course.id, course.name)">
-						<mat-icon>delete</mat-icon>
-						Remove
-					</button>
-                </mat-menu>
-            </mat-card-title>
-            <mat-card-subtitle>code: <strong>{{course.courseCode}}</strong></mat-card-subtitle>
-            
-            
-        </mat-card-header>  
-        
-        <mat-card-content>
-            <mat-icon *ngIf="!course.stationary">laptop</mat-icon>
-            <mat-icon *ngIf="course.stationary">home</mat-icon>
-            <mat-icon>account_box</mat-icon>
-        </mat-card-content>
-
+        <app-course-summary [course]="course" (deleteEvent)="delete(course.id, course.name)"></app-course-summary>
     </mat-card>
 </div>
 

@@ -98,6 +98,7 @@ import { ShowUserCoursesComponent } from './component/show-user-courses/show-use
 import { ChangePasswordComponent } from './component/change-password/change-password.component';
 import { NotFoundComponent } from './component/not-found/not-found.component';
 import { PaginationComponent } from './component/pagination/pagination.component';
+import { CourseSummaryComponent } from './component/course-summary/course-summary.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -178,7 +179,8 @@ export function tokenGetter() {
     ShowUserCoursesComponent,
     ChangePasswordComponent,
     NotFoundComponent,
-    PaginationComponent
+    PaginationComponent,
+    CourseSummaryComponent
   ],
   imports: [
     BrowserModule,
