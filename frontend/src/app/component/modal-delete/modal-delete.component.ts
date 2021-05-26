@@ -35,9 +35,4 @@ export abstract class ModalDeleteComponent {
   cancel(): void {
     this.dialogRef.close(false);
   }
-
-  @HostListener("keydown.esc")
-  onEsc() {
-    this.cancel();
-  }
 }
