@@ -5,42 +5,30 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseSummary } from 'src/app/entity/course-summary';
 import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
 import { Page } from 'src/app/entity/page';
-import { CourseService } from 'src/app/service/course.service';
+import { CourseYearsService } from 'src/app/service/course-years.service';
 import { ModalDeleteCourseYearComponent } from '../modal-delete-course-year/modal-delete-course-year.component';
-import { PageableComponent } from '../pageable/pageable.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
   selector: 'app-show-course-years',
   templateUrl: './show-course-years.component.html',
   styleUrls: ['./show-course-years.component.css']
 })
-export class ShowCourseYearsComponent extends PageableComponent<CourseYearForPage> implements OnInit {
+export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<CourseYearForPage> implements OnInit {
   active: boolean = true;
-  parentId: number;
   parentName: string = '';
+  parentId: number;
 
-  constructor(private courseService: CourseService, private dialog: MatDialog, 
-    private route: ActivatedRoute, private router: Router) { 
-      super();
-      this.parentId = Number(this.route.snapshot.paramMap.get('id'));
+  constructor(protected service: CourseYearsService, private dialog: MatDialog, 
+    protected route: ActivatedRoute, protected router: Router) { 
+      super(service, router, route);
+      this.parentId = this.id;
     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.courseService.getAllActiveYearsForCourse(id).subscribe(
-      (response: Page<CourseYearForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
+    this.getFirstPage();
 
-    this.courseService.getCourseByIdMin(id).subscribe(
+    this.service.getCourseByIdMin(this.id).subscribe(
       (response: CourseSummary) => {
         this.parentName = response.name;
       },
@@ -54,7 +42,7 @@ export class ShowCourseYearsComponent extends PageableComponent<CourseYearForPag
   }
 
   getActivePage(id: number, page: number): void {
-    this.courseService.getAllActiveYearsForCourseForPage(id, page).subscribe(
+    this.service.getAllActiveYearsForCourseForPage(id, page).subscribe(
       (response: Page<CourseYearForPage>) => {
         this.printPage(response);
       },
@@ -69,7 +57,7 @@ export class ShowCourseYearsComponent extends PageableComponent<CourseYearForPag
   }
 
   getAllPage(id: number, page: number): void {
-    this.courseService.getAllYearsForCourseForPage(id, page).subscribe(
+    this.service.getAllYearsForCourseForPage(id, page).subscribe(
       (response: Page<CourseYearForPage>) => {
         this.printPage(response);
       },
@@ -89,19 +77,18 @@ export class ShowCourseYearsComponent extends PageableComponent<CourseYearForPag
   }
 
   getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.active) {
-      this.getActivePage(id, page);
+      this.getActivePage(this.id, page);
     }
     else {
-      this.getAllPage(id, page);
+      this.getAllPage(this.id, page);
     }
   }
 
   delete(id: number) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id,};
+    dialogConfig.data = {id: id};
     const dialogRef = this.dialog.open(ModalDeleteCourseYearComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(

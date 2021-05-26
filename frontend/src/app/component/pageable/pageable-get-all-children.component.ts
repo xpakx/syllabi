@@ -14,7 +14,7 @@ export abstract class PageableGetAllChildrenComponent<T> extends  PageableCompon
     }
 
     getFirstPage(): void {
-        this.service.getAll(this.id).subscribe(
+        this.service.getAllChildren(this.id).subscribe(
           (response: Page<T>) => {
             this.printPage(response);
           },
@@ -29,7 +29,7 @@ export abstract class PageableGetAllChildrenComponent<T> extends  PageableCompon
     }
     
     getPage(page: number): void {
-        this.service.getAllForPage(this.id, page).subscribe(
+        this.service.getAllChildrenForPage(this.id, page).subscribe(
           (response: Page<T>) => {
             this.printPage(response);
           },

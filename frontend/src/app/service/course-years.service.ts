@@ -1,8 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { CourseYearForPage } from "../entity/course-year-for-page";
 import { LiteratureForPage } from "../entity/literature-for-page";
 import { Page } from "../entity/page";
+import { CourseService } from "./course.service";
 import { LiteratureService } from "./literature.service";
 import { ServiceWithDelete } from "./service-with-delete";
 import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
@@ -10,22 +12,18 @@ import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 @Injectable({
     providedIn: 'root'
 })
-export class GroupLiteratureService extends LiteratureService 
-implements ServiceWithDelete, ServiceWithGetAllChildren<LiteratureForPage>  {
+export class CourseYearsService extends CourseService
+implements ServiceWithGetAllChildren<CourseYearForPage> {
 
     constructor(protected http: HttpClient) { 
         super(http);
     }
 
-    public delete(id: number): Observable<any> {
-        return this.deleteGroupLiterature(id);
-    }
-
-    public getAllChildren(id: number): Observable<Page<LiteratureForPage>> {
-        return this.getAllGroupLiterature(id);
+    public getAllChildren(id: number): Observable<Page<CourseYearForPage>> {
+        return this.getAllActiveYearsForCourse(id);
     }
     
-    public getAllChildrenForPage(id: number, page: number): Observable<Page<LiteratureForPage>> {
-        return this.getAllGroupLiteratureForPage(id, page);
+    public getAllChildrenForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
+        return this.getAllActiveYearsForCourseForPage(id, page);
     }
 }

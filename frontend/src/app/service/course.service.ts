@@ -21,7 +21,7 @@ import { ServiceWithGetAll } from './service-with-get-all';
 export class CourseService implements ServiceWithDelete, ServiceWithGetAll<CourseForPage> {
   private url = environment.apiServerUrl + "/courses";
 
-  constructor(private http: HttpClient) { }
+  constructor(protected http: HttpClient) { }
 
   public addNewCourse(course: Course): Observable<CourseResponse> {
     return this.http.post<CourseResponse>(`${this.url}`, course);

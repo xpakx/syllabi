@@ -7,7 +7,9 @@ import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
 import { Page } from 'src/app/entity/page';
 import { StudyGroupForPage } from 'src/app/entity/study-group-for-page';
 import { CourseYearService } from 'src/app/service/course-year.service';
+import { YearGroupsService } from 'src/app/service/year-groups.service';
 import { ModalDeleteStudyGroupComponent } from '../modal-delete-study-group/modal-delete-study-group.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -15,33 +17,21 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-study-groups.component.html',
   styleUrls: ['./show-study-groups.component.css']
 })
-export class ShowStudyGroupsComponent extends PageableComponent<StudyGroupForPage> implements OnInit {
+export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<StudyGroupForPage> implements OnInit {
   parentId: number;
   parentName: string = '';
   parentDate: string = '';
 
-  constructor(private yearService: CourseYearService, private dialog: MatDialog, 
-    private route: ActivatedRoute, private router: Router) { 
-      super();
+  constructor(protected service: YearGroupsService, private dialog: MatDialog, 
+    protected route: ActivatedRoute, protected router: Router) { 
+      super(service, router, route);
       this.parentId = Number(this.route.snapshot.paramMap.get('id'));
     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.yearService.getAllGroupsForYear(id).subscribe(
-      (response: Page<StudyGroupForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
+    this.getFirstPage();
 
-    this.yearService.getCourseYearById(id).subscribe(
+    this.service.getCourseYearById(this.id).subscribe(
       (response: CourseYearDetails) => {
         this.parentName = response.parent.name;  
         this.parentDate = new Date(response.startDate).getFullYear() + '/' +
@@ -53,22 +43,6 @@ export class ShowStudyGroupsComponent extends PageableComponent<StudyGroupForPag
           localStorage.removeItem("token");
           this.router.navigate(['login']);
         }
-      }
-    )
-  }
-
-  getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.yearService.getAllGroupsForYearForPage(id, page).subscribe(
-      (response: Page<StudyGroupForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
       }
     )
   }

@@ -17,7 +17,7 @@ import { ServiceWithDelete } from './service-with-delete';
 export class CourseYearService implements ServiceWithDelete {
   private uri = environment.apiServerUrl + "/years";
 
-  constructor(private http: HttpClient) { }
+  constructor(protected http: HttpClient) { }
 
   public getCourseYearById(id: number): Observable<CourseYearDetails> {
     return this.http.get<CourseYearDetails>(`${this.uri}/${id}`);
