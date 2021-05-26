@@ -4,6 +4,7 @@ import { ServiceWithDelete } from 'src/app/service/service-with-delete';
 
 export abstract class ModalDeleteComponent {
   name: string;
+  parentName!: string;
   id: number;
   message: string = '';
   deletingFailed: boolean = false;
@@ -13,6 +14,9 @@ export abstract class ModalDeleteComponent {
     data: any) { 
       this.name = data.name;
       this.id = data.id;
+      if(data.parentName) {
+        this.parentName = data.parentName;
+      }
     }
 
   delete(): void {

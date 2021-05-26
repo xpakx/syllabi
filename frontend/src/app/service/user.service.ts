@@ -7,11 +7,12 @@ import { CourseForPage } from '../entity/course-for-page';
 import { Page } from '../entity/page';
 import { RoleRequest } from '../entity/role-request';
 import { User } from '../entity/user';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UserService implements ServiceWithDelete {
   private url = environment.apiServerUrl + "/users";
 
   constructor(private http: HttpClient) { }
@@ -28,7 +29,7 @@ export class UserService {
     return this.http.get<Page<User>>(`${this.url}?page=${page}`);
   }
 
-  public deleteUser(id: number): Observable<any> {
+  public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
   }
 

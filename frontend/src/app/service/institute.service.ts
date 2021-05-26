@@ -8,11 +8,12 @@ import { InstituteForPage } from '../entity/institute-for-page';
 import { InstituteRequest } from '../entity/institute-request';
 import { Page } from '../entity/page';
 import { ProgramSummary } from '../entity/program-summary';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InstituteService {
+export class InstituteService implements ServiceWithDelete {
   private url = environment.apiServerUrl + "/institutes";
 
   constructor(private http: HttpClient) { }
@@ -25,7 +26,7 @@ export class InstituteService {
     return this.http.get<Page<InstituteForPage>>(`${this.url}?page=${page}`);
   }
 
-  public deleteInstitute(id: number): Observable<any> {
+  public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
   }
 

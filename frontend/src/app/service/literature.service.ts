@@ -6,6 +6,7 @@ import { Literature } from '../entity/literature';
 import { LiteratureForPage } from '../entity/literature-for-page';
 import { LiteratureRequest } from '../entity/literature-request';
 import { Page } from '../entity/page';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { Page } from '../entity/page';
 export class LiteratureService {
   private url = environment.apiServerUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(protected http: HttpClient) { }
 
   public getAllCourseLiterature(id: number): Observable<Page<LiteratureForPage>> {
     return this.http.get<Page<LiteratureForPage>>(`${this.url}/courses/${id}/literature`);

@@ -70,7 +70,7 @@ export class ShowCourseLiteratureComponent implements OnInit {
   delete(id: number, name: string, courseName: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name, courseName: courseName};
+    dialogConfig.data = {id: id, name: name, parentName: courseName};
     const dialogRef = this.dialog.open(ModalDeleteCourseLiteratureComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(

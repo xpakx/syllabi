@@ -1,41 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { LiteratureService } from 'src/app/service/literature.service';
+import { GroupLiteratureService } from 'src/app/service/group-literature.service';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 
 @Component({
   selector: 'app-modal-delete-group-literature',
   templateUrl: './modal-delete-group-literature.component.html',
   styleUrls: ['./modal-delete-group-literature.component.css']
 })
-export class ModalDeleteGroupLiteratureComponent implements OnInit {
-  id: number;
-  name: string;
-  courseName: string;
+export class ModalDeleteGroupLiteratureComponent extends ModalDeleteComponent {
 
-  constructor(private literatureService: LiteratureService, 
-    private dialogRef: MatDialogRef<ModalDeleteGroupLiteratureComponent>,
-    @Inject(MAT_DIALOG_DATA) data: any) { 
-      this.id = data.id;
-      this.name = data.name;
-      this.courseName = data.courseName;
-    }
-
-  ngOnInit(): void {
+  constructor(public literatureService: GroupLiteratureService, 
+  public dialogRef: MatDialogRef<ModalDeleteGroupLiteratureComponent>,
+  @Inject(MAT_DIALOG_DATA) data: any) { 
+    super(literatureService, dialogRef, data);
   }
-
-  delete(): void {
-    this.literatureService.deleteGroupLiterature(this.id).subscribe(
-      (response) => {
-        this.dialogRef.close();
-      },
-      (error: HttpErrorResponse) => {
-      }
-    );
-  }
-
-  cancel(): void {
-    this.dialogRef.close();
-  }
-
 }

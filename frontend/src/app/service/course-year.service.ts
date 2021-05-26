@@ -9,11 +9,12 @@ import { Page } from '../entity/page';
 import { StudyGroup } from '../entity/study-group';
 import { StudyGroupForPage } from '../entity/study-group-for-page';
 import { StudyGroupRequest } from '../entity/study-group-request';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseYearService {
+export class CourseYearService implements ServiceWithDelete {
   private uri = environment.apiServerUrl + "/years";
 
   constructor(private http: HttpClient) { }
@@ -22,7 +23,7 @@ export class CourseYearService {
     return this.http.get<CourseYearDetails>(`${this.uri}/${id}`);
   }
 
-  public deleteCourseYear(id: number): Observable<any> {
+  public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.uri}/${id}`);
   }
 

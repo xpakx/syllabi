@@ -7,11 +7,12 @@ import { Student } from '../entity/student';
 import { StudentCreateRequest } from '../entity/student-create-request';
 import { StudentUpdateRequest } from '../entity/student-update-request';
 import { StudentWithUserId } from '../entity/student-with-user-id';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StudentService {
+export class StudentService implements ServiceWithDelete {
   private url = environment.apiServerUrl;
 
   constructor(private http: HttpClient) { }
@@ -24,7 +25,7 @@ export class StudentService {
     return this.http.get<StudentWithUserId>(`${this.url}/users/${id}/student`);
   }
 
-  public deleteStudent(id: number): Observable<any> {
+  public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/users/${id}/student`);
   }
 

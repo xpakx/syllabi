@@ -5,11 +5,12 @@ import { environment } from 'src/environments/environment';
 import { StudyGroup } from '../entity/study-group';
 import { StudyGroupRequest } from '../entity/study-group-request';
 import { StudyGroupSummary } from '../entity/study-group-summary';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StudyGroupService {
+export class StudyGroupService implements ServiceWithDelete {
   private url = environment.apiServerUrl + "/groups";
 
   constructor(private http: HttpClient) { }
@@ -22,7 +23,7 @@ export class StudyGroupService {
     return this.http.get<StudyGroupSummary>(`${this.url}/${id}`);
   }
 
-  public deleteStudyGroup(id: number): Observable<any> {
+  public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
   }
 

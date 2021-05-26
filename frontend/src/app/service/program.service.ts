@@ -7,11 +7,12 @@ import { Page } from '../entity/page';
 import { Program } from '../entity/program';
 import { ProgramForPage } from '../entity/program-for-page';
 import { ProgramRequest } from '../entity/program-request';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProgramService {
+export class ProgramService implements ServiceWithDelete {
   private url = environment.apiServerUrl + "/programs";
 
   constructor(private http: HttpClient) { }
@@ -28,7 +29,7 @@ export class ProgramService {
     return this.http.post<Program>(`${this.url}`, program);
   }
 
-  public deleteProgram(id: number): Observable<any> {
+  public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
   }
 

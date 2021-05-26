@@ -5,11 +5,12 @@ import { environment } from 'src/environments/environment';
 import { CourseType } from '../entity/course-type';
 import { CourseTypeRequest } from '../entity/course-type-request';
 import { Page } from '../entity/page';
+import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseTypeService {
+export class CourseTypeService implements ServiceWithDelete {
   private url = environment.apiServerUrl + "/types";
 
   constructor(private http: HttpClient) { }
@@ -30,7 +31,7 @@ export class CourseTypeService {
     return this.http.get<CourseType>(`${this.url}/${id}`);
   }
 
-  public deleteCourseType(id: number): Observable<any> {
+  public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
   }
 
