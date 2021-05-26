@@ -6,8 +6,10 @@ import { Page } from 'src/app/entity/page';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
 import { StudentService } from 'src/app/service/student.service';
+import { StudyGroupStudentsService } from 'src/app/service/study-group-students.service';
 import { StudyGroupService } from 'src/app/service/study-group.service';
 import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -15,31 +17,19 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-group-students.component.html',
   styleUrls: ['./show-group-students.component.css']
 })
-export class ShowGroupStudentsComponent extends PageableComponent<StudentWithUserId> implements OnInit {
+export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId> implements OnInit {
   group: StudyGroupSummary | undefined;
 
-  constructor(private studentService: StudentService, private groupService: StudyGroupService,
-    private dialog: MatDialog, private route: ActivatedRoute, 
-    private router: Router) { 
-      super();
+  constructor(protected service: StudyGroupStudentsService, private groupService: StudyGroupService,
+    private dialog: MatDialog, protected route: ActivatedRoute, 
+    protected router: Router) { 
+      super(service, router, route);
     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.studentService.getAllStudentsForStudyGroup(id).subscribe(
-      (response: Page<StudentWithUserId>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getFirstPage();
 
-    this.groupService.getStudyGroupByIdMin(id).subscribe(
+    this.groupService.getStudyGroupByIdMin(this.id).subscribe(
       (result: StudyGroupSummary) => {
         this.group = result;
       },
@@ -51,22 +41,6 @@ export class ShowGroupStudentsComponent extends PageableComponent<StudentWithUse
         this.message = error.error.message;
       }
     );
-  }
-
-  getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.studentService.getAllStudentsForStudyGroupForPage(id, page).subscribe(
-      (response: Page<StudentWithUserId>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
   }
 
   delete(id: number, name: string) {

@@ -2,45 +2,31 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Course } from 'src/app/entity/course';
 import { CourseSummary } from 'src/app/entity/course-summary';
 import { LiteratureForPage } from 'src/app/entity/literature-for-page';
-import { Page } from 'src/app/entity/page';
+import { CourseLiteratureService } from 'src/app/service/course-literature.service';
 import { CourseService } from 'src/app/service/course.service';
-import { LiteratureService } from 'src/app/service/literature.service';
 import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
-import { PageableComponent } from '../pageable/pageable.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
   selector: 'app-show-all-course-literature',
   templateUrl: './show-all-course-literature.component.html',
   styleUrls: ['./show-all-course-literature.component.css']
 })
-export class ShowAllCourseLiteratureComponent extends PageableComponent<LiteratureForPage> implements OnInit {
+export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage> implements OnInit {
   course: CourseSummary | undefined;
 
-  constructor(private literatureService: LiteratureService, private courseService: CourseService,
-    private dialog: MatDialog, private route: ActivatedRoute, 
-    private router: Router) { 
-      super();
+  constructor(protected service: CourseLiteratureService, private courseService: CourseService,
+    private dialog: MatDialog, protected route: ActivatedRoute, 
+    protected router: Router) { 
+      super(service, router, route);
      }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.literatureService.getAllCourseLiterature(id).subscribe(
-      (response: Page<LiteratureForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getFirstPage();
 
-    this.courseService.getCourseByIdMin(id).subscribe(
+    this.courseService.getCourseByIdMin(this.id).subscribe(
       (result: CourseSummary) => {
         this.course = result;
       },
@@ -52,22 +38,6 @@ export class ShowAllCourseLiteratureComponent extends PageableComponent<Literatu
         this.message = error.error.message;
       }
     );
-  }
-
-  getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.literatureService.getAllCourseLiteratureForPage(id, page).subscribe(
-      (response: Page<LiteratureForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
   }
 
   delete(id: number, name: string, courseName: string) {
@@ -82,5 +52,4 @@ export class ShowAllCourseLiteratureComponent extends PageableComponent<Literatu
       }
     );
   }
-
 }

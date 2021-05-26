@@ -15,7 +15,7 @@ import { ServiceWithDelete } from './service-with-delete';
 export class StudentService implements ServiceWithDelete {
   private url = environment.apiServerUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(protected http: HttpClient) { }
 
   public addNewStudent(id: number, student: StudentCreateRequest): Observable<Student> {
     return this.http.post<Student>(`${this.url}/users/${id}/student`, student);
