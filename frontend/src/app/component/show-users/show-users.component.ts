@@ -23,7 +23,7 @@ export class ShowUsersComponent extends PageableComponent<User> implements OnIni
     }
 
   ngOnInit(): void {
-    this.userService.getAllUsers().subscribe(
+    this.userService.getAll().subscribe(
       (response: Page<User>) => {
         this.printPage(response);
       },
@@ -38,7 +38,7 @@ export class ShowUsersComponent extends PageableComponent<User> implements OnIni
   }
 
   getPage(page: number): void {
-    this.userService.getAllUsersForPage(page).subscribe(
+    this.userService.getAllForPage(page).subscribe(
       (response: Page<User>) => {
         this.printPage(response);
       },

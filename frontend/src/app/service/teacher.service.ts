@@ -10,20 +10,21 @@ import { TeacherCreateRequest } from '../entity/teacher-create-request';
 import { TeacherSummary } from '../entity/teacher-summary';
 import { TeacherUpdateRequest } from '../entity/teacher-update-request';
 import { ServiceWithDelete } from './service-with-delete';
+import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TeacherService implements ServiceWithDelete {
+export class TeacherService implements ServiceWithDelete, ServiceWithGetAll<TeacherSummary> {
   private url = environment.apiServerUrl;
 
   constructor(private http: HttpClient) { }
 
-  public getAllTeachers(): Observable<Page<TeacherSummary>> {
+  public getAll(): Observable<Page<TeacherSummary>> {
     return this.http.get<Page<TeacherSummary>>(`${this.url}/teachers`);
   }
 
-  public getAllTeachersForPage(page: number): Observable<Page<TeacherSummary>> {
+  public getAllForPage(page: number): Observable<Page<TeacherSummary>> {
     return this.http.get<Page<TeacherSummary>>(`${this.url}/teachers?page=${page}`);
   }
 

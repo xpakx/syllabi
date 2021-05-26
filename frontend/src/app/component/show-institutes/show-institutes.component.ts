@@ -21,7 +21,7 @@ export class ShowInstitutesComponent extends PageableComponent<InstituteForPage>
     }
 
   ngOnInit(): void {
-    this.instituteService.getAllInstitutes().subscribe(
+    this.instituteService.getAll().subscribe(
       (response: Page<InstituteForPage>) => {
         this.printPage(response);
       },
@@ -36,7 +36,7 @@ export class ShowInstitutesComponent extends PageableComponent<InstituteForPage>
   }
 
   getPage(page: number): void {
-    this.instituteService.getAllInstitutesForPage(page).subscribe(
+    this.instituteService.getAllForPage(page).subscribe(
       (response: Page<InstituteForPage>) => {
         this.printPage(response);
       },

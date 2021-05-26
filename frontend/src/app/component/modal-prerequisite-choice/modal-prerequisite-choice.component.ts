@@ -40,7 +40,7 @@ export class ModalPrerequisiteChoiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.courseService.getAllCourses().subscribe(
+    this.courseService.getAll().subscribe(
       (response: Page<CourseForPage>) => {
         this.printPage(response);
       },
@@ -51,7 +51,7 @@ export class ModalPrerequisiteChoiceComponent implements OnInit {
   }
 
   getPage(page: number): void {
-    this.courseService.getAllCoursesForPage(page).subscribe(
+    this.courseService.getAllForPage(page).subscribe(
       (response: Page<CourseForPage>) => {
         this.printPage(response);
       },

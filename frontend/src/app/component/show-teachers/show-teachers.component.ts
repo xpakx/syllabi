@@ -22,7 +22,7 @@ export class ShowTeachersComponent extends PageableComponent<TeacherSummary> imp
     }
 
   ngOnInit(): void {
-    this.teacherService.getAllTeachers().subscribe(
+    this.teacherService.getAll().subscribe(
       (response: Page<TeacherSummary>) => {
         this.printPage(response);
       },
@@ -37,7 +37,7 @@ export class ShowTeachersComponent extends PageableComponent<TeacherSummary> imp
   }
 
   getPage(page: number): void {
-    this.teacherService.getAllTeachersForPage(page).subscribe(
+    this.teacherService.getAllForPage(page).subscribe(
       (response: Page<TeacherSummary>) => {
         this.printPage(response);
       },

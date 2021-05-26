@@ -13,11 +13,12 @@ import { CourseYearRequest } from '../entity/course-year-request';
 import { CourseSummary } from '../entity/course-summary';
 import { environment } from 'src/environments/environment';
 import { ServiceWithDelete } from './service-with-delete';
+import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseService implements ServiceWithDelete {
+export class CourseService implements ServiceWithDelete, ServiceWithGetAll<CourseForPage> {
   private url = environment.apiServerUrl + "/courses";
 
   constructor(private http: HttpClient) { }
@@ -26,11 +27,11 @@ export class CourseService implements ServiceWithDelete {
     return this.http.post<CourseResponse>(`${this.url}`, course);
   }
 
-  public getAllCourses(): Observable<Page<CourseForPage>> {
+  public getAll(): Observable<Page<CourseForPage>> {
     return this.http.get<Page<CourseForPage>>(`${this.url}`);
   }
 
-  public getAllCoursesForPage(page: number): Observable<Page<CourseForPage>> {
+  public getAllForPage(page: number): Observable<Page<CourseForPage>> {
     return this.http.get<Page<CourseForPage>>(`${this.url}?page=${page}`);
   }
 
@@ -69,8 +70,4 @@ export class CourseService implements ServiceWithDelete {
   public addNewCourseYear(id: number, year: CourseYearRequest): Observable<CourseYear> {
     return this.http.post<CourseYear>(`${this.url}/${id}/years`, year);
   }
-  
-
-  
-
 }

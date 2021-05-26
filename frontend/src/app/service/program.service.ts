@@ -8,20 +8,21 @@ import { Program } from '../entity/program';
 import { ProgramForPage } from '../entity/program-for-page';
 import { ProgramRequest } from '../entity/program-request';
 import { ServiceWithDelete } from './service-with-delete';
+import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProgramService implements ServiceWithDelete {
+export class ProgramService implements ServiceWithDelete, ServiceWithGetAll<ProgramForPage> {
   private url = environment.apiServerUrl + "/programs";
 
   constructor(private http: HttpClient) { }
 
-  public getAllPrograms(): Observable<Page<ProgramForPage>> {
+  public getAll(): Observable<Page<ProgramForPage>> {
     return this.http.get<Page<ProgramForPage>>(`${this.url}`);
   }
 
-  public getAllProgramsForPage(page: number): Observable<Page<ProgramForPage>> {
+  public getAllForPage(page: number): Observable<Page<ProgramForPage>> {
     return this.http.get<Page<ProgramForPage>>(`${this.url}?page=${page}`);
   }
 

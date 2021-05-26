@@ -21,7 +21,7 @@ export class ShowProgramsComponent extends PageableComponent<ProgramForPage> imp
     }
 
   ngOnInit(): void {
-    this.programService.getAllPrograms().subscribe(
+    this.programService.getAll().subscribe(
       (response: Page<ProgramForPage>) => {
         this.printPage(response);
       },
@@ -36,7 +36,7 @@ export class ShowProgramsComponent extends PageableComponent<ProgramForPage> imp
   }
 
   getPage(page: number): void {
-    this.programService.getAllProgramsForPage(page).subscribe(
+    this.programService.getAllForPage(page).subscribe(
       (response: Page<ProgramForPage>) => {
         this.printPage(response);
       },

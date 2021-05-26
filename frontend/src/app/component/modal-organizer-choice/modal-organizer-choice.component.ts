@@ -24,7 +24,7 @@ export class ModalOrganizerChoiceComponent implements OnInit {
     private dialogRef: MatDialogRef<ModalOrganizerChoiceComponent>) {  }
 
   ngOnInit(): void {
-    this.instituteService.getAllInstitutes().subscribe(
+    this.instituteService.getAll().subscribe(
       (response: Page<InstituteForPage>) => {
         this.printPage(response);
       },
@@ -35,7 +35,7 @@ export class ModalOrganizerChoiceComponent implements OnInit {
   }
 
   getPage(page: number): void {
-    this.instituteService.getAllInstitutesForPage(page).subscribe(
+    this.instituteService.getAllForPage(page).subscribe(
       (response: Page<InstituteForPage>) => {
         this.printPage(response);
       },

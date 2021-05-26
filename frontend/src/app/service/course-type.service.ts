@@ -6,20 +6,21 @@ import { CourseType } from '../entity/course-type';
 import { CourseTypeRequest } from '../entity/course-type-request';
 import { Page } from '../entity/page';
 import { ServiceWithDelete } from './service-with-delete';
+import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseTypeService implements ServiceWithDelete {
+export class CourseTypeService implements ServiceWithDelete, ServiceWithGetAll<CourseType> {
   private url = environment.apiServerUrl + "/types";
 
   constructor(private http: HttpClient) { }
 
-  public getAllCourseTypes(): Observable<Page<CourseType>> {
+  public getAll(): Observable<Page<CourseType>> {
     return this.http.get<Page<CourseType>>(`${this.url}`);
   }
 
-  public getAllCourseTypesForPage(page: number): Observable<Page<CourseType>> {
+  public getAllForPage(page: number): Observable<Page<CourseType>> {
     return this.http.get<Page<CourseType>>(`${this.url}?page=${page}`);
   }
 

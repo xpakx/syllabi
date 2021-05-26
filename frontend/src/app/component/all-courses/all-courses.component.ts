@@ -1,49 +1,25 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Page } from 'src/app/entity/page';
 import { CourseForPage } from '../../entity/course-for-page';
 import { CourseService } from '../../service/course.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
-import { PageableComponent } from '../pageable/pageable.component';
+import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 
 @Component({
   selector: 'app-all-courses',
   templateUrl: './all-courses.component.html',
   styleUrls: ['./all-courses.component.css']
 })
-export class AllCoursesComponent extends PageableComponent<CourseForPage> implements OnInit {
+export class AllCoursesComponent extends PageableGetAllComponent<CourseForPage> implements OnInit {
   
-  constructor(private courseService: CourseService, private dialog: MatDialog,
-    private router: Router) { 
-      super(); 
+  constructor(protected service: CourseService, private dialog: MatDialog,
+    protected router: Router) { 
+      super(service, router); 
     }
 
   ngOnInit(): void {
-    this.courseService.getAllCourses().subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
-  }
-
-  getPage(page: number): void {
-    this.courseService.getAllCoursesForPage(page).subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        this.message = error.error.message;
-      }
-    )
+    this.getFirstPage();
   }
 
   delete(id: number, name: string) {

@@ -37,7 +37,7 @@ export class ModalCoordinatorsChoiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.teacherService.getAllTeachers().subscribe(
+    this.teacherService.getAll().subscribe(
       (response: Page<TeacherSummary>) => {
         this.printPage(response);
       },
@@ -48,7 +48,7 @@ export class ModalCoordinatorsChoiceComponent implements OnInit {
   }
 
   getPage(page: number): void {
-    this.teacherService.getAllTeachersForPage(page).subscribe(
+    this.teacherService.getAllForPage(page).subscribe(
       (response: Page<TeacherSummary>) => {
         this.printPage(response);
       },

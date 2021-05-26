@@ -37,7 +37,7 @@ export class ModalProgramChoiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.programService.getAllPrograms().subscribe(
+    this.programService.getAll().subscribe(
       (response: Page<ProgramForPage>) => {
         this.printPage(response);
       },
@@ -48,7 +48,7 @@ export class ModalProgramChoiceComponent implements OnInit {
   }
 
   getPage(page: number): void {
-    this.programService.getAllProgramsForPage(page).subscribe(
+    this.programService.getAllForPage(page).subscribe(
       (response: Page<ProgramForPage>) => {
         this.printPage(response);
       },

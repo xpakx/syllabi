@@ -8,11 +8,12 @@ import { Page } from '../entity/page';
 import { RoleRequest } from '../entity/role-request';
 import { User } from '../entity/user';
 import { ServiceWithDelete } from './service-with-delete';
+import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService implements ServiceWithDelete {
+export class UserService implements ServiceWithDelete, ServiceWithGetAll<User> {
   private url = environment.apiServerUrl + "/users";
 
   constructor(private http: HttpClient) { }
@@ -21,11 +22,11 @@ export class UserService implements ServiceWithDelete {
     return this.http.post<User>(`${this.url}//${userId}/roles`, role);
   }
   
-  public getAllUsers(): Observable<Page<User>> {
+  public getAll(): Observable<Page<User>> {
     return this.http.get<Page<User>>(`${this.url}`);
   }
 
-  public getAllUsersForPage(page: number): Observable<Page<User>> {
+  public getAllForPage(page: number): Observable<Page<User>> {
     return this.http.get<Page<User>>(`${this.url}?page=${page}`);
   }
 

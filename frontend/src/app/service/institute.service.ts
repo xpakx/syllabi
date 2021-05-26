@@ -9,20 +9,21 @@ import { InstituteRequest } from '../entity/institute-request';
 import { Page } from '../entity/page';
 import { ProgramSummary } from '../entity/program-summary';
 import { ServiceWithDelete } from './service-with-delete';
+import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InstituteService implements ServiceWithDelete {
+export class InstituteService implements ServiceWithDelete, ServiceWithGetAll<InstituteForPage> {
   private url = environment.apiServerUrl + "/institutes";
 
   constructor(private http: HttpClient) { }
 
-  public getAllInstitutes(): Observable<Page<InstituteForPage>> {
+  public getAll(): Observable<Page<InstituteForPage>> {
     return this.http.get<Page<InstituteForPage>>(`${this.url}`);
   }
 
-  public getAllInstitutesForPage(page: number): Observable<Page<InstituteForPage>> {
+  public getAllForPage(page: number): Observable<Page<InstituteForPage>> {
     return this.http.get<Page<InstituteForPage>>(`${this.url}?page=${page}`);
   }
 

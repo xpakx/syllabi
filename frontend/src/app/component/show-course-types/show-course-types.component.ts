@@ -21,7 +21,7 @@ export class ShowCourseTypesComponent extends PageableComponent<CourseType> impl
     }
 
   ngOnInit(): void {
-    this.typeService.getAllCourseTypes().subscribe(
+    this.typeService.getAll().subscribe(
       (response: Page<CourseType>) => {
         this.printPage(response);
       },
@@ -36,7 +36,7 @@ export class ShowCourseTypesComponent extends PageableComponent<CourseType> impl
   }
 
   getPage(page: number): void {
-    this.typeService.getAllCourseTypesForPage(page).subscribe(
+    this.typeService.getAllForPage(page).subscribe(
       (response: Page<CourseType>) => {
         this.printPage(response);
       },
