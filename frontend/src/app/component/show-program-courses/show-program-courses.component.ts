@@ -5,8 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseForPage } from 'src/app/entity/course-for-page';
 import { Page } from 'src/app/entity/page';
 import { Program } from 'src/app/entity/program';
+import { ProgramCoursesAdapterService } from 'src/app/service/program-courses-adapter.service';
 import { ProgramService } from 'src/app/service/program.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -14,30 +16,18 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-program-courses.component.html',
   styleUrls: ['./show-program-courses.component.css']
 })
-export class ShowProgramCoursesComponent extends PageableComponent<CourseForPage> implements OnInit {
+export class ShowProgramCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage> implements OnInit {
   program: Program | undefined;
   
-  constructor(private programService: ProgramService, private dialog: MatDialog,
-    private route: ActivatedRoute, private router: Router) {  
-      super();
-    }
+  constructor(protected service: ProgramCoursesAdapterService, private dialog: MatDialog,
+  protected route: ActivatedRoute, protected router: Router) {  
+    super(service, router, route);
+  }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.programService.getAllCoursesForProgram(id).subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getFirstPage();
 
-    this.programService.getById(id).subscribe(
+    this.service.getParentById(this.id).subscribe(
       (result: Program) => {
         this.program = result;
       },
@@ -49,18 +39,6 @@ export class ShowProgramCoursesComponent extends PageableComponent<CourseForPage
         this.message = error.error.message;
       }
     );
-  }
-
-  getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.programService.getAllCoursesForProgramForPage(id, page).subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        this.message = error.error.message;
-      }
-    )
   }
 
   delete(id: number, name: string) {
