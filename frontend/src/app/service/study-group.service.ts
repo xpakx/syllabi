@@ -7,12 +7,15 @@ import { StudyGroup } from '../entity/study-group';
 import { StudyGroupForPage } from '../entity/study-group-for-page';
 import { StudyGroupRequest } from '../entity/study-group-request';
 import { StudyGroupSummary } from '../entity/study-group-summary';
+import { CrudWithParentService } from './crud-with-parent.service';
 import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StudyGroupService implements ServiceWithDelete {
+export class StudyGroupService 
+implements CrudWithParentService<StudyGroupForPage, StudyGroup, StudyGroupRequest, StudyGroupRequest, StudyGroup> {
+ 
   private url = environment.apiServerUrl + "/groups";
   private parentUrl = environment.apiServerUrl + "/years";
 
@@ -22,11 +25,11 @@ export class StudyGroupService implements ServiceWithDelete {
     return this.http.post<StudyGroup>(`${this.parentUrl}/${yearId}/groups`, group);
   }
 
-  public getAll(yearId: number): Observable<Page<StudyGroupForPage>> {
+  public getAllByParentId(yearId: number): Observable<Page<StudyGroupForPage>> {
     return this.http.get<Page<StudyGroupForPage>>(`${this.parentUrl}/${yearId}/groups`);
   }
 
-  public getAllForPage(yearId: number, page: number): Observable<Page<StudyGroupForPage>> {
+  public getAllByParentIdForPage(yearId: number, page: number): Observable<Page<StudyGroupForPage>> {
     return this.http.get<Page<StudyGroupForPage>>(`${this.parentUrl}/${yearId}/groups?page=${page}`);
   }
 

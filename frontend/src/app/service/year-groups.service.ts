@@ -17,10 +17,10 @@ implements ServiceWithGetAllChildren<StudyGroupForPage> {
     }
 
     public getAllByParentId(id: number): Observable<Page<StudyGroupForPage>> {
-        return this.getAll(id);
+        return this.getAllByParentId(id);
     }
     
     public getAllByParentIdForPage(id: number, page: number): Observable<Page<StudyGroupForPage>> {
-        return this.getAllForPage(id, page);
+        return this.getAllByParentIdForPage(id, page);
     }
 }

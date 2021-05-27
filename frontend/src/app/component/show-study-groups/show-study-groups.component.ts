@@ -3,14 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CourseYearDetails } from 'src/app/entity/course-year-details';
-import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
-import { Page } from 'src/app/entity/page';
 import { StudyGroupForPage } from 'src/app/entity/study-group-for-page';
 import { CourseYearService } from 'src/app/service/course-year.service';
-import { YearGroupsService } from 'src/app/service/year-groups.service';
+import { StudyGroupService } from 'src/app/service/study-group.service';
 import { ModalDeleteStudyGroupComponent } from '../modal-delete-study-group/modal-delete-study-group.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-study-groups',
@@ -22,7 +19,7 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
   parentName: string = '';
   parentDate: string = '';
 
-  constructor(protected service: YearGroupsService, private parentService: CourseYearService,private dialog: MatDialog, 
+  constructor(protected service: StudyGroupService, private parentService: CourseYearService,private dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
       super(service, router, route);
       this.parentId = Number(this.route.snapshot.paramMap.get('id'));
