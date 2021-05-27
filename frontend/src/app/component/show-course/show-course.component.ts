@@ -5,51 +5,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseDetails } from 'src/app/entity/course-details';
 import { CourseService } from 'src/app/service/course.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
+import { ShowComponent } from '../show/show-component.component';
 
 @Component({
   selector: 'app-show-course',
   templateUrl: './show-course.component.html',
   styleUrls: ['./show-course.component.css']
 })
-export class ShowCourseComponent implements OnInit {
-  course: CourseDetails | undefined;
-  message: string = '';
-  id: number;
+export class ShowCourseComponent extends ShowComponent<CourseDetails> implements OnInit {
 
-  constructor(private courseService: CourseService, private route: ActivatedRoute, 
-    private dialog: MatDialog, private router: Router) {  
-      this.id = Number(this.route.snapshot.paramMap.get('id'));
+  constructor(protected courseService: CourseService, protected route: ActivatedRoute, 
+    private dialog: MatDialog, protected router: Router) {  
+      super(courseService, router, route);
      }
 
   ngOnInit(): void {
-    this.courseService.getById(this.id).subscribe(
-      (result: CourseDetails) => {
-        this.course = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
-  }
-
-  loadCourse(id: number): void {
-    this.router.navigate(['courses/'+id]);
-    this.courseService.getById(id).subscribe(
-      (result: CourseDetails) => {
-        this.course = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getElem();
   }
 
   delete(id: number, name: string) {

@@ -1,81 +1,81 @@
-<mat-card *ngIf="course">
+<mat-card *ngIf="elem">
     <mat-card-header>
         <div class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
-            <div class="initials">{{course.name.charAt(0)}}</div>
+            <div class="initials">{{elem.name.charAt(0)}}</div>
         </div>
         <mat-card-title class='title'>
-            {{course.name}}
+            {{elem.name}}
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
-                <button mat-menu-item [routerLink]="'/courses/' + course.id + '/edit'">
+                <button mat-menu-item [routerLink]="'/courses/' + elem.id + '/edit'">
                     <mat-icon>edit</mat-icon>
                     Edit
                 </button>
-                <button mat-menu-item (click)="delete(course.id, course.name)">
+                <button mat-menu-item (click)="delete(elem.id, elem.name)">
                     <mat-icon>delete</mat-icon>
                     Remove
                 </button>
             </mat-menu>
         </mat-card-title>
-        <mat-card-subtitle>code: <strong>{{course.courseCode}}</strong></mat-card-subtitle>
+        <mat-card-subtitle>code: <strong>{{elem.courseCode}}</strong></mat-card-subtitle>
 
     </mat-card-header>  
             
     <mat-card-content>
-        <div class='textWithIcon' *ngIf="!course.stationary">  
+        <div class='textWithIcon' *ngIf="!elem.stationary">  
             <mat-icon class="iconForTextWithIcon">laptop</mat-icon>
             <span class="spanForTextWithIcon">online course</span>
         </div>
-        <div class='textWithIcon' *ngIf="course.stationary">  
+        <div class='textWithIcon' *ngIf="elem.stationary">  
             <mat-icon class="iconForTextWithIcon">home</mat-icon>
             <span class="spanForTextWithIcon">stationary course</span>
         </div>
 
-        <p>Erasmus/ISCED: {{course.erasmusCode}}/{{course.iscedCode}}</p>
-        <p>ECTS: {{course.ects}}</p>
-        <p>Language: {{course.language}}</p>
-        <p *ngIf="course.programs.length > 0">
+        <p>Erasmus/ISCED: {{elem.erasmusCode}}/{{elem.iscedCode}}</p>
+        <p>ECTS: {{elem.ects}}</p>
+        <p>Language: {{elem.language}}</p>
+        <p *ngIf="elem.programs.length > 0">
             Programs:
-            <button mat-button *ngFor="let program of course.programs" [routerLink]="'/programs/' + program.id">
+            <button mat-button *ngFor="let program of elem.programs" [routerLink]="'/programs/' + program.id">
                 {{program.name}}
             </button>
         </p>
-        <p *ngIf="course.prerequisites.length > 0">
+        <p *ngIf="elem.prerequisites.length > 0">
             Prerequisites:
-            <button mat-button *ngFor="let prerequisite of course.prerequisites" (click)="loadCourse(prerequisite.id)">
+            <button mat-button *ngFor="let prerequisite of elem.prerequisites" (click)="loadCourse(prerequisite.id)">
                 {{prerequisite.name}}
             </button>
         </p>
 
-        <p *ngIf="course.organizer">
+        <p *ngIf="elem.organizer">
             Organizer:
-            <button mat-button [routerLink]="'/institutes/' + course.organizer.id">
-                {{course.organizer.name}}
+            <button mat-button [routerLink]="'/institutes/' + elem.organizer.id">
+                {{elem.organizer.name}}
             </button>
         </p>
 
         <h3>Short Description</h3>
-        <div>{{course.shortDescription}}</div>
+        <div>{{elem.shortDescription}}</div>
         <h3>Full Description</h3>
-        <div>{{course.description}}</div>
+        <div>{{elem.description}}</div>
         <h3>Assesment Rules</h3>
-        <div>{{course.assessmentRules}}</div>
+        <div>{{elem.assessmentRules}}</div>
         <h3>Effects</h3>
-        <div>{{course.effects}}</div>
+        <div>{{elem.effects}}</div>
         <h3>Requirements</h3>
-        <div>{{course.requirements}}</div>
+        <div>{{elem.requirements}}</div>
         
         
     </mat-card-content>
 
     <mat-card-actions>
-        <button mat-button color="primary" [routerLink]="'/courses/' + course.id + '/literature'">
+        <button mat-button color="primary" [routerLink]="'/courses/' + elem.id + '/literature'">
             <mat-icon>book</mat-icon>
             LITERATURE
         </button>
-        <button mat-button color="primary" [routerLink]="'/courses/' + course.id + '/years'">
+        <button mat-button color="primary" [routerLink]="'/courses/' + elem.id + '/years'">
             <mat-icon>school</mat-icon>
             YEARS
         </button>
