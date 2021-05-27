@@ -5,8 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseForPage } from 'src/app/entity/course-for-page';
 import { Institute } from 'src/app/entity/institute';
 import { Page } from 'src/app/entity/page';
+import { InstituteCoursesAdapterService } from 'src/app/service/institute-courses-adapter.service';
 import { InstituteService } from 'src/app/service/institute.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -14,30 +16,18 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-institute-courses.component.html',
   styleUrls: ['./show-institute-courses.component.css']
 })
-export class ShowInstituteCoursesComponent extends PageableComponent<CourseForPage> implements OnInit {
+export class ShowInstituteCoursesComponent extends  PageableGetAllChildrenComponent<CourseForPage> implements OnInit {
   institute: Institute | undefined;
   
-  constructor(private instituteService: InstituteService, private dialog: MatDialog,
-    private route: ActivatedRoute, private router: Router) { 
-      super();
+  constructor(protected service: InstituteCoursesAdapterService, private dialog: MatDialog,
+    protected route: ActivatedRoute, protected router: Router) { 
+      super(service, router, route);
     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.instituteService.getAllCourses(id).subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getFirstPage();
 
-    this.instituteService.getById(id).subscribe(
+    this.service.getParentById(this.id).subscribe(
       (result: Institute) => {
         this.institute = result;
       },
@@ -49,22 +39,6 @@ export class ShowInstituteCoursesComponent extends PageableComponent<CourseForPa
         this.message = error.error.message;
       }
     );
-  }
-
-  getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.instituteService.getAllCoursesForPage(id, page).subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
   }
 
   delete(id: number, name: string) {

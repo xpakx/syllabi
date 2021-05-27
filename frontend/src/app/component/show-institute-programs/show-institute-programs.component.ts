@@ -6,6 +6,7 @@ import { Institute } from 'src/app/entity/institute';
 import { Page } from 'src/app/entity/page';
 import { ProgramForPage } from 'src/app/entity/program-for-page';
 import { InstituteCoursesAdapterService } from 'src/app/service/institute-courses-adapter.service';
+import { InstituteProgramsAdapterService } from 'src/app/service/institute-programs-adapter.service';
 import { InstituteService } from 'src/app/service/institute.service';
 import { ModalProgramDeleteComponent } from '../modal-program-delete/modal-program-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
@@ -19,7 +20,7 @@ import { PageableComponent } from '../pageable/pageable.component';
 export class ShowInstituteProgramsComponent extends PageableGetAllChildrenComponent<ProgramForPage> implements OnInit {
   institute: Institute | undefined;
   
-  constructor(protected service: InstituteCoursesAdapterService, private dialog: MatDialog,
+  constructor(protected service: InstituteProgramsAdapterService, private dialog: MatDialog,
     protected route: ActivatedRoute, protected router: Router) {  
       super(service, router, route);
     }
