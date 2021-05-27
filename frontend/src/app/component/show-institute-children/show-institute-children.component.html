@@ -1,4 +1,5 @@
-<h2>Institutes</h2> 
+<h2 *ngIf="institute">Subinstitutes of {{institute.name}}</h2> 
+
 
 <button mat-button routerLink="/institutes/add">
     <mat-icon>add_circle</mat-icon>

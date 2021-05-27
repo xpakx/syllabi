@@ -2,10 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Institute } from 'src/app/entity/institute';
 import { InstituteForPage } from 'src/app/entity/institute-for-page';
 import { Page } from 'src/app/entity/page';
+import { InstituteChildrenAdapterService } from 'src/app/service/institute-children-adapter.service';
 import { InstituteService } from 'src/app/service/institute.service';
 import { ModalDeleteInstituteComponent } from '../modal-delete-institute/modal-delete-institute.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -13,18 +16,20 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-institute-children.component.html',
   styleUrls: ['./show-institute-children.component.css']
 })
-export class ShowInstituteChildrenComponent extends PageableComponent<InstituteForPage> implements OnInit {
-  
-  constructor(private instituteService: InstituteService, private dialog: MatDialog,
-    private router: Router, private route: ActivatedRoute) { 
-      super();
+export class ShowInstituteChildrenComponent extends PageableGetAllChildrenComponent<InstituteForPage> implements OnInit {
+  institute: Institute | undefined;
+
+  constructor(protected service: InstituteChildrenAdapterService, private dialog: MatDialog,
+    protected router: Router, protected route: ActivatedRoute) { 
+      super(service, router, route);
     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.instituteService.getAllChildren(id).subscribe(
-      (response: Page<InstituteForPage>) => {
-        this.printPage(response);
+    this.getFirstPage();
+
+    this.service.getParentById(this.id).subscribe(
+      (result: Institute) => {
+        this.institute = result;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -34,22 +39,6 @@ export class ShowInstituteChildrenComponent extends PageableComponent<InstituteF
         this.message = error.error.message;
       }
     );
-  }
-
-  getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.instituteService.getAllChildrenForPage(id, page).subscribe(
-      (response: Page<InstituteForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    )
   }
   
   delete(id: number, name: string) {
