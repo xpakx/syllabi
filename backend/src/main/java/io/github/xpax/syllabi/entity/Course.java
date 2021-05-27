@@ -51,4 +51,11 @@ public class Course {
             inverseJoinColumns={@JoinColumn(name="prerequisite_id")})
     private Set<Course> prerequisites;
     private String requirements;
+
+    @JsonIgnore
+    @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name="course_semester",
+            joinColumns={@JoinColumn(name="course_id")},
+            inverseJoinColumns={@JoinColumn(name="semester_id")})
+    private Set<Semester> semesters;
 }
