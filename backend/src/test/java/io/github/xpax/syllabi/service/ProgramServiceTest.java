@@ -79,11 +79,6 @@ class ProgramServiceTest {
                 .build();
         request = new ProgramRequest();
         request.setName("Philosophy");
-        List<Integer> courses = new ArrayList<>();
-        courses.add(1);
-        courses.add(2);
-        courses.add(3);
-        request.setCoursesId(courses);
         request.setOrganizerId(9);
         page = Page.empty();
     }
@@ -94,12 +89,6 @@ class ProgramServiceTest {
 
     @Test
     void shouldAddNewProgram() {
-        given(courseRepository.getOne(1))
-                .willReturn(course1);
-        given(courseRepository.getOne(2))
-                .willReturn(course2);
-        given(courseRepository.getOne(3))
-                .willReturn(course3);
         given(instituteRepository.getOne(9))
                 .willReturn(organizer);
         injectMocks();
@@ -116,15 +105,6 @@ class ProgramServiceTest {
         assertNotNull(addedProgram.getOrganizer());
         assertEquals(9, addedProgram.getOrganizer().getId());
         assertEquals("Institute of Philosophy", addedProgram.getOrganizer().getName());
-
-        assertNotNull(addedProgram.getCourses());
-        assertThat(addedProgram.getCourses(), hasSize(3));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(1))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(2))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(3))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Ethics"))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Epistemology"))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Metaphysics"))));
 
         assertEquals("Philosophy", addedProgram.getName());
         assertNull(addedProgram.getId());
@@ -161,12 +141,6 @@ class ProgramServiceTest {
 
     @Test
     void shouldUpdateProgram() {
-        given(courseRepository.getOne(1))
-                .willReturn(course1);
-        given(courseRepository.getOne(2))
-                .willReturn(course2);
-        given(courseRepository.getOne(3))
-                .willReturn(course3);
         given(instituteRepository.getOne(9))
                 .willReturn(organizer);
         given(programRepository.findById(1))
@@ -185,15 +159,6 @@ class ProgramServiceTest {
         assertNotNull(addedProgram.getOrganizer());
         assertEquals(9, addedProgram.getOrganizer().getId());
         assertEquals("Institute of Philosophy", addedProgram.getOrganizer().getName());
-
-        assertNotNull(addedProgram.getCourses());
-        assertThat(addedProgram.getCourses(), hasSize(3));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(1))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(2))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("id", equalTo(3))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Ethics"))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Epistemology"))));
-        assertThat(addedProgram.getCourses(), hasItem(hasProperty("name", equalTo("Metaphysics"))));
 
         assertEquals("Philosophy", addedProgram.getName());
         assertNotNull(addedProgram.getId());

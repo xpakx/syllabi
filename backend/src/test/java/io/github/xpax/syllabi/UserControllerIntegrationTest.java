@@ -166,7 +166,7 @@ class UserControllerIntegrationTest {
 
         Course linguisticsIntro = Course.builder()
                 .name("Introduction to Linguistics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(linguisticsIntro);
 

@@ -19,7 +19,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     <T> Page<T> findAllProjectedBy(Pageable page, Class<T> type);
 
     @EntityGraph(value = "CourseDetails", type = EntityGraph.EntityGraphType.FETCH,
-            attributePaths = {"programs.id", "programs.name", "prerequisites.id", "prerequisites.name", "organizer.id", "organizer.name"})
+            attributePaths = {"semesters.program.id", "semesters.program.name", "prerequisites.id", "prerequisites.name", "organizer.id", "organizer.name"})
     <T> Optional<T> findProjectedById(Integer courseId, Class<T> type);
 
     <T> Optional<T> getProjectedById(Integer courseId, Class<T> type);

@@ -33,8 +33,7 @@ public class ProgramService {
 
     public Program addNewProgram(ProgramRequest programRequest) {
         Institute institute = getInstitute(programRequest);
-        Set<Course> courseSet = getCourseSet(programRequest);
-        Program programToAdd = buildProgram(institute, courseSet, programRequest.getName()).description(programRequest.getDescription()).build();
+        Program programToAdd = buildProgram(institute, programRequest.getName()).description(programRequest.getDescription()).build();
         return programRepository.save(programToAdd);
     }
 
@@ -49,14 +48,12 @@ public class ProgramService {
 
     public Program updateProgram(ProgramRequest programRequest, Integer programId) {
         Institute institute = getInstitute(programRequest);
-        Set<Course> courseSet = getCourseSet(programRequest);
         Program programToUpdate = programRepository.findById(programId)
                 .orElseThrow(() -> new NotFoundException("No program with id "+programId+" found!"));
 
         programToUpdate.setDescription(programRequest.getDescription());
         programToUpdate.setOrganizer(institute);
         programToUpdate.setName(programRequest.getName());
-        programToUpdate.setCourses(courseSet);
         return programRepository.save(programToUpdate);
     }
 
@@ -71,24 +68,9 @@ public class ProgramService {
             return null;
     }
 
-    private Set<Course> getCourseSet(ProgramRequest programRequest) {
-        return getCourses(programRequest)
-                .stream()
-                .map(courseRepository::getOne)
-                .collect(Collectors.toSet());
-    }
-
-    private List<Integer> getCourses(ProgramRequest programRequest) {
-        if(programRequest.getCoursesId() != null)
-            return programRequest.getCoursesId();
-        else
-            return new ArrayList<>();
-    }
-
-    private Program.ProgramBuilder buildProgram(Institute institute, Set<Course> courseSet, String name) {
+    private Program.ProgramBuilder buildProgram(Institute institute, String name) {
         return Program.builder()
                 .organizer(institute)
-                .name(name)
-                .courses(courseSet);
+                .name(name);
     }
 }

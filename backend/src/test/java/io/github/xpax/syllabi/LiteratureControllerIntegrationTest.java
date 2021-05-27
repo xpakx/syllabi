@@ -93,7 +93,7 @@ class LiteratureControllerIntegrationTest {
     private Integer addCourseLiteratureAndReturnCourseId() {
         Course course = Course.builder()
                 .name("Philosophy of Science")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         Integer courseId = courseRepository.save(course).getId();
 
@@ -130,7 +130,7 @@ class LiteratureControllerIntegrationTest {
     private Integer addCourseLiteratureAndReturnLiteratureId() {
         Course course = Course.builder()
                 .name("Philosophy of Science")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course);
 
@@ -178,7 +178,7 @@ class LiteratureControllerIntegrationTest {
     private Integer addGroupLiteratureAndReturnGroupId() {
         Course course = Course.builder()
                 .name("Philosophy of Science")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course);
         CourseYear year = CourseYear.builder()
@@ -224,7 +224,7 @@ class LiteratureControllerIntegrationTest {
     private Integer addGroupLiteratureAndReturnLiteratureId() {
         Course course = Course.builder()
                 .name("Philosophy of Science")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course);
 

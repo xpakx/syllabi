@@ -84,7 +84,7 @@ class StudyGroupControllerIntegrationTest {
     private Integer addGroup() {
         Course course = Course.builder()
                 .name("Introduction to Linguistics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course);
 

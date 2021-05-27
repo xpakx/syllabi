@@ -9,7 +9,6 @@ import java.util.List;
 @Setter
 public class ProgramRequest {
     private Integer organizerId;
-    private List<Integer> coursesId;
     private String name;
     private String description;
 }

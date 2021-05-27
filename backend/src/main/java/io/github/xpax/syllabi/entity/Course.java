@@ -39,13 +39,6 @@ public class Course {
 
     @JsonIgnore
     @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name="course_program",
-            joinColumns={@JoinColumn(name="course_id")},
-            inverseJoinColumns={@JoinColumn(name="program_id")})
-    private Set<Program> programs;
-
-    @JsonIgnore
-    @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name="prerequisites",
             joinColumns={@JoinColumn(name="child_id")},
             inverseJoinColumns={@JoinColumn(name="prerequisite_id")})

@@ -93,24 +93,24 @@ class CourseControllerIntegrationTest {
     private Integer addCourses() {
         Course course1 = Course.builder()
                 .name("Introduction to Cognitive Science")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course1);
         Course course2 = Course.builder()
                 .name("Pragmatics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         int courseId = courseRepository.save(course2).getId();
         Course course3 = Course.builder()
                 .name("Logic I")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course3);
 
         for (int i = 4; i <= 25; i++) {
             Course dummyCourse = Course.builder()
                     .name("Dummy Course #" + i)
-                    .programs(new HashSet<>())
+                    .semesters(new HashSet<>())
                     .build();
             courseRepository.save(dummyCourse);
         }
@@ -121,7 +121,7 @@ class CourseControllerIntegrationTest {
     private Integer addCourseAndYears() {
         Course course = Course.builder()
                 .name("Introduction to Cognitive Science")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         Integer courseId = courseRepository.save(course).getId();
 

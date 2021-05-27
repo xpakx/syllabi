@@ -95,19 +95,19 @@ class CourseYearControllerIntegrationTest {
     private Integer addCoursesAndYears() {
         Course linguisticsIntro = Course.builder()
                 .name("Introduction to Linguistics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(linguisticsIntro);
 
         Course acousticPhonetics = Course.builder()
                 .name("Acoustic Phonetics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(acousticPhonetics);
 
         Course languageEvolution = Course.builder()
                 .name("Language Evolution")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(languageEvolution);
 
@@ -172,7 +172,7 @@ class CourseYearControllerIntegrationTest {
     private Integer addCourseAndYear() {
         Course linguisticsIntro = Course.builder()
                 .name("Introduction to Linguistics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(linguisticsIntro);
 
@@ -199,7 +199,7 @@ class CourseYearControllerIntegrationTest {
     private Integer addCourseAndYearAndGroups() {
         Course linguisticsIntro = Course.builder()
                 .name("Introduction to Linguistics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(linguisticsIntro);
 

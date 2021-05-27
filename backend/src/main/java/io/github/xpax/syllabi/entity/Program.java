@@ -26,6 +26,9 @@ public class Program {
     private Institute organizer;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "programs")
-    private Set<Course> courses;
+    @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name="program_semester",
+            joinColumns={@JoinColumn(name="program_id")},
+            inverseJoinColumns={@JoinColumn(name="semester_id")})
+    private Set<Semester> semesters;
 }

@@ -121,19 +121,19 @@ class InstituteControllerIntegrationTest {
 
         Course course1 = Course.builder()
                 .name("Ethics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .organizer(institute1)
                 .build();
         courseRepository.save(course1);
         Course course2 = Course.builder()
                 .name("Epistemology")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .organizer(institute1)
                 .build();
         courseRepository.save(course2);
         Course course3 = Course.builder()
                 .name("Metaphysics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .organizer(institute1)
                 .build();
         courseRepository.save(course3);
@@ -141,7 +141,7 @@ class InstituteControllerIntegrationTest {
         for(int i = 4; i<=25; i++) {
             Course dummyCourse = Course.builder()
                     .name("Dummy Course #"+i)
-                    .programs(new HashSet<>())
+                    .semesters(new HashSet<>())
                     .organizer(institute1)
                     .build();
             courseRepository.save(dummyCourse);

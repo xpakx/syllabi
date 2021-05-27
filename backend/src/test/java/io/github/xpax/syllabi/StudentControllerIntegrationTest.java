@@ -128,7 +128,7 @@ class StudentControllerIntegrationTest {
     private Integer addStudyGroup() {
         Course course = Course.builder()
                 .name("Introduction to Linguistics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course);
 
@@ -170,7 +170,7 @@ class StudentControllerIntegrationTest {
     private Integer addCourseYear() {
         Course course = Course.builder()
                 .name("Introduction to Linguistics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courseRepository.save(course);
 

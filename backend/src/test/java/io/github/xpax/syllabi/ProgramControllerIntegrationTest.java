@@ -114,7 +114,6 @@ class ProgramControllerIntegrationTest {
 
         Program program = Program.builder()
                 .name("Cognitive Science")
-                .courses(courses)
                 .build();
         program = programRepository.save(program);
         Semester semester = Semester.builder()
