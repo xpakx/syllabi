@@ -59,7 +59,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   }
 
   getAllPage(id: number, page: number): void {
-    this.service.getAllYearsForCourseForPage(id, page).subscribe(
+    this.service.getAllByParentIdForPage(id, page).subscribe(
       (response: Page<CourseYearForPage>) => {
         this.printPage(response);
       },

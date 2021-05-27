@@ -6,6 +6,7 @@ import { Literature } from "../entity/literature";
 import { LiteratureForPage } from "../entity/literature-for-page";
 import { LiteratureRequest } from "../entity/literature-request";
 import { Page } from "../entity/page";
+import { CrudWithParentService } from "./crud-with-parent.service";
 import { ServiceWithDelete } from "./service-with-delete";
 import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 
@@ -13,7 +14,7 @@ import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
     providedIn: 'root'
 })
 export class CourseLiteratureService
-implements ServiceWithDelete, ServiceWithGetAllChildren<LiteratureForPage> {
+implements CrudWithParentService<LiteratureForPage, Literature, LiteratureRequest, LiteratureRequest, Literature> {
     private url = environment.apiServerUrl;
 
     constructor(protected http: HttpClient) { }

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { CourseTypeRequest } from '../entity/course-type-request';
 import { CourseYear } from '../entity/course-year';
 import { CourseYearDetails } from '../entity/course-year-details';
 import { CourseYearForPage } from '../entity/course-year-for-page';
@@ -10,12 +11,14 @@ import { Page } from '../entity/page';
 import { StudyGroup } from '../entity/study-group';
 import { StudyGroupForPage } from '../entity/study-group-for-page';
 import { StudyGroupRequest } from '../entity/study-group-request';
+import { CrudWithParentService } from './crud-with-parent.service';
 import { ServiceWithDelete } from './service-with-delete';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseYearService implements ServiceWithDelete {
+export class CourseYearService 
+implements CrudWithParentService<CourseYearForPage, CourseYearDetails, CourseYearRequest, CourseYearRequest, CourseYear> { 
   private url = environment.apiServerUrl + "/years";
   private urlCourses = environment.apiServerUrl + "/courses";
 
@@ -25,19 +28,19 @@ export class CourseYearService implements ServiceWithDelete {
     return this.http.post<CourseYear>(`${this.urlCourses}/${courseId}/years`, year);
   }
 
-  public getAllYearsForCourse(id: number): Observable<Page<CourseYearForPage>> {
+  public getAllByParentId(id: number): Observable<Page<CourseYearForPage>> {
     return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years`);
   }
 
-  public getAllYearsForCourseForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
+  public getAllByParentIdForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
     return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years?page=${page}`);
   }
 
-  public getAllActiveYearsForCourse(id: number): Observable<Page<CourseYearForPage>> {
+  public getAllActiveByParentId(id: number): Observable<Page<CourseYearForPage>> {
     return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years/active`);
   }
 
-  public getAllActiveYearsForCourseForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
+  public getAllActiveByParentIdForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
     return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years/active?page=${page}`);
   }
 
