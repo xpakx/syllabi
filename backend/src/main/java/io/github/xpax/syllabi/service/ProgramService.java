@@ -50,10 +50,13 @@ public class ProgramService {
     public Program updateProgram(ProgramRequest programRequest, Integer programId) {
         Institute institute = getInstitute(programRequest);
         Set<Course> courseSet = getCourseSet(programRequest);
-        Program programToUpdate = buildProgram(institute, courseSet, programRequest.getName())
-                .description(programRequest.getDescription())
-                .id(programId)
-                .build();
+        Program programToUpdate = programRepository.findById(programId)
+                .orElseThrow(() -> new NotFoundException("No program with id "+programId+" found!"));
+
+        programToUpdate.setDescription(programRequest.getDescription());
+        programToUpdate.setOrganizer(institute);
+        programToUpdate.setName(programRequest.getName());
+        programToUpdate.setCourses(courseSet);
         return programRepository.save(programToUpdate);
     }
 

@@ -105,6 +105,8 @@ class CourseTypeServiceTest {
 
     @Test
     void shouldUpdateCourseType() {
+        given(courseTypeRepository.findById(anyInt()))
+                .willReturn(Optional.of(type));
         injectMocks();
 
         courseTypeService.updateCourseType(request, 7);

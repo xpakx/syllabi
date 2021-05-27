@@ -42,6 +42,7 @@ class InstituteServiceTest {
     private InstituteService instituteService;
     private Page<InstituteForPage> page;
     private Institute institute;
+    private Institute institute2;
     private InstituteDetails instituteDet;
     private InstituteRequest request;
     private Page<CourseForPage> coursePage;
@@ -55,6 +56,10 @@ class InstituteServiceTest {
         institute = Institute.builder()
                 .id(3)
                 .name("Institute of Computer Science")
+                .build();
+        institute2 = Institute.builder()
+                .id(4)
+                .name("Institute of Artificial Intelligence")
                 .build();
         instituteDet = factory.createProjection(InstituteDetails.class, institute);
         request = new InstituteRequest();
@@ -148,6 +153,8 @@ class InstituteServiceTest {
     void shouldUpdateInstitute() {
         given(instituteRepository.getOne(3))
                 .willReturn(institute);
+        given(instituteRepository.findById(4))
+                .willReturn(Optional.of(institute2));
         injectMocks();
 
         instituteService.updateInstitute(request, 4);

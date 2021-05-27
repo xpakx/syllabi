@@ -51,6 +51,7 @@ class CourseServiceTest {
     private CourseDetails course;
     private Course algorithms;
     private Course computation;
+    private Course courseWithId3;
     private Program program;
     private NewCourseRequest request;
     private UpdateCourseRequest updateRequest;
@@ -72,13 +73,13 @@ class CourseServiceTest {
                 .build();
 
         coursePage = Page.empty();
-        Course course = Course.builder()
+        courseWithId3 = Course.builder()
                 .id(3)
                 .name("Artificial Intelligence")
                 .build();
 
-        this.course = factory.createProjection(CourseDetails.class, course);
-        this.courseMin = factory.createProjection(CourseSummary.class, course);
+        this.course = factory.createProjection(CourseDetails.class, courseWithId3);
+        this.courseMin = factory.createProjection(CourseSummary.class, courseWithId3);
 
         program = Program.builder()
                 .id(0)
@@ -189,6 +190,8 @@ class CourseServiceTest {
                 .willReturn(algorithms);
         given(courseRepository.getOne(2))
                 .willReturn(computation);
+        given(courseRepository.findById(3))
+                .willReturn(Optional.of(courseWithId3));
         given(programRepository.getOne(0))
                 .willReturn(program);
         injectMocks();

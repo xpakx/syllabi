@@ -45,18 +45,33 @@ public class CourseService {
     }
 
     public Course updateCourse(UpdateCourseRequest courseRequest, Integer courseId) {
+        Course courseToUpdate = courseRepository.findById(courseId)
+                .orElseThrow( () -> new NotFoundException("Course with id " + courseId + " does not exist"));
         Institute institute = getInstitute(courseRequest);
-        Course courseToUpdate = buildCourse(courseRequest, institute)
-                .id(courseId)
-                .prerequisites(getPrerequisites(courseRequest)
-                        .stream()
-                        .map(courseRepository::getOne)
-                        .collect(Collectors.toSet()))
-                .programs(getPrograms(courseRequest)
-                        .stream()
-                        .map(programRepository::getOne)
-                        .collect(Collectors.toSet()))
-                .build();
+
+        courseToUpdate.setPrerequisites(getPrerequisites(courseRequest)
+                .stream()
+                .map(courseRepository::getOne)
+                .collect(Collectors.toSet()));
+        courseToUpdate.setPrograms(getPrograms(courseRequest)
+                .stream()
+                .map(programRepository::getOne)
+                .collect(Collectors.toSet()));
+        courseToUpdate.setCourseCode(courseRequest.getCourseCode());
+        courseToUpdate.setIscedCode(courseRequest.getIscedCode());
+        courseToUpdate.setErasmusCode(courseRequest.getErasmusCode());
+        courseToUpdate.setName(courseRequest.getName());
+        courseToUpdate.setEcts(courseRequest.getEcts());
+        courseToUpdate.setLanguage(courseRequest.getLanguage());
+        courseToUpdate.setFacultative(courseRequest.getFacultative());
+        courseToUpdate.setStationary(courseRequest.getStationary());
+        courseToUpdate.setShortDescription(courseRequest.getShortDescription());
+        courseToUpdate.setDescription(courseRequest.getDescription());
+        courseToUpdate.setAssessmentRules(courseRequest.getAssessmentRules());
+        courseToUpdate.setEffects(courseRequest.getEffects());
+        courseToUpdate.setOrganizer(institute);
+        courseToUpdate.setRequirements(courseRequest.getRequirements());
+
         return courseRepository.save(courseToUpdate);
     }
 

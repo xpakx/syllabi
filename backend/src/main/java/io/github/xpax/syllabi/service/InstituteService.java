@@ -47,15 +47,14 @@ public class InstituteService {
 
     public Institute updateInstitute(InstituteRequest instituteRequest, Integer instituteId) {
         Institute parent = getParentInstitute(instituteRequest);
-        Institute institute = Institute.builder()
-                .id(instituteId)
-                .parent(parent)
-                .code(instituteRequest.getCode())
-                .name(instituteRequest.getName())
-                .url(instituteRequest.getUrl())
-                .phone(instituteRequest.getPhone())
-                .address(instituteRequest.getAddress())
-                .build();
+        Institute institute = instituteRepository.findById(instituteId)
+                .orElseThrow(() -> new NotFoundException("Institute with id "+instituteId+" not found!"));
+        institute.setParent(parent);
+        institute.setCode(instituteRequest.getCode());
+        institute.setName(instituteRequest.getName());
+        institute.setUrl(instituteRequest.getUrl());
+        institute.setPhone(instituteRequest.getPhone());
+        institute.setAddress(instituteRequest.getAddress());
         return instituteRepository.save(institute);
     }
 

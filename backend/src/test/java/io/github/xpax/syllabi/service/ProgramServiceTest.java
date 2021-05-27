@@ -169,9 +169,11 @@ class ProgramServiceTest {
                 .willReturn(course3);
         given(instituteRepository.getOne(9))
                 .willReturn(organizer);
+        given(programRepository.findById(1))
+                .willReturn(Optional.of(program));
         injectMocks();
 
-        programService.updateProgram(request, 3);
+        programService.updateProgram(request, 1);
 
         ArgumentCaptor<Program> programCaptor = ArgumentCaptor.forClass(Program.class);
         then(programRepository)
@@ -195,7 +197,7 @@ class ProgramServiceTest {
 
         assertEquals("Philosophy", addedProgram.getName());
         assertNotNull(addedProgram.getId());
-        assertEquals(3, addedProgram.getId());
+        assertEquals(1, addedProgram.getId());
     }
 
     @Test

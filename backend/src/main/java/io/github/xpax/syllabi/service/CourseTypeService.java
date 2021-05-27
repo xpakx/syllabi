@@ -34,9 +34,10 @@ public class CourseTypeService {
     }
 
     public CourseType updateCourseType(CourseTypeRequest courseTypeRequest, Integer typeId) {
-        CourseType courseType = buildCourseType(courseTypeRequest)
-                .id(typeId)
-                .build();
+        CourseType courseType = courseTypeRepository.findById(typeId)
+                .orElseThrow(() -> new NotFoundException("Type with id "+typeId+" not found!"));
+
+        courseType.setName(courseTypeRequest.getName());
         return courseTypeRepository.save(courseType);
     }
 
