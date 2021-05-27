@@ -8,6 +8,7 @@ import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { StudyGroup } from 'src/app/entity/study-group';
 import { TeacherSummary } from 'src/app/entity/teacher-summary';
 import { CourseYearService } from 'src/app/service/course-year.service';
+import { StudyGroupService } from 'src/app/service/study-group.service';
 import { ModalCoordinatorsChoiceComponent } from '../modal-coordinators-choice/modal-coordinators-choice.component';
 import { ModalCourseTypeChoiceComponent } from '../modal-course-type-choice/modal-course-type-choice.component';
 
@@ -27,7 +28,8 @@ export class AddStudyGroupComponent implements OnInit {
   parentName: string = "";
   typeName: string = "Choose type";
 
-  constructor(private yearService: CourseYearService, private route: ActivatedRoute, 
+  constructor(private parentService: CourseYearService, private service: StudyGroupService,
+    private route: ActivatedRoute, 
     private fb: FormBuilder, private dialog: MatDialog,
     private router: Router) { 
       this.id = Number(this.route.snapshot.paramMap.get('id'));
@@ -40,7 +42,7 @@ export class AddStudyGroupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.yearService.getCourseYearById(this.id).subscribe(
+    this.parentService.getById(this.id).subscribe(
       (response: CourseYearDetails) => {
         this.parentName = response.parent.name;
       },
@@ -55,7 +57,7 @@ export class AddStudyGroupComponent implements OnInit {
 
   addStudyGroup(): void {
     if(this.form.valid && this.type) {
-      this.yearService.addNewStudyGroup(this.id, {
+      this.service.addNew(this.id, {
         description: this.form.controls.description.value,
         name: this.form.controls.name.value,
         studentLimit : this.form.controls.studentLimit.value,

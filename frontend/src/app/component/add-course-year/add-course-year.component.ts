@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseSummary } from 'src/app/entity/course-summary';
 import { CourseYear } from 'src/app/entity/course-year';
 import { TeacherSummary } from 'src/app/entity/teacher-summary';
+import { CourseYearService } from 'src/app/service/course-year.service';
 import { CourseService } from 'src/app/service/course.service';
 import { ModalCoordinatorsChoiceComponent } from '../modal-coordinators-choice/modal-coordinators-choice.component';
 
@@ -22,9 +23,9 @@ export class AddCourseYearComponent implements OnInit {
   coordinators: TeacherSummary[] = [];
   parentName: string = "";
 
-  constructor(private courseService: CourseService, private route: ActivatedRoute, 
-    private fb: FormBuilder, private dialog: MatDialog,
-    private router: Router) { 
+  constructor(private courseService: CourseService, private yearService: CourseYearService,
+    private route: ActivatedRoute, private fb: FormBuilder, 
+    private dialog: MatDialog, private router: Router) { 
     this.form = this.fb.group({
       description: ['', Validators.maxLength(600)],
       assessmentRules: ['', Validators.maxLength(300)],
@@ -36,7 +37,7 @@ export class AddCourseYearComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.courseService.getCourseByIdMin(id).subscribe(
+    this.courseService.getByIdMin(id).subscribe(
       (response: CourseSummary) => {
         this.parentName = response.name;
       },
@@ -52,7 +53,7 @@ export class AddCourseYearComponent implements OnInit {
   addCourseYear(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
-      this.courseService.addNewCourseYear(id, {
+      this.yearService.addNew(id, {
         description: this.form.controls.description.value,
         assessmentRules : this.form.controls.assessmentRules.value,
         commentary : this.form.controls.commentary.value,

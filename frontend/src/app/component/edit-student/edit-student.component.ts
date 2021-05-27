@@ -46,7 +46,7 @@ export class EditStudentComponent implements OnInit {
   editStudent(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
-      this.studentService.editStudent(id, {
+      this.studentService.edit(id, {
         name: this.form.controls.name.value,
         surname: this.form.controls.surname.value
       }).subscribe(

@@ -26,7 +26,7 @@ export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComp
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.courseService.getCourseByIdMin(this.id).subscribe(
+    this.courseService.getByIdMin(this.id).subscribe(
       (result: CourseSummary) => {
         this.course = result;
       },

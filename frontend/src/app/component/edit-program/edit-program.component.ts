@@ -34,7 +34,7 @@ export class EditProgramComponent implements OnInit {
 
   ngOnInit(): void { 
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.programService.getProgramById(id).subscribe(
+    this.programService.getById(id).subscribe(
       (result: Program) => {
         this.program = result;
         this.form = this.fb.group({
@@ -58,7 +58,7 @@ export class EditProgramComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
     if(this.form.valid && this.institute) {
-      this.programService.editProgram(id, {
+      this.programService.edit(id, {
         description: this.form.controls.description.value,
         name: this.form.controls.name.value,
         organizerId: this.institute,

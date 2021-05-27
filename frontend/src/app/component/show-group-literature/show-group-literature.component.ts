@@ -4,6 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Literature } from 'src/app/entity/literature';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
+import { GroupLiteratureService } from 'src/app/service/group-literature.service';
 import { LiteratureService } from 'src/app/service/literature.service';
 import { StudyGroupService } from 'src/app/service/study-group.service';
 import { ModalDeleteGroupLiteratureComponent } from '../modal-delete-group-literature/modal-delete-group-literature.component';
@@ -18,7 +19,7 @@ export class ShowGroupLiteratureComponent implements OnInit {
   message: string = '';
   group: StudyGroupSummary | undefined;
 
-  constructor(private literatureService: LiteratureService, private groupService: StudyGroupService,
+  constructor(private literatureService: GroupLiteratureService, private groupService: StudyGroupService,
     private route: ActivatedRoute, 
     private dialog: MatDialog, private router: Router) { }
 
@@ -38,7 +39,7 @@ export class ShowGroupLiteratureComponent implements OnInit {
     );
 
 
-    this.groupService.getStudyGroupByIdMin(id).subscribe(
+    this.groupService.getByIdMin(id).subscribe(
       (result: StudyGroupSummary) => {
         this.group = result;
       },

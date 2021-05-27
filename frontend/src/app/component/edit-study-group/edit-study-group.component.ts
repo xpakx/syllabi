@@ -34,7 +34,7 @@ export class EditStudyGroupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.groupService.getStudyGroupById(this.id).subscribe(
+    this.groupService.getById(this.id).subscribe(
       (result: StudyGroup) => {
         this.group = result;
         this.form = this.fb.group({
@@ -60,7 +60,7 @@ export class EditStudyGroupComponent implements OnInit {
   editStudyGroup(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid && this.type) {
-      this.groupService.editStudyGroup(id, {
+      this.groupService.edit(id, {
         name: this.form.controls.name.value,
         description: this.form.controls.description.value,
         studentLimit : this.form.controls.studentLimit.value,

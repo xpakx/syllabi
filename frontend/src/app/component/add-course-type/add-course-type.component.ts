@@ -30,7 +30,7 @@ export class AddCourseTypeComponent implements OnInit {
   addStudyGroup(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
-      this.typeService.addNewCourseType({
+      this.typeService.addNew({
         name: this.form.controls.name.value
       }).subscribe(
         (response: CourseType) => {

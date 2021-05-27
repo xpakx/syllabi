@@ -17,7 +17,7 @@ export class StudentService implements ServiceWithDelete {
 
   constructor(protected http: HttpClient) { }
 
-  public addNewStudent(id: number, student: StudentCreateRequest): Observable<Student> {
+  public addNew(id: number, student: StudentCreateRequest): Observable<Student> {
     return this.http.post<Student>(`${this.url}/users/${id}/student`, student);
   }
 
@@ -29,7 +29,7 @@ export class StudentService implements ServiceWithDelete {
     return this.http.delete<any>(`${this.url}/users/${id}/student`);
   }
 
-  public editStudent(id: number, student: StudentUpdateRequest): Observable<Student> {
+  public edit(id: number, student: StudentUpdateRequest): Observable<Student> {
     return this.http.put<Student>(`${this.url}/users/${id}/student`, student);
   }
 

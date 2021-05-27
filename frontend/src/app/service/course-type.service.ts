@@ -5,16 +5,22 @@ import { environment } from 'src/environments/environment';
 import { CourseType } from '../entity/course-type';
 import { CourseTypeRequest } from '../entity/course-type-request';
 import { Page } from '../entity/page';
+import { CrudService } from './crud.service';
 import { ServiceWithDelete } from './service-with-delete';
 import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseTypeService implements ServiceWithDelete, ServiceWithGetAll<CourseType> {
+export class CourseTypeService 
+implements CrudService<CourseType, CourseType, CourseTypeRequest, CourseTypeRequest, CourseType> {
   private url = environment.apiServerUrl + "/types";
 
   constructor(private http: HttpClient) { }
+
+  public addNew(type: CourseTypeRequest): Observable<CourseType> {
+    return this.http.post<CourseType>(`${this.url}`, type);
+  }
 
   public getAll(): Observable<Page<CourseType>> {
     return this.http.get<Page<CourseType>>(`${this.url}`);
@@ -24,20 +30,15 @@ export class CourseTypeService implements ServiceWithDelete, ServiceWithGetAll<C
     return this.http.get<Page<CourseType>>(`${this.url}?page=${page}`);
   }
 
-  public addNewCourseType(type: CourseTypeRequest): Observable<CourseType> {
-    return this.http.post<CourseType>(`${this.url}`, type);
+  public getById(id: number): Observable<CourseType> {
+    return this.http.get<CourseType>(`${this.url}/${id}`);
   }
 
-  public getCourseTypeById(id: number): Observable<CourseType> {
-    return this.http.get<CourseType>(`${this.url}/${id}`);
+  public edit(id: number, type: CourseTypeRequest): Observable<CourseType> {
+    return this.http.put<CourseType>(`${this.url}/${id}`, type);
   }
 
   public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
   }
-
-  public editCourseType(id: number, type: CourseTypeRequest): Observable<CourseType> {
-    return this.http.put<CourseType>(`${this.url}/${id}`, type);
-  }
-
 }

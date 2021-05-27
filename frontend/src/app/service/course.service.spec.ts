@@ -3,6 +3,7 @@ import { Course } from '../entity/course';
 
 import { CourseService } from './course.service';
 import { of, defer } from 'rxjs';
+import { CourseResponse } from '../entity/course-response';
 
 describe('CourseService', () => {
   let service: CourseService;
@@ -18,7 +19,8 @@ describe('CourseService', () => {
   });
 
   it('#addNewCourse should return added course', () => {
-    const token: Course = {courseCode: 'code',
+    const token: CourseResponse = {id: 0,
+      courseCode: 'code',
       iscedCode: 'code',
       erasmusCode: 'code',
       name: 'Dummy Course',
@@ -37,7 +39,7 @@ describe('CourseService', () => {
 
     httpClientSpy.post.and.returnValue(of(token));
 
-    service.addNewCourse(token).subscribe(
+    service.addNew(token).subscribe(
       response => expect(response).toEqual(token), fail
     );
     expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');

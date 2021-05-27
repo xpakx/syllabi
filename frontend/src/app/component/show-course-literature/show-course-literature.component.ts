@@ -4,6 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CourseSummary } from 'src/app/entity/course-summary';
 import { Literature } from 'src/app/entity/literature';
+import { CourseLiteratureService } from 'src/app/service/course-literature.service';
 import { CourseService } from 'src/app/service/course.service';
 import { LiteratureService } from 'src/app/service/literature.service';
 import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
@@ -18,7 +19,7 @@ export class ShowCourseLiteratureComponent implements OnInit {
   message: string = '';
   course: CourseSummary | undefined;
 
-  constructor(private literatureService: LiteratureService, private courseService: CourseService,
+  constructor(private literatureService: CourseLiteratureService, private courseService: CourseService,
     private route: ActivatedRoute, 
     private dialog: MatDialog, private router: Router) { }
 
@@ -38,7 +39,7 @@ export class ShowCourseLiteratureComponent implements OnInit {
     );
 
 
-    this.courseService.getCourseByIdMin(id).subscribe(
+    this.courseService.getByIdMin(id).subscribe(
       (result: CourseSummary) => {
         this.course = result;
       },

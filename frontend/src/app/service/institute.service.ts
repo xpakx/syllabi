@@ -8,16 +8,22 @@ import { InstituteForPage } from '../entity/institute-for-page';
 import { InstituteRequest } from '../entity/institute-request';
 import { Page } from '../entity/page';
 import { ProgramSummary } from '../entity/program-summary';
+import { CrudService } from './crud.service';
 import { ServiceWithDelete } from './service-with-delete';
 import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InstituteService implements ServiceWithDelete, ServiceWithGetAll<InstituteForPage> {
+export class InstituteService 
+implements CrudService<InstituteForPage, Institute, InstituteRequest, InstituteRequest, Institute> {
   private url = environment.apiServerUrl + "/institutes";
 
   constructor(private http: HttpClient) { }
+
+  public addNew(institute: InstituteRequest): Observable<Institute> {
+    return this.http.post<Institute>(`${this.url}`, institute);
+  }
 
   public getAll(): Observable<Page<InstituteForPage>> {
     return this.http.get<Page<InstituteForPage>>(`${this.url}`);
@@ -27,20 +33,16 @@ export class InstituteService implements ServiceWithDelete, ServiceWithGetAll<In
     return this.http.get<Page<InstituteForPage>>(`${this.url}?page=${page}`);
   }
 
-  public delete(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.url}/${id}`);
-  }
-
-  public getInstituteById(id: number): Observable<Institute> {
+  public getById(id: number): Observable<Institute> {
     return this.http.get<Institute>(`${this.url}/${id}`);
   }
 
-  public editInstitute(id: number, institute: InstituteRequest): Observable<Institute> {
+  public edit(id: number, institute: InstituteRequest): Observable<Institute> {
     return this.http.put<Institute>(`${this.url}/${id}`, institute);
   }
 
-  public addNewInstitute(institute: InstituteRequest): Observable<Institute> {
-    return this.http.post<Institute>(`${this.url}`, institute);
+  public delete(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.url}/${id}`);
   }
 
   public getAllCourses(id: number): Observable<Page<CourseForPage>> {

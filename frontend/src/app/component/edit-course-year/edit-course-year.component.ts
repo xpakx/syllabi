@@ -33,7 +33,7 @@ export class EditCourseYearComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.yearService.getCourseYearById(this.id).subscribe(
+    this.yearService.getById(this.id).subscribe(
       (result: CourseYearDetails) => {
         this.year = result;
         this.form = this.fb.group({
@@ -59,7 +59,7 @@ export class EditCourseYearComponent implements OnInit {
     if(this.form.valid && this.id && this.year) {
 
 
-      this.yearService.editCourseYear(this.id, {
+      this.yearService.edit(this.id, {
         description: this.form.controls.description.value,
         assessmentRules : this.form.controls.assessmentRules.value,
         commentary : this.form.controls.commentary.value,

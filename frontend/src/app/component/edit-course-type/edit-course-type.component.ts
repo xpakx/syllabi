@@ -24,7 +24,7 @@ export class EditCourseTypeComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.typeService.getCourseTypeById(id).subscribe(
+    this.typeService.getById(id).subscribe(
       (result: CourseType) => {
         this.type = result;
         this.form = this.fb.group({
@@ -44,7 +44,7 @@ export class EditCourseTypeComponent implements OnInit {
   addStudyGroup(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
-      this.typeService.editCourseType(id, {
+      this.typeService.edit(id, {
         name: this.form.controls.name.value
       }).subscribe(
         (response: CourseType) => {

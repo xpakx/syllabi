@@ -12,7 +12,7 @@ import { ServiceWithDelete } from './service-with-delete';
   providedIn: 'root'
 })
 export class LiteratureService {
-  private url = environment.apiServerUrl;
+  protected url = environment.apiServerUrl;
 
   constructor(protected http: HttpClient) { }
 
@@ -22,10 +22,6 @@ export class LiteratureService {
 
   public getAllCourseLiteratureForPage(id: number, page: number): Observable<Page<LiteratureForPage>> {
     return this.http.get<Page<LiteratureForPage>>(`${this.url}/courses/${id}/literature?page=${page}`);
-  }
-
-  public deleteCourseLiterature(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.url}/courses/literature/${id}`);
   }
 
   public getCourseLiteratureById(id: number): Observable<LiteratureForPage> {

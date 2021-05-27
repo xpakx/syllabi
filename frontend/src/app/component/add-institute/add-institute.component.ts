@@ -37,7 +37,7 @@ export class AddInstituteComponent implements OnInit {
   addInstitute(): void {
 
     if(this.form.valid) {
-      this.instituteService.addNewInstitute({
+      this.instituteService.addNew({
         name: this.form.controls.name.value,
         code: this.form.controls.code.value,
         url: this.form.controls.url.value,

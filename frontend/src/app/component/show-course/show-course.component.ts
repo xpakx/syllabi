@@ -22,7 +22,7 @@ export class ShowCourseComponent implements OnInit {
      }
 
   ngOnInit(): void {
-    this.courseService.getCourseById(this.id).subscribe(
+    this.courseService.getById(this.id).subscribe(
       (result: CourseDetails) => {
         this.course = result;
       },
@@ -38,7 +38,7 @@ export class ShowCourseComponent implements OnInit {
 
   loadCourse(id: number): void {
     this.router.navigate(['courses/'+id]);
-    this.courseService.getCourseById(id).subscribe(
+    this.courseService.getById(id).subscribe(
       (result: CourseDetails) => {
         this.course = result;
       },

@@ -20,7 +20,7 @@ export class ShowInstituteComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.instituteService.getInstituteById(id).subscribe(
+    this.instituteService.getById(id).subscribe(
       (result: Institute) => {
         this.institute = result;
       },
@@ -35,7 +35,7 @@ export class ShowInstituteComponent implements OnInit {
   }
 
   loadCourse(id: number): void {
-    this.instituteService.getInstituteById(id).subscribe(
+    this.instituteService.getById(id).subscribe(
       (result: Institute) => {
         this.institute = result;
       },

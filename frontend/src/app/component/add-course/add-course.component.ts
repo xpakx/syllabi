@@ -44,7 +44,7 @@ export class AddCourseComponent implements OnInit {
 
   addCourse(): void {
     if(this.form.valid) {
-      this.courseService.addNewCourse({
+      this.courseService.addNew({
         'name': this.form.controls.name.value,
         'courseCode': this.form.controls.courseCode.value,
         'iscedCode': this.form.controls.iscedCode.value,

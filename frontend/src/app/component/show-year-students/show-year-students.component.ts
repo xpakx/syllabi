@@ -31,7 +31,7 @@ export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<S
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.yearService.getCourseYearById(this.id).subscribe(
+    this.yearService.getById(this.id).subscribe(
       (result: CourseYearDetails) => {
         this.yearName = result.parent.name;  
         this.yearDate = new Date(result.startDate).getFullYear() + '/' +

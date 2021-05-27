@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Literature } from 'src/app/entity/literature';
+import { GroupLiteratureService } from 'src/app/service/group-literature.service';
 import { LiteratureService } from 'src/app/service/literature.service';
 
 @Component({
@@ -17,7 +18,7 @@ export class AddGroupLiteratureComponent implements OnInit {
   public message: string = '';
   private formSubmitAttempt: boolean = false;
 
-  constructor(private literatureService: LiteratureService, private fb: FormBuilder, 
+  constructor(private literatureService: GroupLiteratureService, private fb: FormBuilder, 
     private dialog: MatDialog, private router: Router,
     private route: ActivatedRoute) { 
     this.form = this.fb.group({

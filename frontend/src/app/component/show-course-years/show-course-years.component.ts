@@ -6,6 +6,7 @@ import { CourseSummary } from 'src/app/entity/course-summary';
 import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
 import { Page } from 'src/app/entity/page';
 import { CourseYearsService } from 'src/app/service/course-years.service';
+import { CourseService } from 'src/app/service/course.service';
 import { ModalDeleteCourseYearComponent } from '../modal-delete-course-year/modal-delete-course-year.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -19,7 +20,8 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   parentName: string = '';
   parentId: number;
 
-  constructor(protected service: CourseYearsService, private dialog: MatDialog, 
+  constructor(protected service: CourseYearsService, protected parentService: CourseService,
+    private dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
       super(service, router, route);
       this.parentId = this.id;
@@ -28,7 +30,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.service.getCourseByIdMin(this.id).subscribe(
+    this.parentService.getByIdMin(this.id).subscribe(
       (response: CourseSummary) => {
         this.parentName = response.name;
       },

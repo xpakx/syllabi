@@ -40,7 +40,7 @@ export class EditCourseComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.courseService.getCourseById(this.id).subscribe(
+    this.courseService.getById(this.id).subscribe(
       (result: CourseDetails) => {
         this.course = result;
         this.form = this.fb.group({
@@ -77,7 +77,7 @@ export class EditCourseComponent implements OnInit {
       let prereq = this.prerequisites ? this.prerequisites.map((p) => p.id) : undefined;
       let prog = this.programs ? this.programs.map((p) => p.id) : undefined;
 
-      this.courseService.editCourse(this.id, {
+      this.courseService.edit(this.id, {
         'name': this.form.controls.name.value,
         'courseCode': this.form.controls.courseCode.value,
         'iscedCode': this.form.controls.iscedCode.value,

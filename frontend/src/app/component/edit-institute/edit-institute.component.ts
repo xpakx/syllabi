@@ -29,7 +29,7 @@ export class EditInstituteComponent implements OnInit {
   ngOnInit(): void {
     
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.instituteService.getInstituteById(id).subscribe(
+    this.instituteService.getById(id).subscribe(
       (result: Institute) => {
         this.institute = result;
         this.form = this.fb.group({
@@ -56,7 +56,7 @@ export class EditInstituteComponent implements OnInit {
 
     if(this.form.valid) {
       const id = Number(this.route.snapshot.paramMap.get('id'));
-      this.instituteService.editInstitute(id, {
+      this.instituteService.edit(id, {
         name: this.form.controls.name.value,
         code: this.form.controls.code.value,
         url: this.form.controls.url.value,

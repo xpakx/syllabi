@@ -22,7 +22,7 @@ export class ShowStudyGroupComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.groupService.getStudyGroupById(this.id).subscribe(
+    this.groupService.getById(this.id).subscribe(
       (result: StudyGroup) => {
         this.group = result;
       },

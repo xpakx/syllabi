@@ -18,7 +18,7 @@ implements ServiceWithDelete, ServiceWithGetAllChildren<LiteratureForPage> {
     }
 
     public delete(id: number): Observable<any> {
-        return this.deleteCourseLiterature(id);
+        return this.http.delete<any>(`${this.url}/courses/literature/${id}`);
     }
 
     public getAllChildren(id: number): Observable<Page<LiteratureForPage>> {

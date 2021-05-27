@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Literature } from 'src/app/entity/literature';
+import { CourseLiteratureService } from 'src/app/service/course-literature.service';
 import { LiteratureService } from 'src/app/service/literature.service';
 
 @Component({
@@ -18,7 +19,7 @@ export class EditCourseLiteratureComponent implements OnInit {
   private formSubmitAttempt: boolean = false;
   literature!: Literature;
 
-  constructor(private literatureService: LiteratureService, private fb: FormBuilder, 
+  constructor(private literatureService: CourseLiteratureService, private fb: FormBuilder, 
     private dialog: MatDialog, private router: Router,
     private route: ActivatedRoute) {  }
 

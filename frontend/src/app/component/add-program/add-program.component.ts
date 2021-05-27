@@ -35,7 +35,7 @@ export class AddProgramComponent implements OnInit {
   addProgram(): void {
 
     if(this.form.valid && this.institute) {
-      this.programService.addNewProgram({
+      this.programService.addNew({
         description: this.form.controls.description.value,
         name: this.form.controls.name.value,
         organizerId: this.institute,

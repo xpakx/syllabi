@@ -14,16 +14,18 @@ import { CourseSummary } from '../entity/course-summary';
 import { environment } from 'src/environments/environment';
 import { ServiceWithDelete } from './service-with-delete';
 import { ServiceWithGetAll } from './service-with-get-all';
+import { CrudService } from './crud.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseService implements ServiceWithDelete, ServiceWithGetAll<CourseForPage> {
+export class CourseService 
+implements CrudService<CourseForPage, CourseDetails, Course, CourseEdit, CourseResponse> {
   private url = environment.apiServerUrl + "/courses";
 
   constructor(protected http: HttpClient) { }
 
-  public addNewCourse(course: Course): Observable<CourseResponse> {
+  public addNew(course: Course): Observable<CourseResponse> {
     return this.http.post<CourseResponse>(`${this.url}`, course);
   }
 
@@ -35,39 +37,19 @@ export class CourseService implements ServiceWithDelete, ServiceWithGetAll<Cours
     return this.http.get<Page<CourseForPage>>(`${this.url}?page=${page}`);
   }
 
-  public getCourseById(id: number): Observable<CourseDetails> {
+  public getById(id: number): Observable<CourseDetails> {
     return this.http.get<CourseDetails>(`${this.url}/${id}`);
   }
 
-  public getCourseByIdMin(id: number): Observable<CourseSummary> {
+  public getByIdMin(id: number): Observable<CourseSummary> {
     return this.http.get<CourseSummary>(`${this.url}/${id}/min`);
   }
 
-  public editCourse(id: number, course: CourseEdit): Observable<CourseResponse> {
+  public edit(id: number, course: CourseEdit): Observable<CourseResponse> {
     return this.http.put<CourseResponse>(`${this.url}/${id}`, course);
   }
 
   public delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
-  }
-
-  public getAllYearsForCourse(id: number): Observable<Page<CourseYearForPage>> {
-    return this.http.get<Page<CourseYearForPage>>(`${this.url}/${id}/years`);
-  }
-
-  public getAllYearsForCourseForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
-    return this.http.get<Page<CourseYearForPage>>(`${this.url}/${id}/years?page=${page}`);
-  }
-
-  public getAllActiveYearsForCourse(id: number): Observable<Page<CourseYearForPage>> {
-    return this.http.get<Page<CourseYearForPage>>(`${this.url}/${id}/years/active`);
-  }
-
-  public getAllActiveYearsForCourseForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
-    return this.http.get<Page<CourseYearForPage>>(`${this.url}/${id}/years/active?page=${page}`);
-  }
-
-  public addNewCourseYear(id: number, year: CourseYearRequest): Observable<CourseYear> {
-    return this.http.post<CourseYear>(`${this.url}/${id}/years`, year);
   }
 }

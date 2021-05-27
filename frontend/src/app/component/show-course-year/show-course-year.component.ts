@@ -22,7 +22,7 @@ export class ShowCourseYearComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.yearService.getCourseYearById(this.id).subscribe(
+    this.yearService.getById(this.id).subscribe(
       (result: CourseYearDetails) => {
         this.year = result;
       },

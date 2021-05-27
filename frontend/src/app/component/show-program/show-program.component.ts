@@ -22,7 +22,7 @@ export class ShowProgramComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.programService.getProgramById(id).subscribe(
+    this.programService.getById(id).subscribe(
       (result: Program) => {
         this.program = result;
       },
@@ -37,7 +37,7 @@ export class ShowProgramComponent implements OnInit {
   }
 
   loadCourse(id: number): void {
-    this.programService.getProgramById(id).subscribe(
+    this.programService.getById(id).subscribe(
       (result: Program) => {
         this.program = result;
       },

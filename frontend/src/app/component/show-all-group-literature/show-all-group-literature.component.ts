@@ -26,7 +26,7 @@ export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenCompo
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.groupService.getStudyGroupByIdMin(this.id).subscribe(
+    this.groupService.getByIdMin(this.id).subscribe(
       (result: StudyGroupSummary) => {
         this.group = result;
       },

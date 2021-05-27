@@ -7,13 +7,15 @@ import { Page } from '../entity/page';
 import { Program } from '../entity/program';
 import { ProgramForPage } from '../entity/program-for-page';
 import { ProgramRequest } from '../entity/program-request';
+import { CrudService } from './crud.service';
 import { ServiceWithDelete } from './service-with-delete';
 import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProgramService implements ServiceWithDelete, ServiceWithGetAll<ProgramForPage> {
+export class ProgramService 
+implements CrudService<ProgramForPage, Program, ProgramRequest, ProgramRequest, Program> {
   private url = environment.apiServerUrl + "/programs";
 
   constructor(private http: HttpClient) { }
@@ -26,7 +28,7 @@ export class ProgramService implements ServiceWithDelete, ServiceWithGetAll<Prog
     return this.http.get<Page<ProgramForPage>>(`${this.url}?page=${page}`);
   }
 
-  public addNewProgram(program: ProgramRequest): Observable<Program> {
+  public addNew(program: ProgramRequest): Observable<Program> {
     return this.http.post<Program>(`${this.url}`, program);
   }
 
@@ -34,11 +36,11 @@ export class ProgramService implements ServiceWithDelete, ServiceWithGetAll<Prog
     return this.http.delete<any>(`${this.url}/${id}`);
   }
 
-  public getProgramById(id: number): Observable<Program> {
+  public getById(id: number): Observable<Program> {
     return this.http.get<Program>(`${this.url}/${id}`);
   }
 
-  public editProgram(id: number, program: ProgramRequest): Observable<Program> {
+  public edit(id: number, program: ProgramRequest): Observable<Program> {
     return this.http.put<Program>(`${this.url}/${id}`, program);
   }
 

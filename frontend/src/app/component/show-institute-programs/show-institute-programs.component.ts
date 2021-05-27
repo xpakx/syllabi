@@ -37,7 +37,7 @@ export class ShowInstituteProgramsComponent extends PageableComponent<ProgramFor
       }
     );
 
-    this.instituteService.getInstituteById(id).subscribe(
+    this.instituteService.getById(id).subscribe(
       (result: Institute) => {
         this.institute = result;
       },

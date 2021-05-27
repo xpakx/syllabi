@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CourseYear } from '../entity/course-year';
 import { CourseYearDetails } from '../entity/course-year-details';
+import { CourseYearForPage } from '../entity/course-year-for-page';
 import { CourseYearRequest } from '../entity/course-year-request';
 import { Page } from '../entity/page';
 import { StudyGroup } from '../entity/study-group';
@@ -15,31 +16,40 @@ import { ServiceWithDelete } from './service-with-delete';
   providedIn: 'root'
 })
 export class CourseYearService implements ServiceWithDelete {
-  private uri = environment.apiServerUrl + "/years";
+  private url = environment.apiServerUrl + "/years";
+  private urlCourses = environment.apiServerUrl + "/courses";
 
   constructor(protected http: HttpClient) { }
 
-  public getCourseYearById(id: number): Observable<CourseYearDetails> {
-    return this.http.get<CourseYearDetails>(`${this.uri}/${id}`);
+  public addNew(courseId: number, year: CourseYearRequest): Observable<CourseYear> {
+    return this.http.post<CourseYear>(`${this.urlCourses}/${courseId}/years`, year);
+  }
+
+  public getAllYearsForCourse(id: number): Observable<Page<CourseYearForPage>> {
+    return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years`);
+  }
+
+  public getAllYearsForCourseForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
+    return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years?page=${page}`);
+  }
+
+  public getAllActiveYearsForCourse(id: number): Observable<Page<CourseYearForPage>> {
+    return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years/active`);
+  }
+
+  public getAllActiveYearsForCourseForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
+    return this.http.get<Page<CourseYearForPage>>(`${this.urlCourses}/${id}/years/active?page=${page}`);
+  }
+
+  public getById(id: number): Observable<CourseYearDetails> {
+    return this.http.get<CourseYearDetails>(`${this.url}/${id}`);
+  }
+
+  public edit(id: number, year: CourseYearRequest): Observable<CourseYear> {
+    return this.http.put<CourseYear>(`${this.url}/${id}`, year);
   }
 
   public delete(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.uri}/${id}`);
-  }
-
-  public editCourseYear(id: number, year: CourseYearRequest): Observable<CourseYear> {
-    return this.http.put<CourseYear>(`${this.uri}/${id}`, year);
-  }
-
-  public getAllGroupsForYear(id: number): Observable<Page<StudyGroupForPage>> {
-    return this.http.get<Page<StudyGroupForPage>>(`${this.uri}/${id}/groups`);
-  }
-
-  public getAllGroupsForYearForPage(id: number, page: number): Observable<Page<StudyGroupForPage>> {
-    return this.http.get<Page<StudyGroupForPage>>(`${this.uri}/${id}/groups?page=${page}`);
-  }
-
-  public addNewStudyGroup(id: number, group: StudyGroupRequest): Observable<StudyGroup> {
-    return this.http.post<StudyGroup>(`${this.uri}/${id}/groups`, group);
+    return this.http.delete<any>(`${this.url}/${id}`);
   }
 }

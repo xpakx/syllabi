@@ -22,7 +22,7 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
   parentName: string = '';
   parentDate: string = '';
 
-  constructor(protected service: YearGroupsService, private dialog: MatDialog, 
+  constructor(protected service: YearGroupsService, private parentService: CourseYearService,private dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
       super(service, router, route);
       this.parentId = Number(this.route.snapshot.paramMap.get('id'));
@@ -31,7 +31,7 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.service.getCourseYearById(this.id).subscribe(
+    this.parentService.getById(this.id).subscribe(
       (response: CourseYearDetails) => {
         this.parentName = response.parent.name;  
         this.parentDate = new Date(response.startDate).getFullYear() + '/' +

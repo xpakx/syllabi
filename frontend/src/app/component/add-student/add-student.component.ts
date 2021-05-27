@@ -42,7 +42,7 @@ export class AddStudentComponent implements OnInit {
   addStudent(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
-      this.studentService.addNewStudent(id, {
+      this.studentService.addNew(id, {
         name: this.form.controls.name.value,
         surname: this.form.controls.surname.value
       }).subscribe(
