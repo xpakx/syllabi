@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Literature } from 'src/app/entity/literature';
 import { CourseLiteratureService } from 'src/app/service/course-literature.service';
-import { LiteratureService } from 'src/app/service/literature.service';
 
 @Component({
   selector: 'app-add-course-literature',
@@ -37,7 +36,7 @@ export class AddCourseLiteratureComponent implements OnInit {
   addLiterature(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
-      this.literatureService.addNewCourseLiterature(id, {
+      this.literatureService.addNew(id, {
         'title': this.form.controls.title.value,
         'author': this.form.controls.author.value,
         'pages': this.form.controls.pages.value,

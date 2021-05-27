@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CourseLiteratureService } from 'src/app/service/course-literature.service';
-import { LiteratureService } from 'src/app/service/literature.service';
 import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 
 @Component({

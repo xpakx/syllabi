@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Literature } from 'src/app/entity/literature';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
 import { GroupLiteratureService } from 'src/app/service/group-literature.service';
-import { LiteratureService } from 'src/app/service/literature.service';
 import { StudyGroupService } from 'src/app/service/study-group.service';
 import { ModalDeleteGroupLiteratureComponent } from '../modal-delete-group-literature/modal-delete-group-literature.component';
 
@@ -25,7 +24,7 @@ export class ShowGroupLiteratureComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.literatureService.getGroupLiteratureById(id).subscribe(
+    this.literatureService.getById(id).subscribe(
       (result: Literature) => {
         this.literature = result;
       },
@@ -54,7 +53,7 @@ export class ShowGroupLiteratureComponent implements OnInit {
   }
 
   loadCourse(id: number): void {
-    this.literatureService.getCourseLiteratureById(id).subscribe(
+    this.literatureService.getById(id).subscribe(
       (result: Literature) => {
         this.literature = result;
       },

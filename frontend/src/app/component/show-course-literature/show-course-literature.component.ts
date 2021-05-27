@@ -6,7 +6,6 @@ import { CourseSummary } from 'src/app/entity/course-summary';
 import { Literature } from 'src/app/entity/literature';
 import { CourseLiteratureService } from 'src/app/service/course-literature.service';
 import { CourseService } from 'src/app/service/course.service';
-import { LiteratureService } from 'src/app/service/literature.service';
 import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
 
 @Component({
@@ -25,7 +24,7 @@ export class ShowCourseLiteratureComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.literatureService.getCourseLiteratureById(id).subscribe(
+    this.literatureService.getById(id).subscribe(
       (result: Literature) => {
         this.literature = result;
       },
@@ -54,7 +53,7 @@ export class ShowCourseLiteratureComponent implements OnInit {
   }
 
   loadCourse(id: number): void {
-    this.literatureService.getCourseLiteratureById(id).subscribe(
+    this.literatureService.getById(id).subscribe(
       (result: Literature) => {
         this.literature = result;
       },

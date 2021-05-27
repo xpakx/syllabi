@@ -2,12 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { CourseYearForPage } from "../entity/course-year-for-page";
-import { LiteratureForPage } from "../entity/literature-for-page";
 import { Page } from "../entity/page";
 import { CourseYearService } from "./course-year.service";
-import { CourseService } from "./course.service";
-import { LiteratureService } from "./literature.service";
-import { ServiceWithDelete } from "./service-with-delete";
 import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 
 @Injectable({

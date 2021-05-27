@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Literature } from 'src/app/entity/literature';
 import { GroupLiteratureService } from 'src/app/service/group-literature.service';
-import { LiteratureService } from 'src/app/service/literature.service';
 
 @Component({
   selector: 'app-edit-group-literature',
@@ -25,7 +24,7 @@ export class EditGroupLiteratureComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.literatureService.getGroupLiteratureById(id).subscribe(
+    this.literatureService.getById(id).subscribe(
       (result: Literature) => {
         this.literature = result;
         this.form = this.fb.group({
@@ -50,7 +49,7 @@ export class EditGroupLiteratureComponent implements OnInit {
   editLiterature(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
-      this.literatureService.editGroupLiterature(id, {
+      this.literatureService.edit(id, {
         'title': this.form.controls.title.value,
         'author': this.form.controls.author.value,
         'pages': this.form.controls.pages.value,
