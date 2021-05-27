@@ -16,11 +16,11 @@ implements ServiceWithGetAllChildren<StudyGroupForPage> {
         super(http);
     }
 
-    public getAllChildren(id: number): Observable<Page<StudyGroupForPage>> {
+    public getAllByParentId(id: number): Observable<Page<StudyGroupForPage>> {
         return this.getAll(id);
     }
     
-    public getAllChildrenForPage(id: number, page: number): Observable<Page<StudyGroupForPage>> {
+    public getAllByParentIdForPage(id: number, page: number): Observable<Page<StudyGroupForPage>> {
         return this.getAllForPage(id, page);
     }
 }

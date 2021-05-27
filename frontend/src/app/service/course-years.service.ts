@@ -20,11 +20,11 @@ implements ServiceWithGetAllChildren<CourseYearForPage> {
         super(http);
     }
 
-    public getAllChildren(id: number): Observable<Page<CourseYearForPage>> {
+    public getAllByParentId(id: number): Observable<Page<CourseYearForPage>> {
         return this.getAllActiveYearsForCourse(id);
     }
     
-    public getAllChildrenForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
+    public getAllByParentIdForPage(id: number, page: number): Observable<Page<CourseYearForPage>> {
         return this.getAllActiveYearsForCourseForPage(id, page);
     }
 }

@@ -21,11 +21,11 @@ implements ServiceWithDelete, ServiceWithGetAllChildren<LiteratureForPage> {
         return this.http.delete<any>(`${this.url}/courses/literature/${id}`);
     }
 
-    public getAllChildren(id: number): Observable<Page<LiteratureForPage>> {
+    public getAllByParentId(id: number): Observable<Page<LiteratureForPage>> {
         return this.getAllCourseLiterature(id);
     }
     
-    public getAllChildrenForPage(id: number, page: number): Observable<Page<LiteratureForPage>> {
+    public getAllByParentIdForPage(id: number, page: number): Observable<Page<LiteratureForPage>> {
         return this.getAllCourseLiteratureForPage(id, page);
     }
 }
