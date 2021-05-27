@@ -9,5 +9,5 @@ import java.util.List;
 @Setter
 public class UpdateCourseRequest extends CourseRequest {
     List<Integer> prerequisites;
-    List<Integer> programs;
+    List<Integer> semesters;
 }

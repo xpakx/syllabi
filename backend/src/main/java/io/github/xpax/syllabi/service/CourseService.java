@@ -7,6 +7,7 @@ import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
+import io.github.xpax.syllabi.repo.SemesterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,12 +22,14 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final InstituteRepository instituteRepository;
     private final ProgramRepository programRepository;
+    private final SemesterRepository semesterRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, InstituteRepository instituteRepository, ProgramRepository programRepository) {
+    public CourseService(CourseRepository courseRepository, InstituteRepository instituteRepository, ProgramRepository programRepository, SemesterRepository semesterRepository) {
         this.courseRepository = courseRepository;
         this.instituteRepository = instituteRepository;
         this.programRepository = programRepository;
+        this.semesterRepository = semesterRepository;
     }
 
     public Page<CourseForPage> getAllCourses(Integer page, Integer size) {
@@ -53,9 +56,9 @@ public class CourseService {
                 .stream()
                 .map(courseRepository::getOne)
                 .collect(Collectors.toSet()));
-        courseToUpdate.setPrograms(getPrograms(courseRequest)
+        courseToUpdate.setSemesters(getSemesters(courseRequest)
                 .stream()
-                .map(programRepository::getOne)
+                .map(semesterRepository::getOne)
                 .collect(Collectors.toSet()));
         courseToUpdate.setCourseCode(courseRequest.getCourseCode());
         courseToUpdate.setIscedCode(courseRequest.getIscedCode());
@@ -112,9 +115,9 @@ public class CourseService {
                 .requirements(courseRequest.getRequirements());
     }
 
-    private List<Integer> getPrograms(UpdateCourseRequest courseRequest) {
-        if(courseRequest.getPrograms() != null)
-            return courseRequest.getPrograms();
+    private List<Integer> getSemesters(UpdateCourseRequest courseRequest) {
+        if(courseRequest.getSemesters() != null)
+            return courseRequest.getSemesters();
         else
             return new ArrayList<>();
     }

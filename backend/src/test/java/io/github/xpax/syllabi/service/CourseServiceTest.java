@@ -3,11 +3,13 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
+import io.github.xpax.syllabi.repo.SemesterRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +44,8 @@ class CourseServiceTest {
     private InstituteRepository instituteRepository;
     @Mock
     private ProgramRepository programRepository;
+    @Mock
+    private SemesterRepository semesterRepository;
 
     private CourseService courseService;
 
@@ -53,6 +57,7 @@ class CourseServiceTest {
     private Course computation;
     private Course courseWithId3;
     private Program program;
+    private Semester semester;
     private NewCourseRequest request;
     private UpdateCourseRequest updateRequest;
     private CourseSummary courseMin;
@@ -85,6 +90,9 @@ class CourseServiceTest {
                 .id(0)
                 .name("Computer Science")
                 .build();
+        semester = Semester.builder()
+                .id(0)
+                .build();
         algorithms = Course.builder()
                 .id(1)
                 .name("Algorithms and Data Structures")
@@ -107,13 +115,13 @@ class CourseServiceTest {
         updateRequest.setPrerequisites(prerequisites);
         List<Integer> programs = new ArrayList<>();
         programs.add(0);
-        updateRequest.setPrograms(programs);
+        updateRequest.setSemesters(programs);
         updateRequest.setName("Artificial Intelligence");
         updateRequest.setOrganizerId(0);
     }
 
     private void injectMocks() {
-        courseService = new CourseService(courseRepository, instituteRepository, programRepository);
+        courseService = new CourseService(courseRepository, instituteRepository, programRepository, semesterRepository);
     }
 
     @Test
@@ -192,8 +200,8 @@ class CourseServiceTest {
                 .willReturn(computation);
         given(courseRepository.findById(3))
                 .willReturn(Optional.of(courseWithId3));
-        given(programRepository.getOne(0))
-                .willReturn(program);
+        given(semesterRepository.getOne(0))
+                .willReturn(semester);
         injectMocks();
 
         courseService.updateCourse(updateRequest, 3);
@@ -214,7 +222,7 @@ class CourseServiceTest {
 
         assertNotNull(updatedCourse);
         assertThat(updatedCourse.getPrerequisites(), hasSize(2));
-        assertThat(updatedCourse.getPrograms(), hasSize(1));
+        assertThat(updatedCourse.getSemesters(), hasSize(1));
         assertEquals("Artificial Intelligence", updatedCourse.getName());
         assertEquals(3, updatedCourse.getId());
     }
