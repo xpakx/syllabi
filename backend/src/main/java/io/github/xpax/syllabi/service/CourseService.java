@@ -80,7 +80,7 @@ public class CourseService {
     }
 
     public Page<CourseForPage> getAllCoursesByProgramId(Integer page, Integer size, Integer programId) {
-        return courseRepository.findByProgramsId(programId, PageRequest.of(page, size));
+        return courseRepository.findBySemestersProgramId(programId, PageRequest.of(page, size));
     }
 
     public Page<CourseForPage> getAllCoursesByUserId(Integer page, Integer size, Integer userId) {

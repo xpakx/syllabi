@@ -1,12 +1,10 @@
 package io.github.xpax.syllabi;
 
-import io.github.xpax.syllabi.entity.Course;
-import io.github.xpax.syllabi.entity.Program;
-import io.github.xpax.syllabi.entity.Role;
-import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
+import io.github.xpax.syllabi.repo.SemesterRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
@@ -46,6 +44,8 @@ class ProgramControllerIntegrationTest {
     CourseRepository courseRepository;
     @Autowired
     ProgramRepository programRepository;
+    @Autowired
+    SemesterRepository semesterRepository;
 
     private ProgramRequest programRequest;
 
@@ -78,6 +78,7 @@ class ProgramControllerIntegrationTest {
     void cleanUp() {
         userRepository.deleteAll();
         courseRepository.deleteAll();
+        semesterRepository.deleteAll();
         programRepository.deleteAll();
     }
 
@@ -89,24 +90,24 @@ class ProgramControllerIntegrationTest {
         Set<Course> courses = new HashSet<>();
         Course course1 = Course.builder()
                 .name("Introduction to Cognitive Science")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courses.add(course1);
         Course course2 = Course.builder()
                 .name("Pragmatics")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courses.add(course2);
         Course course3 = Course.builder()
                 .name("Logic I")
-                .programs(new HashSet<>())
+                .semesters(new HashSet<>())
                 .build();
         courses.add(course3);
 
         for(int i = 4; i<=25; i++) {
             Course dummyCourse = Course.builder()
                     .name("Dummy Course #"+i)
-                    .programs(new HashSet<>())
+                    .semesters(new HashSet<>())
                     .build();
             courses.add(dummyCourse);
         }
@@ -115,12 +116,19 @@ class ProgramControllerIntegrationTest {
                 .name("Cognitive Science")
                 .courses(courses)
                 .build();
+        program = programRepository.save(program);
+        Semester semester = Semester.builder()
+                .name("Semester")
+                .number(1)
+                .program(program)
+                .build();
+
         for(Course c : courses) {
-            c.setPrograms(Collections.singleton(program));
+            c.setSemesters(Collections.singleton(semester));
         }
 
         courseRepository.saveAll(courses);
-        return programRepository.save(program).getId();
+        return program.getId();
     }
 
     private Integer addPrograms() {

@@ -26,7 +26,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     Page<CourseForPage> findByOrganizerId(Integer organizerId, Pageable page);
 
-    Page<CourseForPage> findByProgramsId(Integer programsId, Pageable page);
+    Page<CourseForPage> findBySemestersProgramId(Integer programsId, Pageable page);
 
     @Query("SELECT c FROM StudyGroup sg JOIN sg.year JOIN sg.year.parent c JOIN sg.students s WHERE s.user.id = :userId")
     Page<CourseForPage> findByUserId(Integer userId, Pageable page);

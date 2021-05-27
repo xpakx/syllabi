@@ -24,6 +24,8 @@ insert into prerequisites (child_id, prerequisite_id) values (2,1);
 insert into program (name, description) values ('Philosophy', 'Blah blah');
 insert into program (name) values ('Cognitive Science');
 
+insert into semester (name, number, program_id) values ('Summer 2021', 1, 1);
+
 insert into institute (name, code, url, phone, address) values ('Institute of Philosophy', 'PHIL001', 'https:/example.com', '00-00', 'idk');
 insert into institute (name) values ('Institute of Computer Science');
 
@@ -42,8 +44,8 @@ INSERT INTO users (password, username) VALUES
 ('$2a$10$RNjpi/CGfQ9t.abfnkgD7e2xUFcbHqjCKpbiPOQvod5VCoaw2VGJ.', 'Teacher');
 INSERT INTO teacher (user_id, name, surname) values (2, 'James', 'Bond');
 
-insert into course_program(course_id, program_id) values (1,1);
-insert into course_program(course_id, program_id) values (2,1);
+insert into course_semester(course_id, semester_id) values (1,1);
+insert into course_semester(course_id, semester_id) values (2,1);
 
 insert into course_literature(author, title, edition, pages, description, obligatory, course_id) values ('Daniel Kahneman', 'Thinking Slow, Thinking Fast', 'idk', 'pp. 20-23', 'just a good book', true, 1);
 

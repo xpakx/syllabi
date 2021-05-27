@@ -245,7 +245,7 @@ class CourseServiceTest {
 
     @Test
     void shouldAskRepositoryForCoursesByProgramId() {
-        given(courseRepository.findByProgramsId(anyInt(), any(PageRequest.class)))
+        given(courseRepository.findBySemestersProgramId(anyInt(), any(PageRequest.class)))
                 .willReturn(coursePage);
         injectMocks();
 
@@ -256,7 +256,7 @@ class CourseServiceTest {
 
         then(courseRepository)
                 .should(times(1))
-                .findByProgramsId(programIdCaptor.capture(), pageRequestCaptor.capture());
+                .findBySemestersProgramId(programIdCaptor.capture(), pageRequestCaptor.capture());
         PageRequest pageRequest = pageRequestCaptor.getValue();
         Integer programId = programIdCaptor.getValue();
 
