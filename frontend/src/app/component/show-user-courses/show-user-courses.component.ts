@@ -6,8 +6,10 @@ import { CourseForPage } from 'src/app/entity/course-for-page';
 import { Page } from 'src/app/entity/page';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { StudentService } from 'src/app/service/student.service';
+import { UserCoursesAdapterService } from 'src/app/service/user-courses-adapter.service';
 import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
+import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
@@ -15,31 +17,19 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-user-courses.component.html',
   styleUrls: ['./show-user-courses.component.css']
 })
-export class ShowUserCoursesComponent extends PageableComponent<CourseForPage> implements OnInit {
+export class ShowUserCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage> implements OnInit {
   student: StudentWithUserId | undefined;
   
-  constructor(private userService: UserService, private studentService: StudentService, 
-    private dialog: MatDialog, private route: ActivatedRoute, 
-    private router: Router) {  
-      super();
+  constructor(protected service: UserCoursesAdapterService, 
+    private dialog: MatDialog, protected route: ActivatedRoute, 
+    protected router: Router) {  
+      super(service, router, route);
     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.userService.getAllCoursesForUser(id).subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getFirstPage();
 
-    this.studentService.getStudentByUserId(id).subscribe(
+    this.service.getParentById(this.id).subscribe(
       (result: StudentWithUserId) => {
         this.student = result;
       },
@@ -51,18 +41,6 @@ export class ShowUserCoursesComponent extends PageableComponent<CourseForPage> i
         this.message = error.error.message;
       }
     );
-  }
-
-  getPage(page: number): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.userService.getAllCoursesForUserForPage(id, page).subscribe(
-      (response: Page<CourseForPage>) => {
-        this.printPage(response);
-      },
-      (error: HttpErrorResponse) => {
-        this.message = error.error.message;
-      }
-    )
   }
 
   delete(id: number, name: string) {
