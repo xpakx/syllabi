@@ -5,12 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { Page } from 'src/app/entity/page';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
-import { CourseYearStudentsService } from 'src/app/service/course-year-students.service';
+import { CourseYearStudentsAdapterService } from 'src/app/service/course-year-students-adapter.service';
 import { CourseYearService } from 'src/app/service/course-year.service';
-import { StudentService } from 'src/app/service/student.service';
 import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-year-students',
@@ -22,7 +20,7 @@ export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<S
   yearDate: string = '';
   yearId!: number;
 
-  constructor(protected service: CourseYearStudentsService, private yearService: CourseYearService,
+  constructor(protected service: CourseYearStudentsAdapterService, private yearService: CourseYearService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) {  
       super(service, router, route);
