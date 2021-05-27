@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseSummary } from 'src/app/entity/course-summary';
 import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
 import { Page } from 'src/app/entity/page';
-import { CourseYearsService } from 'src/app/service/course-years.service';
+import { CourseYearService } from 'src/app/service/course-year.service';
 import { CourseService } from 'src/app/service/course.service';
 import { ModalDeleteCourseYearComponent } from '../modal-delete-course-year/modal-delete-course-year.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
@@ -20,7 +20,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   parentName: string = '';
   parentId: number;
 
-  constructor(protected service: CourseYearsService, protected parentService: CourseService,
+  constructor(protected service: CourseYearService, protected parentService: CourseService,
     private dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
       super(service, router, route);
@@ -28,7 +28,18 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
     }
 
   ngOnInit(): void {
-    this.getFirstPage();
+    this.service.getAllActiveByParentId(this.parentId).subscribe(
+      (response: Page<CourseYearForPage>) => {
+        this.printPage(response);
+      },
+      (error: HttpErrorResponse) => {
+        if(error.status === 401) {
+          localStorage.removeItem("token");
+          this.router.navigate(['login']);
+        }
+        this.message = error.error.message;
+      }
+    )
 
     this.parentService.getByIdMin(this.id).subscribe(
       (response: CourseSummary) => {
@@ -44,7 +55,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   }
 
   getActivePage(id: number, page: number): void {
-    this.service.getAllActiveYearsForCourseForPage(id, page).subscribe(
+    this.service.getAllActiveByParentIdForPage(id, page).subscribe(
       (response: Page<CourseYearForPage>) => {
         this.printPage(response);
       },
