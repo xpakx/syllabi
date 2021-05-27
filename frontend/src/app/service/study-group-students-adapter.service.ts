@@ -3,24 +3,29 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Page } from "../entity/page";
 import { StudentWithUserId } from "../entity/student-with-user-id";
+import { StudyGroupSummary } from "../entity/study-group-summary";
 import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 import { StudentService } from "./student.service";
+import { StudyGroupService } from "./study-group.service";
 
 @Injectable({
     providedIn: 'root'
 })
-export class StudyGroupStudentsService extends StudentService
+export class StudyGroupStudentsAdapterService
 implements ServiceWithGetAllChildren<StudentWithUserId> {
 
-    constructor(protected http: HttpClient) { 
-        super(http);
-    }
+    constructor(protected http: HttpClient, private service: StudentService, 
+        private parentService: StudyGroupService) {  }
 
     public getAllByParentId(id: number): Observable<Page<StudentWithUserId>> {
-        return this.getAllStudentsForStudyGroup(id);
+        return this.service.getAllStudentsForStudyGroup(id);
     }
     
     public getAllByParentIdForPage(id: number, page: number): Observable<Page<StudentWithUserId>> {
-        return this.getAllStudentsForStudyGroupForPage(id, page);
+        return this.service.getAllStudentsForStudyGroupForPage(id, page);
+    }
+
+    public getParentById(id: number): Observable<StudyGroupSummary> {
+        return this.parentService.getByIdMin(id);
     }
 }

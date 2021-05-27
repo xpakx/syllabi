@@ -2,15 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Page } from 'src/app/entity/page';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
-import { StudentService } from 'src/app/service/student.service';
-import { StudyGroupStudentsService } from 'src/app/service/study-group-students.service';
-import { StudyGroupService } from 'src/app/service/study-group.service';
+import { StudyGroupStudentsAdapterService } from 'src/app/service/study-group-students-adapter.service';
 import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-group-students',
@@ -20,7 +16,7 @@ import { PageableComponent } from '../pageable/pageable.component';
 export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId> implements OnInit {
   group: StudyGroupSummary | undefined;
 
-  constructor(protected service: StudyGroupStudentsService, private groupService: StudyGroupService,
+  constructor(protected service: StudyGroupStudentsAdapterService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) { 
       super(service, router, route);
@@ -29,7 +25,7 @@ export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.groupService.getByIdMin(this.id).subscribe(
+    this.service.getParentById(this.id).subscribe(
       (result: StudyGroupSummary) => {
         this.group = result;
       },
