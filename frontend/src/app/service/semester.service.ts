@@ -7,6 +7,7 @@ import { CrudWithParentService } from './crud-with-parent.service';
 import { SemesterRequest } from '../entity/semester-request';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { ProgramSummary } from '../entity/program-summary';
 
 @Injectable({
   providedIn: 'root'
@@ -39,5 +40,9 @@ export class SemesterService implements CrudWithParentService<Semester, Semester
 
   delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}/${id}`);
+  }
+
+  getParentById(id: number): Observable<ProgramSummary> {
+    return this.http.get<ProgramSummary>(`${this.programUrl}/${id}`);
   }
 }
