@@ -3,10 +3,12 @@ package io.github.xpax.syllabi;
 import io.github.xpax.syllabi.entity.Role;
 import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.dto.SemesterRequest;
 import io.github.xpax.syllabi.repo.SemesterRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,8 @@ public class SemesterControllerIntegrationTest {
     @Autowired
     SemesterRepository semesterRepository;
 
+    private SemesterRequest semesterRequest;
+
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost".concat(":").concat(port+"").concat("/semesters");
@@ -58,6 +62,10 @@ public class SemesterControllerIntegrationTest {
                 .roles(roles)
                 .build();
         userRepository.save(admin);
+
+        semesterRequest = new SemesterRequest();
+        semesterRequest.setName("Edited Semester");
+        semesterRequest.setNumber(1);
     }
 
     @AfterEach
@@ -163,5 +171,61 @@ public class SemesterControllerIntegrationTest {
                 .get(baseUrl + "/{semesterId}", id)
                 .then()
                 .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToUpdateSemesterRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .put(baseUrl + "/{semesterId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateSemesterRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(semesterRequest)
+                .when()
+                .put(baseUrl + "/{semesterId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithUpdatedSemester() {
+        Integer id = addSemester();
+        given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(semesterRequest)
+                .when()
+                .put(baseUrl + "/{semesterId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Edited Semester"));
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{semesterId}", id)
+                .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("Edited Semester"));
     }
 }
