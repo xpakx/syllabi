@@ -1,14 +1,14 @@
 package io.github.xpax.syllabi;
 
-import io.github.xpax.syllabi.entity.Role;
-import io.github.xpax.syllabi.entity.Semester;
-import io.github.xpax.syllabi.entity.User;
+import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.SemesterRequest;
+import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.SemesterRepository;
 import io.github.xpax.syllabi.repo.UserRepository;
 import io.github.xpax.syllabi.security.JwtTokenUtil;
 import io.github.xpax.syllabi.service.UserService;
 import io.restassured.http.ContentType;
+import org.apache.catalina.LifecycleState;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -39,6 +39,8 @@ public class SemesterControllerIntegrationTest {
     UserService userService;
     @Autowired
     SemesterRepository semesterRepository;
+    @Autowired
+    CourseRepository courseRepository;
 
     private SemesterRequest semesterRequest;
 
@@ -71,6 +73,7 @@ public class SemesterControllerIntegrationTest {
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
+        courseRepository.deleteAll();
         semesterRepository.deleteAll();
     }
 
@@ -83,6 +86,42 @@ public class SemesterControllerIntegrationTest {
                 .name("Semester")
                 .number(1)
                 .build();
+        return semesterRepository.save(semester).getId();
+    }
+
+    private Integer addSemesterAndCourses() {
+        List<Course> courses = new ArrayList<>();
+        Semester semester = Semester.builder()
+                .name("Semester")
+                .number(1)
+                .build();
+
+        Course course1 = Course.builder()
+                .name("Ethics")
+                .semesters(Collections.singleton(semester))
+                .build();
+        courses.add(course1);
+        Course course2 = Course.builder()
+                .name("Epistemology")
+                .semesters(Collections.singleton(semester))
+                .build();
+        courses.add(course2);
+        Course course3 = Course.builder()
+                .name("Metaphysics")
+                .semesters(Collections.singleton(semester))
+                .build();
+        courses.add(course3);
+
+        for(int i = 4; i<=25; i++) {
+            Course dummyCourse = Course.builder()
+                    .name("Dummy Course #"+i)
+                    .semesters(Collections.singleton(semester))
+                    .build();
+            courses.add(dummyCourse);
+        }
+
+        semester.setCourses(new HashSet<>(courses));
+        courseRepository.saveAll(courses);
         return semesterRepository.save(semester).getId();
     }
 
@@ -227,5 +266,54 @@ public class SemesterControllerIntegrationTest {
                 .then()
                 .statusCode(OK.value())
                 .body("name", equalTo("Edited Semester"));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetSemesterCoursesRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{semesterId}/courses", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndDefaultPaginationToGetSemesterCoursesRequest() {
+        Integer id = addSemesterAndCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{semesterId}/courses", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("content[0].name", equalTo("Ethics"))
+                .body("content[1].name", equalTo("Epistemology"))
+                .body("content[2].name", equalTo("Metaphysics"))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithCoursesPageAndCustomPaginationToGetAllCoursesRequest() {
+        Integer id = addSemesterAndCourses();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{semesterId}/courses", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("content[0].name", equalTo("Dummy Course #16"))
+                .body("numberOfElements", equalTo(5));
     }
 }

@@ -90,6 +90,10 @@ public class CourseService {
         return courseRepository.findByUserId(userId, PageRequest.of(page, size));
     }
 
+    public Page<CourseForPage> getAllCoursesBySemesterId(Integer page, Integer size, Integer semesterId) {
+        return courseRepository.findBySemestersId(semesterId, PageRequest.of(page, size));
+    }
+
     private Institute getInstitute(CourseRequest courseRequest) {
         if(courseRequest.getOrganizerId() != null)
             return instituteRepository.getOne(courseRequest.getOrganizerId());

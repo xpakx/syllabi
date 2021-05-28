@@ -1,11 +1,8 @@
 package io.github.xpax.syllabi.repo;
 
 import io.github.xpax.syllabi.entity.Course;
-import io.github.xpax.syllabi.entity.dto.CourseDetails;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
-import io.github.xpax.syllabi.entity.dto.CourseSummary;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,4 +27,6 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("SELECT c FROM StudyGroup sg JOIN sg.year JOIN sg.year.parent c JOIN sg.students s WHERE s.user.id = :userId")
     Page<CourseForPage> findByUserId(Integer userId, Pageable page);
+
+    Page<CourseForPage> findBySemestersId(Integer semesterId, Pageable page);
 }
