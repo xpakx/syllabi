@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.times;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,5 +65,29 @@ public class SemesterControllerTest {
                 .body("id", equalTo(1))
                 .body("number", equalTo(1))
                 .body("name", equalTo("Semester"));
+    }
+
+    @Test
+    void shouldRespondToDeleteRequest() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/semesters/{semesterId}", 5)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldDeleteSemester() {
+        injectMocks();
+        given()
+                .when()
+                .delete("/semesters/{semesterId}", 5)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(semesterService)
+                .should(times(1))
+                .deleteSemester(5);
     }
 }

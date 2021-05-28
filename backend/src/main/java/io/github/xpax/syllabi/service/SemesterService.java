@@ -17,4 +17,8 @@ public class SemesterService {
         return semesterRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No semester with id "+id+" found!"));
     }
+
+    public void deleteSemester(Integer id) {
+        semesterRepository.deleteById(id);
+    }
 }

@@ -116,4 +116,52 @@ public class SemesterControllerIntegrationTest {
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
+
+    @Test
+    void shouldRespondWith401ToDeleteGroupRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .delete(baseUrl + "/{semesterId}", 2)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToDeleteGroupRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .delete(baseUrl + "/{semesterId}", 2)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldDeleteGroup() {
+        Integer id = addSemester();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .when()
+                .delete(baseUrl + "/{semesterId}", id)
+                .then()
+                .statusCode(OK.value());
+
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{semesterId}", id)
+                .then()
+                .statusCode(NOT_FOUND.value());
+    }
 }

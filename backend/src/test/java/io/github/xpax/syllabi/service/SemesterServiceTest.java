@@ -14,6 +14,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class SemesterServiceTest {
@@ -58,5 +60,14 @@ public class SemesterServiceTest {
         injectMocks();
 
         assertThrows(NotFoundException.class, () -> semesterService.getSemester(5));
+    }
+
+    @Test
+    void shouldDeleteSemester() {
+        injectMocks();
+        semesterService.deleteSemester(5);
+        then(semesterRepository)
+                .should(times(1))
+                .deleteById(5);
     }
 }
