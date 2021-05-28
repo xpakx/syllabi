@@ -20,8 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -84,7 +82,7 @@ class ProgramServiceTest {
     }
 
     private void injectMocks() {
-        programService = new ProgramService(courseRepository, programRepository, instituteRepository);
+        programService = new ProgramService(programRepository, instituteRepository);
     }
 
     @Test

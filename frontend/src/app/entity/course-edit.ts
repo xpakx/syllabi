@@ -16,5 +16,5 @@ export interface CourseEdit {
 
     organizerId: number | undefined;
     prerequisites: number[] | undefined;
-    programs: number[] | undefined;
+    semesters: number[] | undefined;
 }

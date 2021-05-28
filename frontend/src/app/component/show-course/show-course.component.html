@@ -36,10 +36,10 @@
         <p>Erasmus/ISCED: {{elem.erasmusCode}}/{{elem.iscedCode}}</p>
         <p>ECTS: {{elem.ects}}</p>
         <p>Language: {{elem.language}}</p>
-        <p *ngIf="elem.programs.length > 0">
+        <p *ngIf="elem.semesters.length > 0">
             Programs:
-            <button mat-button *ngFor="let program of elem.programs" [routerLink]="'/programs/' + program.id">
-                {{program.name}}
+            <button mat-button *ngFor="let semester of elem.semesters" [routerLink]="'/programs/' + semester.id">
+                {{semester.name}} <!-- ({{program.program.name}}) -->
             </button>
         </p>
         <p *ngIf="elem.prerequisites.length > 0">

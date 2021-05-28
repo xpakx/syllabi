@@ -1,6 +1,6 @@
 import { CourseSummary } from "./course-summary";
 import { InstituteForPage } from "./institute-for-page";
-import { ProgramSummary } from "./program-summary";
+import { SemesterSummary } from "./semester-summary";
 
 export interface CourseDetails {
     id: number;
@@ -13,7 +13,7 @@ export interface CourseDetails {
     facultative: boolean;
     stationary: boolean;
 
-    programs: ProgramSummary[];
+    semesters: SemesterSummary[];
     prerequisites: CourseSummary[];
     organizer: InstituteForPage;
 

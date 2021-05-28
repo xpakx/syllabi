@@ -21,12 +21,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProgramService {
-    private final CourseRepository courseRepository;
     private final ProgramRepository programRepository;
     private final InstituteRepository instituteRepository;
 
-    public ProgramService(CourseRepository courseRepository, ProgramRepository programRepository, InstituteRepository instituteRepository) {
-        this.courseRepository = courseRepository;
+    public ProgramService(ProgramRepository programRepository, InstituteRepository instituteRepository) {
         this.programRepository = programRepository;
         this.instituteRepository = instituteRepository;
     }

@@ -19,7 +19,7 @@
                 </button>
             </mat-menu>
         </mat-card-title>
-        <mat-card-subtitle>{{program.organizer.name}}</mat-card-subtitle>
+        <mat-card-subtitle *ngIf="program.organizer">{{program.organizer.name}}</mat-card-subtitle>
 
     </mat-card-header>  
             

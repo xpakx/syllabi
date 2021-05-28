@@ -7,7 +7,7 @@ import { Course } from 'src/app/entity/course';
 import { CourseDetails } from 'src/app/entity/course-details';
 import { CourseResponse } from 'src/app/entity/course-response';
 import { CourseSummary } from 'src/app/entity/course-summary';
-import { ProgramSummary } from 'src/app/entity/program-summary';
+import { SemesterSummary } from 'src/app/entity/semester-summary';
 import { CourseService } from 'src/app/service/course.service';
 import { ModalOrganizerChoiceComponent } from '../modal-organizer-choice/modal-organizer-choice.component';
 import { ModalPrerequisiteChoiceComponent } from '../modal-prerequisite-choice/modal-prerequisite-choice.component';
@@ -30,7 +30,7 @@ export class EditCourseComponent implements OnInit {
   instituteName: string = "Choose institute";
 
   prerequisites: CourseSummary[] = [];
-  programs: ProgramSummary[] = [];
+  semesters: SemesterSummary[] = [];
 
   course: CourseDetails | undefined;
 
@@ -59,7 +59,7 @@ export class EditCourseComponent implements OnInit {
           stationary: [this.course.stationary],
         });
         this.prerequisites = this.course.prerequisites;
-        this.programs = this.course.programs;
+        this.semesters = this.course.semesters;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -75,7 +75,7 @@ export class EditCourseComponent implements OnInit {
     if(this.form.valid && this.id) {
 
       let prereq = this.prerequisites ? this.prerequisites.map((p) => p.id) : undefined;
-      let prog = this.programs ? this.programs.map((p) => p.id) : undefined;
+      let prog = this.semesters ? this.semesters.map((p) => p.id) : undefined;
 
       this.courseService.edit(this.id, {
         'name': this.form.controls.name.value,
@@ -93,7 +93,7 @@ export class EditCourseComponent implements OnInit {
         'stationary': this.form.controls.stationary.value,
         'organizerId' : this.institute,
         prerequisites: prereq,
-        programs: prog
+        semesters: prog
       }).subscribe(
         (response: CourseResponse) => {
           this.router.navigate(["courses/"+response.id]);
@@ -128,13 +128,13 @@ export class EditCourseComponent implements OnInit {
   addPrograms(): void {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = this.programs;
+    dialogConfig.data = this.semesters;
     const dialogRef = this.dialog.open(ModalProgramChoiceComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       (data) => {
         if(data) {
-          this.programs = data;
+          this.semesters = data;
         }
       }
     );
