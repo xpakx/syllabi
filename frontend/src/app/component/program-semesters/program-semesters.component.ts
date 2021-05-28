@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramSummary } from 'src/app/entity/program-summary';
 import { Semester } from 'src/app/entity/semester';
 import { SemesterService } from 'src/app/service/semester.service';
-import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
+import { ModalDeleteSemesterComponent } from '../modal-delete-semester/modal-delete-semester.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -43,7 +43,7 @@ export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<S
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
     dialogConfig.data = {id: id, name: name, parentName: programName};
-    const dialogRef = this.dialog.open(ModalDeleteCourseLiteratureComponent, dialogConfig);
+    const dialogRef = this.dialog.open(ModalDeleteSemesterComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       (data) => {

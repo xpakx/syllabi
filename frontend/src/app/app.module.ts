@@ -101,6 +101,7 @@ import { PaginationComponent } from './component/pagination/pagination.component
 import { CourseSummaryComponent } from './component/course-summary/course-summary.component';
 import { ProgramSemestersComponent } from './component/program-semesters/program-semesters.component';
 import { ShowSemesterComponent } from './component/show-semester/show-semester.component';
+import { ModalDeleteSemesterComponent } from './component/modal-delete-semester/modal-delete-semester.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -184,7 +185,8 @@ export function tokenGetter() {
     PaginationComponent,
     CourseSummaryComponent,
     ProgramSemestersComponent,
-    ShowSemesterComponent
+    ShowSemesterComponent,
+    ModalDeleteSemesterComponent
   ],
   imports: [
     BrowserModule,

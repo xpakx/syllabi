@@ -3,7 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SemesterSummary } from 'src/app/entity/semester-summary';
 import { SemesterService } from 'src/app/service/semester.service';
-import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
+import { ModalDeleteSemesterComponent } from '../modal-delete-semester/modal-delete-semester.component';
 import { ShowComponent } from '../show/show-component.component';
 
 @Component({
@@ -22,11 +22,11 @@ export class ShowSemesterComponent extends ShowComponent<SemesterSummary> implem
     this.getElem();
   }
 
-  delete(id: number, name: string) {
+  delete(id: number, name: string, programName: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalDeleteCourseComponent, dialogConfig);
+    dialogConfig.data = {id: id, name: name, parentName: programName};
+    const dialogRef = this.dialog.open(ModalDeleteSemesterComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       (data: boolean) => {
