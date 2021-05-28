@@ -7,6 +7,7 @@ import { AddCourseComponent } from './component/add-course/add-course.component'
 import { AddGroupLiteratureComponent } from './component/add-group-literature/add-group-literature.component';
 import { AddInstituteComponent } from './component/add-institute/add-institute.component';
 import { AddProgramComponent } from './component/add-program/add-program.component';
+import { AddSemesterComponent } from './component/add-semester/add-semester.component';
 import { AddStudentComponent } from './component/add-student/add-student.component';
 import { AddStudyGroupComponent } from './component/add-study-group/add-study-group.component';
 import { AddTeacherComponent } from './component/add-teacher/add-teacher.component';
@@ -272,6 +273,10 @@ const routes: Routes = [
   {
     path: 'semesters/:id',
     component: ShowSemesterComponent
+  },
+  {
+    path: 'programs/:id/semesters/add',
+    component: AddSemesterComponent
   },
   {
     path: '404',

@@ -1,0 +1,18 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="addSemester()">
+            <h2>Add new semester for program {{parentName}}</h2>
+            <mat-error *ngIf="requestInvalid">
+                Error: {{message}}
+            </mat-error>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Name" formControlName="name" required>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Number" formControlName="number" required>
+            </mat-form-field>
+            <button mat-raised-button color="secondary">Add</button>
+        </form>
+    </mat-card-content>
+</mat-card>    
+
