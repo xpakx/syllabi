@@ -4,6 +4,7 @@ import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.SemesterRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterSummary;
 import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.SemesterService;
 import io.restassured.http.ContentType;
@@ -44,6 +45,7 @@ public class SemesterControllerTest {
     private CourseService courseService;
 
     private Semester semester;
+    private SemesterSummary semesterSum;
     private SemesterRequest semesterRequest;
     private Page<CourseForPage> coursePage;
 
@@ -56,6 +58,7 @@ public class SemesterControllerTest {
                 .id(1)
                 .number(1)
                 .build();
+        semesterSum = factory.createProjection(SemesterSummary.class, semester);
 
         semesterRequest = new SemesterRequest();
         semesterRequest.setName("Semester");
@@ -91,7 +94,7 @@ public class SemesterControllerTest {
     @Test
     void shouldProduceSemester() {
         BDDMockito.given(semesterService.getSemester(1))
-                .willReturn(semester);
+                .willReturn(semesterSum);
         injectMocks();
         given()
                 .when()

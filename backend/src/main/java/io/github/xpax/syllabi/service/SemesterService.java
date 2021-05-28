@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.SemesterRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterSummary;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.SemesterRepository;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ public class SemesterService {
         this.semesterRepository = semesterRepository;
     }
 
-    public Semester getSemester(Integer id) {
-        return semesterRepository.findById(id)
+    public SemesterSummary getSemester(Integer id) {
+        return semesterRepository.findProjectedById(id)
                 .orElseThrow(() -> new NotFoundException("No semester with id "+id+" found!"));
     }
 

@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.StudyGroup;
 import io.github.xpax.syllabi.entity.dto.SemesterRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterSummary;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.SemesterRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.Optional;
 
@@ -30,7 +33,10 @@ public class SemesterServiceTest {
     private SemesterService semesterService;
 
     private Semester semester;
+    private SemesterSummary semesterSum;
     private SemesterRequest semesterRequest;
+
+    private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
     @BeforeEach
     void setUp() {
@@ -39,6 +45,7 @@ public class SemesterServiceTest {
                 .id(5)
                 .number(1)
                 .build();
+        semesterSum = factory.createProjection(SemesterSummary.class, semester);
         semesterRequest = new SemesterRequest();
         semesterRequest.setName("Semester");
         semesterRequest.setNumber(1);
@@ -50,11 +57,11 @@ public class SemesterServiceTest {
 
     @Test
     void shouldReturnSemester() {
-        given(semesterRepository.findById(5))
-                .willReturn(Optional.of(semester));
+        given(semesterRepository.findProjectedById(5))
+                .willReturn(Optional.of(semesterSum));
         injectMocks();
 
-        Semester result = semesterService.getSemester(5);
+        SemesterSummary result = semesterService.getSemester(5);
 
         assertNotNull(result);
         assertEquals(5, result.getId());
@@ -64,7 +71,7 @@ public class SemesterServiceTest {
 
     @Test
     void shouldThrowExceptionIfSemesterNotFound() {
-        given(semesterRepository.findById(anyInt()))
+        given(semesterRepository.findProjectedById(anyInt()))
                 .willReturn(Optional.empty());
         injectMocks();
 

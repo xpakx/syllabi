@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.controller;
 import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.SemesterRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterSummary;
 import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.SemesterService;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class SemesterController {
     }
 
     @GetMapping("/{semesterId}")
-    public ResponseEntity<Semester> getSemester(@PathVariable Integer semesterId) {
+    public ResponseEntity<SemesterSummary> getSemester(@PathVariable Integer semesterId) {
         return new ResponseEntity<>(semesterService.getSemester(semesterId), HttpStatus.OK);
     }
 
