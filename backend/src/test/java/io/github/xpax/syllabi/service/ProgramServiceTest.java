@@ -3,12 +3,14 @@ package io.github.xpax.syllabi.service;
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
+import io.github.xpax.syllabi.repo.SemesterRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +36,7 @@ import static org.mockito.Mockito.times;
 @ExtendWith(MockitoExtension.class)
 class ProgramServiceTest {
     @Mock
-    private CourseRepository courseRepository;
+    private SemesterRepository semesterRepository;
     @Mock
     private ProgramRepository programRepository;
     @Mock
@@ -49,6 +51,7 @@ class ProgramServiceTest {
     private ProgramDetails programDetails;
 
     private Page<Program> page;
+    private Page<Semester> semesterPage;
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
@@ -79,10 +82,11 @@ class ProgramServiceTest {
         request.setName("Philosophy");
         request.setOrganizerId(9);
         page = Page.empty();
+        semesterPage = Page.empty();
     }
 
     private void injectMocks() {
-        programService = new ProgramService(programRepository, instituteRepository);
+        programService = new ProgramService(programRepository, instituteRepository, semesterRepository);
     }
 
     @Test
@@ -182,5 +186,26 @@ class ProgramServiceTest {
         assertEquals(20, pageRequest.getPageSize());
 
         assertThat(result, is(sameInstance(page)));
+    }
+
+    @Test
+    void shouldAskRepositoryForSemesters() {
+        given(semesterRepository.findByProgramId(anyInt(), any(PageRequest.class)))
+                .willReturn(semesterPage);
+        injectMocks();
+
+        Page<Semester> result = programService.getAllSemesters(1, 0, 20);
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+
+        then(semesterRepository)
+                .should(times(1))
+                .findByProgramId(anyInt(), pageRequestCaptor.capture());
+        PageRequest pageRequest = pageRequestCaptor.getValue();
+
+        assertEquals(0, pageRequest.getPageNumber());
+        assertEquals(20, pageRequest.getPageSize());
+
+        assertThat(result, is(sameInstance(semesterPage)));
     }
 }

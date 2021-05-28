@@ -145,6 +145,23 @@ class ProgramControllerIntegrationTest {
         return programRepository.save(program).getId();
     }
 
+    private Integer addSemesters() {
+        Program program = Program.builder()
+                .name("Cognitive Science")
+                .build();
+        program = programRepository.save(program);
+
+        for(int i = 1; i<=25; i++) {
+            Semester dummySemester = Semester.builder()
+                    .name("Dummy Semester #"+i)
+                    .program(program)
+                    .build();
+            semesterRepository.save(dummySemester);
+        }
+
+        return program.getId();
+    }
+
     @Test
     void shouldRespondWith401ToAddProgramRequestIfUserUnauthorized() {
         given()
@@ -444,6 +461,51 @@ class ProgramControllerIntegrationTest {
                 .queryParam("size", 5)
                 .when()
                 .get(baseUrl)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(5))
+                .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetAllSemestersForProgramRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .get(baseUrl + "/{programId}/semesters", 1)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithSemestersPageAndDefaultPaginationToGetAllSemestersForProgramRequest() {
+        Integer id = addSemesters();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .when()
+                .get(baseUrl + "/{programId}/semesters", id)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(20))
+                .body("numberOfElements", equalTo(20));
+    }
+
+    @Test
+    void shouldRespondWithSemestersPageAndCustomPaginationToGetAllSemestersForProgramRequest() {
+        Integer id = addSemesters();
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .queryParam("page", 3)
+                .queryParam("size", 5)
+                .when()
+                .get(baseUrl + "/{programId}/semesters", id)
                 .then()
                 .statusCode(OK.value())
                 .body("content", hasSize(5))

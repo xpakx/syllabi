@@ -1,6 +1,7 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
@@ -70,6 +71,16 @@ public class ProgramController {
                                                         @RequestParam Optional<Integer> size) {
         return new ResponseEntity<>(
                 programService.getAllPrograms(page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/{programId}/semesters")
+    public ResponseEntity<Page<Semester>> getAllSemesters(@PathVariable Integer programId,
+                                                          @RequestParam Optional<Integer> page,
+                                                          @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                programService.getAllSemesters(programId, page.orElse(0), size.orElse(20)),
                 HttpStatus.OK
         );
     }

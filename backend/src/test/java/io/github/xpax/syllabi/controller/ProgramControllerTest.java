@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.ProgramService;
@@ -49,6 +50,7 @@ public class ProgramControllerTest {
     private Page<CourseForPage> coursePage;
     private ProgramDetails program;
     private Page<Program> programPage;
+    private Page<Semester> semesterPage;
 
     @BeforeEach
     void setUp() {
@@ -102,6 +104,29 @@ public class ProgramControllerTest {
         programList.add(program2);
         programList.add(program3);
         programPage = new PageImpl<>(programList);
+
+
+        Semester sem1 = Semester.builder()
+                .id(1)
+                .number(1)
+                .name("winter semester")
+                .build();
+        Semester sem2 = Semester.builder()
+                .id(2)
+                .number(2)
+                .name("summer semester")
+                .build();
+        Semester sem3 = Semester.builder()
+                .id(3)
+                .number(3)
+                .name("winter semester")
+                .build();
+
+        List<Semester> semesterList = new ArrayList<>();
+        semesterList.add(sem1);
+        semesterList.add(sem2);
+        semesterList.add(sem3);
+        semesterPage = new PageImpl<>(semesterList);
     }
 
     private void injectMocks() {
@@ -398,5 +423,68 @@ public class ProgramControllerTest {
         BDDMockito.then(programService)
                 .should(times(1))
                 .getAllPrograms(0, 20);
+    }
+
+    @Test
+    void shouldRespondToAllSemestersRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}/semesters", 1)
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldProduceListOfSemesters() {
+        BDDMockito.given(programService.getAllSemesters(anyInt(), anyInt(), anyInt()))
+                .willReturn(semesterPage);
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}/semesters", 1)
+                .then()
+                .statusCode(OK.value())
+                .body("content", hasSize(3))
+                .body("content[0].id", equalTo(1))
+                .body("content[0].number", equalTo(1))
+                .body("content[0].name", equalTo("winter semester"))
+                .body("content[1].id", equalTo(2))
+                .body("content[1].number", equalTo(2))
+                .body("content[1].name", equalTo("summer semester"))
+                .body("content[2].id", equalTo(3))
+                .body("content[2].number", equalTo(3))
+                .body("content[2].name", equalTo("winter semester"))
+                .body("numberOfElements", equalTo(3));
+    }
+
+    @Test
+    void shouldTakePageAndSizeFromGetSemestersRequest() {
+        injectMocks();
+        given()
+                .queryParam("page", 7)
+                .queryParam("size", 5)
+                .when()
+                .get("/programs/{programId}/semesters", 1)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(programService)
+                .should(times(1))
+                .getAllSemesters(1,7, 5);
+    }
+
+    @Test
+    void shouldUseDefaultPageAndSizeValuesForSemestersRequest() {
+        injectMocks();
+        given()
+                .when()
+                .get("/programs/{programId}/semesters", 1)
+                .then()
+                .statusCode(OK.value());
+
+        BDDMockito.then(programService)
+                .should(times(1))
+                .getAllSemesters(1,0, 20);
     }
 }

@@ -1,32 +1,28 @@
 package io.github.xpax.syllabi.service;
 
-import io.github.xpax.syllabi.entity.Course;
 import io.github.xpax.syllabi.entity.Institute;
 import io.github.xpax.syllabi.entity.Program;
+import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
-import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.github.xpax.syllabi.repo.SemesterRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ProgramService {
     private final ProgramRepository programRepository;
     private final InstituteRepository instituteRepository;
+    private final SemesterRepository semesterRepository;
 
-    public ProgramService(ProgramRepository programRepository, InstituteRepository instituteRepository) {
+    public ProgramService(ProgramRepository programRepository, InstituteRepository instituteRepository, SemesterRepository semesterRepository) {
         this.programRepository = programRepository;
         this.instituteRepository = instituteRepository;
+        this.semesterRepository = semesterRepository;
     }
 
     public Program addNewProgram(ProgramRequest programRequest) {
@@ -57,6 +53,10 @@ public class ProgramService {
 
     public Page<Program> getAllPrograms(Integer page, Integer size) {
         return programRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public Page<Semester> getAllSemesters(Integer programId, Integer page, Integer size) {
+        return semesterRepository.findByProgramId(programId, PageRequest.of(page, size));
     }
 
     private Institute getInstitute(ProgramRequest programRequest) {
