@@ -65,7 +65,7 @@
                 book
             </mat-icon> 
             <mat-card-title class='title'>
-                {{elem.name}}
+                Semester {{elem.number}}
                 <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
                     <mat-icon>more_vert</mat-icon>
                 </button>
@@ -80,7 +80,7 @@
                     </button>
                 </mat-menu>
             </mat-card-title>
-            <mat-card-subtitle>Semester {{elem.number}}</mat-card-subtitle>
+            <mat-card-subtitle>{{elem.name}}</mat-card-subtitle>
             
             
         </mat-card-header>  

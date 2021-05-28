@@ -45,6 +45,7 @@ import { ShowInstitutesComponent } from './component/show-institutes/show-instit
 import { ShowProgramCoursesComponent } from './component/show-program-courses/show-program-courses.component';
 import { ShowProgramComponent } from './component/show-program/show-program.component';
 import { ShowProgramsComponent } from './component/show-programs/show-programs.component';
+import { ShowSemesterComponent } from './component/show-semester/show-semester.component';
 import { ShowStudentComponent } from './component/show-student/show-student.component';
 import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
@@ -267,6 +268,10 @@ const routes: Routes = [
   {
     path: 'changepassword',
     component: ChangePasswordComponent
+  },
+  {
+    path: 'semesters/:id',
+    component: ShowSemesterComponent
   },
   {
     path: '404',

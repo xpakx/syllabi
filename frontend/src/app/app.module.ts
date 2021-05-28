@@ -100,6 +100,7 @@ import { NotFoundComponent } from './component/not-found/not-found.component';
 import { PaginationComponent } from './component/pagination/pagination.component';
 import { CourseSummaryComponent } from './component/course-summary/course-summary.component';
 import { ProgramSemestersComponent } from './component/program-semesters/program-semesters.component';
+import { ShowSemesterComponent } from './component/show-semester/show-semester.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -182,7 +183,8 @@ export function tokenGetter() {
     NotFoundComponent,
     PaginationComponent,
     CourseSummaryComponent,
-    ProgramSemestersComponent
+    ProgramSemestersComponent,
+    ShowSemesterComponent
   ],
   imports: [
     BrowserModule,

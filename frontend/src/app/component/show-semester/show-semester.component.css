@@ -1,0 +1,33 @@
+.more-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+ }
+
+.circle {
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+mat-card-actions {
+    display: flex;
+    align-items: right;
+    justify-content: right;
+}
+
+.textWithIcon {
+    position:relative;
+    padding-top:4px;
+}
+
+.iconForTextWithIcon {
+    position:relative;
+    padding-right: 5px;
+}
+
+.spanForTextWithIcon { 
+    position:absolute;
+    padding-top:5px;
+}
