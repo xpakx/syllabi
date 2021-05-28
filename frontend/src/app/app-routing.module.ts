@@ -47,6 +47,7 @@ import { ShowInstitutesComponent } from './component/show-institutes/show-instit
 import { ShowProgramCoursesComponent } from './component/show-program-courses/show-program-courses.component';
 import { ShowProgramComponent } from './component/show-program/show-program.component';
 import { ShowProgramsComponent } from './component/show-programs/show-programs.component';
+import { ShowSemesterCoursesComponent } from './component/show-semester-courses/show-semester-courses.component';
 import { ShowSemesterComponent } from './component/show-semester/show-semester.component';
 import { ShowStudentComponent } from './component/show-student/show-student.component';
 import { ShowStudyGroupComponent } from './component/show-study-group/show-study-group.component';
@@ -278,6 +279,10 @@ const routes: Routes = [
   {
     path: 'semesters/:id/edit',
     component: EditSemesterComponent
+  },
+  {
+    path: 'semesters/:id/courses',
+    component: ShowSemesterCoursesComponent
   },
   {
     path: 'programs/:id/semesters/add',

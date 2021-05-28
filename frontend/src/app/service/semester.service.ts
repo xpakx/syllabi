@@ -8,6 +8,7 @@ import { SemesterRequest } from '../entity/semester-request';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ProgramSummary } from '../entity/program-summary';
+import { CourseForPage } from '../entity/course-for-page';
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +45,13 @@ export class SemesterService implements CrudWithParentService<Semester, Semester
 
   getParentById(id: number): Observable<ProgramSummary> {
     return this.http.get<ProgramSummary>(`${this.programUrl}/${id}`);
+  }
+
+  getAllCourses(id: number): Observable<Page<CourseForPage>> {
+    return this.http.get<Page<CourseForPage>>(`${this.url}/${id}/courses`);
+  }
+
+  getAllCoursesForPage(id: number, page: number): Observable<Page<CourseForPage>> {
+    return this.http.get<Page<CourseForPage>>(`${this.url}/${id}/courses?page=${page}`);
   }
 }
