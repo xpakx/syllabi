@@ -2,6 +2,7 @@ package io.github.xpax.syllabi;
 
 import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterRequest;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
 import io.github.xpax.syllabi.repo.SemesterRepository;
@@ -48,6 +49,7 @@ class ProgramControllerIntegrationTest {
     SemesterRepository semesterRepository;
 
     private ProgramRequest programRequest;
+    private SemesterRequest semesterRequest;
 
     @BeforeEach
     void setUp() {
@@ -72,6 +74,10 @@ class ProgramControllerIntegrationTest {
 
         programRequest = new ProgramRequest();
         programRequest.setName("Cognitive Science");
+
+        semesterRequest = new SemesterRequest();
+        semesterRequest.setName("Winter");
+        semesterRequest.setNumber(1);
     }
 
     @AfterEach
@@ -142,6 +148,13 @@ class ProgramControllerIntegrationTest {
             programRepository.save(dummyProgram);
         }
 
+        return programRepository.save(program).getId();
+    }
+
+    private Integer addProgram() {
+        Program program = Program.builder()
+                .name("Cognitive Science")
+                .build();
         return programRepository.save(program).getId();
     }
 
@@ -510,5 +523,54 @@ class ProgramControllerIntegrationTest {
                 .statusCode(OK.value())
                 .body("content", hasSize(5))
                 .body("numberOfElements", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith401ToAddSemesterRequestIfUserUnauthorized() {
+        given()
+                .log()
+                .uri()
+                .when()
+                .post(baseUrl + "/{programId}/semesters", 1)
+                .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToAddSemesterRequestIfNotAdmin() {
+        given()
+                .log()
+                .uri()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(semesterRequest)
+                .when()
+                .post(baseUrl + "/{programId}/semesters", 1)
+                .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWithAddedSemester() {
+        Integer id = addProgram();
+        Integer addedSemesterId = given()
+                .log()
+                .uri()
+                .log()
+                .body()
+                .auth()
+                .oauth2(tokenFor("admin1"))
+                .contentType(ContentType.JSON)
+                .body(semesterRequest)
+                .when()
+                .post(baseUrl + "/{programId}/semesters", id)
+                .then()
+                .statusCode(CREATED.value())
+                .body("name", equalTo("Winter"))
+                .body("number", equalTo(1))
+                .extract()
+                .jsonPath()
+                .getInt("id");
     }
 }

@@ -5,6 +5,7 @@ import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.CourseForPage;
 import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterRequest;
 import io.github.xpax.syllabi.service.CourseService;
 import io.github.xpax.syllabi.service.ProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,5 +84,12 @@ public class ProgramController {
                 programService.getAllSemesters(programId, page.orElse(0), size.orElse(20)),
                 HttpStatus.OK
         );
+    }
+
+    @Secured("ROLE_COURSE_ADMIN")
+    @PostMapping("/{programId}/semesters")
+    public ResponseEntity<Semester> addNewSemester(@RequestBody SemesterRequest semesterRequest,
+                                                  @PathVariable Integer programId) {
+        return new ResponseEntity<>(programService.addNewSemester(programId, semesterRequest), HttpStatus.CREATED);
     }
 }

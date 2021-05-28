@@ -5,6 +5,7 @@ import io.github.xpax.syllabi.entity.Program;
 import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.InstituteRepository;
 import io.github.xpax.syllabi.repo.ProgramRepository;
@@ -27,7 +28,9 @@ public class ProgramService {
 
     public Program addNewProgram(ProgramRequest programRequest) {
         Institute institute = getInstitute(programRequest);
-        Program programToAdd = buildProgram(institute, programRequest.getName()).description(programRequest.getDescription()).build();
+        Program programToAdd = buildProgram(institute, programRequest.getName())
+                .description(programRequest.getDescription())
+                .build();
         return programRepository.save(programToAdd);
     }
 
@@ -70,5 +73,15 @@ public class ProgramService {
         return Program.builder()
                 .organizer(institute)
                 .name(name);
+    }
+
+    public Semester addNewSemester(Integer programId, SemesterRequest request) {
+        Program program = programRepository.getOne(programId);
+        Semester semesterToAdd = Semester.builder()
+                .number(request.getNumber())
+                .name(request.getName())
+                .program(program)
+                .build();
+        return semesterRepository.save(semesterToAdd);
     }
 }

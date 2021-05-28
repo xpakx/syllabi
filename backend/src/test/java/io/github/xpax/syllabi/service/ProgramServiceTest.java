@@ -6,6 +6,7 @@ import io.github.xpax.syllabi.entity.Program;
 import io.github.xpax.syllabi.entity.Semester;
 import io.github.xpax.syllabi.entity.dto.ProgramDetails;
 import io.github.xpax.syllabi.entity.dto.ProgramRequest;
+import io.github.xpax.syllabi.entity.dto.SemesterRequest;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.CourseRepository;
 import io.github.xpax.syllabi.repo.InstituteRepository;
@@ -53,6 +54,8 @@ class ProgramServiceTest {
     private Page<Program> page;
     private Page<Semester> semesterPage;
 
+    private SemesterRequest semesterRequest;
+
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
     @BeforeEach
@@ -83,6 +86,10 @@ class ProgramServiceTest {
         request.setOrganizerId(9);
         page = Page.empty();
         semesterPage = Page.empty();
+
+        semesterRequest = new SemesterRequest();
+        semesterRequest.setName("Winter");
+        semesterRequest.setNumber(1);
     }
 
     private void injectMocks() {
@@ -207,5 +214,27 @@ class ProgramServiceTest {
         assertEquals(20, pageRequest.getPageSize());
 
         assertThat(result, is(sameInstance(semesterPage)));
+    }
+
+    @Test
+    void shouldAddNewSemester() {
+        given(programRepository.getOne(1))
+                .willReturn(program);
+        injectMocks();
+
+        programService.addNewSemester(1, semesterRequest);
+
+        ArgumentCaptor<Semester> semesterCaptor = ArgumentCaptor.forClass(Semester.class);
+        then(semesterRepository)
+                .should(times(1))
+                .save(semesterCaptor.capture());
+        Semester addedSemester = semesterCaptor.getValue();
+
+        assertNotNull(addedSemester);
+        assertNotNull(addedSemester.getProgram());
+
+        assertEquals("Winter", addedSemester.getName());
+        assertEquals(1, addedSemester.getNumber());
+        assertNull(addedSemester.getId());
     }
 }

@@ -46,11 +46,13 @@ public class ProgramControllerTest {
 
     private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
     private ProgramRequest programRequest;
+    private SemesterRequest semesterRequest;
     private Program addedProgram;
     private Page<CourseForPage> coursePage;
     private ProgramDetails program;
     private Page<Program> programPage;
     private Page<Semester> semesterPage;
+    private Semester addedSemester;
 
     @BeforeEach
     void setUp() {
@@ -127,6 +129,16 @@ public class ProgramControllerTest {
         semesterList.add(sem2);
         semesterList.add(sem3);
         semesterPage = new PageImpl<>(semesterList);
+
+        semesterRequest = new SemesterRequest();
+        semesterRequest.setName("Winter");
+        semesterRequest.setNumber(1);
+
+        addedSemester = Semester.builder()
+                .id(17)
+                .name("Winter")
+                .number(1)
+                .build();
     }
 
     private void injectMocks() {
@@ -486,5 +498,55 @@ public class ProgramControllerTest {
         BDDMockito.then(programService)
                 .should(times(1))
                 .getAllSemesters(1,0, 20);
+    }
+
+    @Test
+    void shouldRespondToAddNewSemesterRequest() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(semesterRequest)
+                .when()
+                .post("/programs/{programId}/semesters", 1)
+                .then()
+                .statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldCreateNewSemester() {
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(semesterRequest)
+                .when()
+                .post("/programs/{programId}/semesters", 1)
+                .then()
+                .statusCode(CREATED.value());
+
+        ArgumentCaptor<SemesterRequest> requestCaptor = ArgumentCaptor.forClass(SemesterRequest.class);
+        BDDMockito.then(programService)
+                .should(times(1))
+                .addNewSemester(anyInt(), requestCaptor.capture());
+
+        SemesterRequest capturedRequest = requestCaptor.getValue();
+        assertEquals("Winter", capturedRequest.getName());
+        assertEquals(1, capturedRequest.getNumber());
+    }
+
+    @Test
+    void shouldReturnAddedSemester() {
+        BDDMockito.given(programService.addNewSemester(anyInt(), any(SemesterRequest.class)))
+                .willReturn(addedSemester);
+        injectMocks();
+        given()
+                .contentType(ContentType.JSON)
+                .body(programRequest)
+                .when()
+                .post("/programs/{programId}/semesters", 1)
+                .then()
+                .statusCode(CREATED.value())
+                .body("id", equalTo(17))
+                .body("name", equalTo("Winter"))
+                .body("number", equalTo(1));
     }
 }
