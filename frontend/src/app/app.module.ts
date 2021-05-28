@@ -104,6 +104,7 @@ import { ShowSemesterComponent } from './component/show-semester/show-semester.c
 import { ModalDeleteSemesterComponent } from './component/modal-delete-semester/modal-delete-semester.component';
 import { AddSemesterComponent } from './component/add-semester/add-semester.component';
 import { EditSemesterComponent } from './component/edit-semester/edit-semester.component';
+import { ShowSemesterCoursesComponent } from './component/show-semester-courses/show-semester-courses.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -190,7 +191,8 @@ export function tokenGetter() {
     ShowSemesterComponent,
     ModalDeleteSemesterComponent,
     AddSemesterComponent,
-    EditSemesterComponent
+    EditSemesterComponent,
+    ShowSemesterCoursesComponent
   ],
   imports: [
     BrowserModule,

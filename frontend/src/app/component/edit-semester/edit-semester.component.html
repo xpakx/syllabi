@@ -1,1 +1,18 @@
-<p>edit-semester works!</p>
+<mat-card *ngIf="semester">
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="editSemester()">
+            <h2>Edit semester for program {{semester.program.name}}</h2>
+            <mat-error *ngIf="requestInvalid">
+                Error: {{message}}
+            </mat-error>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Name" formControlName="name" required>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Number" formControlName="number" required>
+            </mat-form-field>
+            <button mat-raised-button color="secondary">Edit</button>
+        </form>
+    </mat-card-content>
+</mat-card>    
+

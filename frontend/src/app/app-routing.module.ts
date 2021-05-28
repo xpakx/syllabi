@@ -21,6 +21,7 @@ import { EditCourseComponent } from './component/edit-course/edit-course.compone
 import { EditGroupLiteratureComponent } from './component/edit-group-literature/edit-group-literature.component';
 import { EditInstituteComponent } from './component/edit-institute/edit-institute.component';
 import { EditProgramComponent } from './component/edit-program/edit-program.component';
+import { EditSemesterComponent } from './component/edit-semester/edit-semester.component';
 import { EditStudentComponent } from './component/edit-student/edit-student.component';
 import { EditStudyGroupComponent } from './component/edit-study-group/edit-study-group.component';
 import { EditTeacherJobComponent } from './component/edit-teacher-job/edit-teacher-job.component';
@@ -273,6 +274,10 @@ const routes: Routes = [
   {
     path: 'semesters/:id',
     component: ShowSemesterComponent
+  },
+  {
+    path: 'semesters/:id/edit',
+    component: EditSemesterComponent
   },
   {
     path: 'programs/:id/semesters/add',
