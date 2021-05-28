@@ -4,5 +4,5 @@ export interface SemesterSummary {
     id: number;
     name: string;
     number: number;
-    //program: ProgramSummary;
+    program: ProgramSummary;
 }
