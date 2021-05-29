@@ -4,12 +4,9 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Institute } from 'src/app/entity/institute';
 import { InstituteForPage } from 'src/app/entity/institute-for-page';
-import { Page } from 'src/app/entity/page';
 import { InstituteChildrenAdapterService } from 'src/app/service/institute-children-adapter.service';
-import { InstituteService } from 'src/app/service/institute.service';
 import { ModalDeleteInstituteComponent } from '../modal-delete-institute/modal-delete-institute.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-institute-children',
@@ -17,7 +14,6 @@ import { PageableComponent } from '../pageable/pageable.component';
   styleUrls: ['./show-institute-children.component.css']
 })
 export class ShowInstituteChildrenComponent extends PageableGetAllChildrenComponent<InstituteForPage, Institute> implements OnInit {
-  institute: Institute | undefined;
 
   constructor(protected service: InstituteChildrenAdapterService, private dialog: MatDialog,
     protected router: Router, protected route: ActivatedRoute) { 
@@ -26,19 +22,7 @@ export class ShowInstituteChildrenComponent extends PageableGetAllChildrenCompon
 
   ngOnInit(): void {
     this.getFirstPage();
-
-    this.service.getParentById(this.id).subscribe(
-      (result: Institute) => {
-        this.institute = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getParent();
   }
   
   delete(id: number, name: string) {

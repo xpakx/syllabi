@@ -15,9 +15,8 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   styleUrls: ['./show-all-course-literature.component.css']
 })
 export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage, CourseSummary> implements OnInit {
-  course: CourseSummary | undefined;
 
-  constructor(protected service: CourseLiteratureService, private courseService: CourseService,
+  constructor(protected service: CourseLiteratureService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) { 
       super(service, router, route);
@@ -25,19 +24,7 @@ export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComp
 
   ngOnInit(): void {
     this.getFirstPage();
-
-    this.courseService.getByIdMin(this.id).subscribe(
-      (result: CourseSummary) => {
-        this.course = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getParent();
   }
 
   delete(id: number, name: string, courseName: string) {

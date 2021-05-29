@@ -1,8 +1,8 @@
-<h2 *ngIf="group">Students for group {{group.name}} ({{group.year.parent.name}})</h2> 
+<h2 *ngIf="parent">Students for group {{parent.name}} ({{parent.year.parent.name}})</h2> 
 
-<button mat-button [routerLink]="'/groups/'+ group.id" *ngIf="group">
+<button mat-button [routerLink]="'/groups/'+ parent.id" *ngIf="parent">
     <mat-icon>arrow_left</mat-icon>
-    Back to group {{group.name}}
+    Back to group {{parent.name}}
 </button>
 
 <div *ngIf="message">

@@ -14,7 +14,6 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   styleUrls: ['./show-semester-courses.component.css']
 })
 export class ShowSemesterCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage, SemesterSummary> implements OnInit {
-  semester: SemesterSummary | undefined;
 
   constructor(protected service: SemesterCoursesAdapterService, private dialog: MatDialog,
     protected route: ActivatedRoute, protected router: Router) {  
@@ -23,19 +22,7 @@ export class ShowSemesterCoursesComponent extends PageableGetAllChildrenComponen
   
     ngOnInit(): void {
       this.getFirstPage();
-  
-      this.service.getParentById(this.id).subscribe(
-        (result: SemesterSummary) => {
-          this.semester = result;
-        },
-        (error: HttpErrorResponse) => {
-          if(error.status === 401) {
-            localStorage.removeItem("token");
-            this.router.navigate(['login']);
-          }
-          this.message = error.error.message;
-        }
-      );
+      this.getParent();
     }
   
     delete(id: number, name: string) {

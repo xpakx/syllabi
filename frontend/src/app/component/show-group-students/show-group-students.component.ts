@@ -14,7 +14,6 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   styleUrls: ['./show-group-students.component.css']
 })
 export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId, StudyGroupSummary> implements OnInit {
-  group: StudyGroupSummary | undefined;
 
   constructor(protected service: StudyGroupStudentsAdapterService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
@@ -24,19 +23,7 @@ export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<
 
   ngOnInit(): void {
     this.getFirstPage();
-
-    this.service.getParentById(this.id).subscribe(
-      (result: StudyGroupSummary) => {
-        this.group = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getParent();
   }
 
   delete(id: number, name: string) {

@@ -1,11 +1,11 @@
-<h2 *ngIf="course">Literature for course {{course.name}}</h2> 
+<h2 *ngIf="parent">Literature for course {{parent.name}}</h2> 
 
-<button mat-button [routerLink]="'/courses/'+ course.id" *ngIf="course">
+<button mat-button [routerLink]="'/courses/'+ parent.id" *ngIf="parent">
     <mat-icon>arrow_left</mat-icon>
-    Back to {{course.name}}
+    Back to {{parent.name}}
 </button>
 
-<button mat-button [routerLink]="'/courses/'+ course.id +'/literature/add'" *ngIf="course">
+<button mat-button [routerLink]="'/courses/'+ parent.id +'/literature/add'" *ngIf="parent">
     <mat-icon>add_circle</mat-icon>
     Add literature
 </button>
@@ -35,7 +35,7 @@
 							<mat-icon>edit</mat-icon>
 							Edit
 						</button>
-						<button mat-menu-item (click)="delete(lit.id, lit.title, course.name)" *ngIf="course">
+						<button mat-menu-item (click)="delete(lit.id, lit.title, parent.name)" *ngIf="parent">
 							<mat-icon>delete</mat-icon>
 							Remove
 						</button>
@@ -76,7 +76,7 @@
                         <mat-icon>edit</mat-icon>
                         Edit
                     </button>
-                    <button mat-menu-item (click)="delete(lit.id, lit.title, course.name)" *ngIf="course">
+                    <button mat-menu-item (click)="delete(lit.id, lit.title, parent.name)" *ngIf="parent">
                         <mat-icon>delete</mat-icon>
                         Remove
                     </button>

@@ -1,11 +1,11 @@
-<h2 *ngIf="group">Literature for group {{group.name}} ({{group.year.parent.name}})</h2> 
+<h2 *ngIf="parent">Literature for group {{parent.name}} ({{parent.year.parent.name}})</h2> 
 
-<button mat-button [routerLink]="'/groups/'+ group.id" *ngIf="group">
+<button mat-button [routerLink]="'/groups/'+ parent.id" *ngIf="parent">
     <mat-icon>arrow_left</mat-icon>
-    Back to group {{group.name}}
+    Back to group {{parent.name}}
 </button>
 
-<button mat-button [routerLink]="'/groups/'+ group.id +'/literature/add'" *ngIf="group">
+<button mat-button [routerLink]="'/groups/'+ parent.id +'/literature/add'" *ngIf="parent">
     <mat-icon>add_circle</mat-icon>
     Add literature
 </button>
@@ -35,7 +35,7 @@
 							<mat-icon>edit</mat-icon>
 							Edit
 						</button>
-						<button mat-menu-item (click)="delete(lit.id, lit.title, group.name)" *ngIf="group">
+						<button mat-menu-item (click)="delete(lit.id, lit.title, parent.name)" *ngIf="parent">
 							<mat-icon>delete</mat-icon>
 							Remove
 						</button>
@@ -76,7 +76,7 @@
                         <mat-icon>edit</mat-icon>
                         Edit
                     </button>
-                    <button mat-menu-item (click)="delete(lit.id, lit.title, group.name)" *ngIf="group">
+                    <button mat-menu-item (click)="delete(lit.id, lit.title, parent.name)" *ngIf="parent">
                         <mat-icon>delete</mat-icon>
                         Remove
                     </button>

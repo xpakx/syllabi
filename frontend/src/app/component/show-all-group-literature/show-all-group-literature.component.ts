@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LiteratureForPage } from 'src/app/entity/literature-for-page';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
 import { GroupLiteratureService } from 'src/app/service/group-literature.service';
-import { StudyGroupService } from 'src/app/service/study-group.service';
 import { ModalDeleteGroupLiteratureComponent } from '../modal-delete-group-literature/modal-delete-group-literature.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -15,7 +14,6 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   styleUrls: ['./show-all-group-literature.component.css']
 })
 export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage, StudyGroupSummary> implements OnInit {
-  group: StudyGroupSummary | undefined;
 
   constructor(protected service: GroupLiteratureService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
@@ -25,19 +23,7 @@ export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenCompo
 
   ngOnInit(): void {
     this.getFirstPage();
-
-    this.service.getParentById(this.id).subscribe(
-      (result: StudyGroupSummary) => {
-        this.group = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getParent();
   }
 
   delete(id: number, name: string, groupName: string) {
