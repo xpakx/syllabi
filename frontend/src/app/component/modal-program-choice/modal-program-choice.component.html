@@ -5,10 +5,7 @@
 <mat-dialog-content>
     <div *ngIf="step===1" >
         <span *ngFor="let program of programs">
-            <button mat-button color="primary" 
-            *ngIf="choiceNum.includes(program.id)" 
-            (click)="nextStep(program)">{{program.name}}</button>
-            <button mat-button *ngIf="!choiceNum.includes(program.id)" (click)="nextStep(program)">{{program.name}}</button>
+            <button mat-button (click)="nextStep(program)">{{program.name}}</button>
         </span>
     </div>
     <div *ngIf="step===2" >

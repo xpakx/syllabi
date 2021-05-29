@@ -142,7 +142,6 @@ export class ModalProgramChoiceComponent implements OnInit {
   choose(semester: Semester): void {
     this.choice.push(semester);
     this.choiceNum = this.choice.map((p) => p.id);
-    this.prevStep();
   }
 
   cancel(id: number): void {
