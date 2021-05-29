@@ -1,11 +1,11 @@
-<h2>Course Years for Course {{parentName}}</h2> 
+<h2 *ngIf="parent">Course Years for Course {{parent.name}}</h2> 
 
-<button mat-button [routerLink]="'/courses/'+ parentId">
+<button mat-button [routerLink]="'/courses/'+ parent.id" *ngIf="parent">
     <mat-icon>arrow_left</mat-icon>
-    Back to {{parentName}}
+    Back to {{parent.name}}
 </button>
 
-<button mat-button [routerLink]="'/courses/'+ parentId +'/years/add'">
+<button mat-button [routerLink]="'/courses/'+ parent.d +'/years/add'" *ngIf="parent">
     <mat-icon>add_circle</mat-icon>
     Add new year
 </button>

@@ -41,17 +41,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
       }
     )
 
-    this.parentService.getByIdMin(this.id).subscribe(
-      (response: CourseSummary) => {
-        this.parentName = response.name;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-      }
-    )
+    this.getParent();
   }
 
   getActivePage(id: number, page: number): void {
