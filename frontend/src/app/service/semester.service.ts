@@ -13,7 +13,7 @@ import { CourseForPage } from '../entity/course-for-page';
 @Injectable({
   providedIn: 'root'
 })
-export class SemesterService implements CrudWithParentService<Semester, SemesterSummary, SemesterRequest, SemesterRequest, Semester> {
+export class SemesterService implements CrudWithParentService<Semester, SemesterSummary, SemesterRequest, SemesterRequest, Semester, ProgramSummary> {
   private programUrl = environment.apiServerUrl + "/programs";
   private url = environment.apiServerUrl + "/semesters";
 
@@ -52,6 +52,6 @@ export class SemesterService implements CrudWithParentService<Semester, Semester
   }
 
   getAllCoursesForPage(id: number, page: number): Observable<Page<CourseForPage>> {
-    return this.http.get<Page<CourseForPage>>(`${this.url}/${id}/courses?page=${page}`);
+    return this.http.get<Page<CourseForPage>>(`${this.programUrl}/${id}/courses?page=${page}`);
   }
 }

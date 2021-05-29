@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { CourseYearDetails } from '../entity/course-year-details';
 import { Page } from '../entity/page';
 import { StudyGroup } from '../entity/study-group';
 import { StudyGroupForPage } from '../entity/study-group-for-page';
@@ -14,7 +15,7 @@ import { ServiceWithDelete } from './service-with-delete';
   providedIn: 'root'
 })
 export class StudyGroupService 
-implements CrudWithParentService<StudyGroupForPage, StudyGroup, StudyGroupRequest, StudyGroupRequest, StudyGroup> {
+implements CrudWithParentService<StudyGroupForPage, StudyGroup, StudyGroupRequest, StudyGroupRequest, StudyGroup, CourseYearDetails> {
  
   private url = environment.apiServerUrl + "/groups";
   private parentUrl = environment.apiServerUrl + "/years";
@@ -47,5 +48,9 @@ implements CrudWithParentService<StudyGroupForPage, StudyGroup, StudyGroupReques
 
   public edit(id: number, group: StudyGroupRequest): Observable<StudyGroup> {
     return this.http.put<StudyGroup>(`${this.url}/${id}`, group);
+  }
+
+  public getParentById(id: number): Observable<CourseYearDetails> {
+    return this.http.get<CourseYearDetails>(`${this.parentUrl}/${id}`);
   }
 }

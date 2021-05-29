@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
+import { CourseSummary } from "../entity/course-summary";
 import { Literature } from "../entity/literature";
 import { LiteratureForPage } from "../entity/literature-for-page";
 import { LiteratureRequest } from "../entity/literature-request";
@@ -14,7 +15,7 @@ import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
     providedIn: 'root'
 })
 export class CourseLiteratureService
-implements CrudWithParentService<LiteratureForPage, Literature, LiteratureRequest, LiteratureRequest, Literature> {
+implements CrudWithParentService<LiteratureForPage, Literature, LiteratureRequest, LiteratureRequest, Literature, CourseSummary> {
     private url = environment.apiServerUrl;
 
     constructor(protected http: HttpClient) { }
@@ -41,5 +42,9 @@ implements CrudWithParentService<LiteratureForPage, Literature, LiteratureReques
 
     public edit(id: number, literature: LiteratureRequest): Observable<Literature> {
         return this.http.put<Literature>(`${this.url}/courses/literature/${id}`, literature);
+    }
+
+    public getParentById(id: number): Observable<CourseSummary> {
+        return this.http.get<CourseSummary>(`${this.url}/courses/${id}/min`);
     }
 }
