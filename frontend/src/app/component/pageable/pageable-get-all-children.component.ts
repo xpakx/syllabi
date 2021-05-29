@@ -6,6 +6,7 @@ import { PageableComponent } from "./pageable.component";
 
 export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableComponent<T> {
     protected id: number;
+    parent!: U;
 
     constructor(protected service: ServiceWithGetAllChildren<T, U>, protected router: Router,
       protected route: ActivatedRoute) { 
@@ -26,6 +27,21 @@ export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableCom
             this.message = error.error.message;
           }
         )
+    }
+
+    getParent() {
+      this.service.getParentById(this.id).subscribe(
+        (result: U) => {
+          this.parent = result;
+        },
+        (error: HttpErrorResponse) => {
+          if(error.status === 401) {
+            localStorage.removeItem("token");
+            this.router.navigate(['login']);
+          }
+          this.message = error.error.message;
+        }
+      );
     }
     
     getPage(page: number): void {

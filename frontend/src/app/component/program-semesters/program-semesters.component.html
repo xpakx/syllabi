@@ -1,11 +1,11 @@
-<h2 *ngIf="program">Semesters for program {{program.name}}</h2> 
+<h2 *ngIf="parent">Semesters for program {{parent.name}}</h2> 
 
-<button mat-button [routerLink]="'/programs/'+ program.id" *ngIf="program">
+<button mat-button [routerLink]="'/programs/'+ parent.id" *ngIf="parent">
     <mat-icon>arrow_left</mat-icon>
-    Back to {{program.name}}
+    Back to {{parent.name}}
 </button>
 
-<button mat-button [routerLink]="'/programs/'+ program.id +'/semesters/add'" *ngIf="program">
+<button mat-button [routerLink]="'/programs/'+ parent.id +'/semesters/add'" *ngIf="parent">
     <mat-icon>add_circle</mat-icon>
     Add semester
 </button>
@@ -35,7 +35,7 @@
 							<mat-icon>edit</mat-icon>
 							Edit
 						</button>
-						<button mat-menu-item (click)="delete(elem.id, elem.name, program.name)" *ngIf="program">
+						<button mat-menu-item (click)="delete(elem.id, elem.name, parent.name)" *ngIf="parent">
 							<mat-icon>delete</mat-icon>
 							Remove
 						</button>
@@ -74,7 +74,7 @@
                         <mat-icon>edit</mat-icon>
                         Edit
                     </button>
-                    <button mat-menu-item (click)="delete(elem.id, elem.name, program.name)" *ngIf="program">
+                    <button mat-menu-item (click)="delete(elem.id, elem.name, parent.name)" *ngIf="parent">
                         <mat-icon>delete</mat-icon>
                         Remove
                     </button>

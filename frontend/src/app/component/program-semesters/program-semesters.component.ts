@@ -14,7 +14,6 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   styleUrls: ['./program-semesters.component.css']
 })
 export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<Semester, ProgramSummary> implements OnInit {
-  program: ProgramSummary | undefined;
 
   constructor(protected service: SemesterService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
@@ -24,19 +23,7 @@ export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<S
 
   ngOnInit(): void {
       this.getFirstPage();
-  
-      this.service.getParentById(this.id).subscribe(
-        (result: ProgramSummary) => {
-          this.program = result;
-        },
-        (error: HttpErrorResponse) => {
-          if(error.status === 401) {
-            localStorage.removeItem("token");
-            this.router.navigate(['login']);
-          }
-          this.message = error.error.message;
-        }
-      );
+      this.getParent();
   }
 
   delete(id: number, name: string, programName: string) {
