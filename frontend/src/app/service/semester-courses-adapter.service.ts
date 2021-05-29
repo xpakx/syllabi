@@ -11,7 +11,7 @@ import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
     providedIn: 'root'
 })
 export class SemesterCoursesAdapterService
-implements ServiceWithGetAllChildren<CourseForPage> {
+implements ServiceWithGetAllChildren<CourseForPage, SemesterSummary> {
 
     constructor(protected http: HttpClient, private service: SemesterService) {  }
 

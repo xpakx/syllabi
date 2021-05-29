@@ -13,7 +13,7 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   templateUrl: './program-semesters.component.html',
   styleUrls: ['./program-semesters.component.css']
 })
-export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<Semester> implements OnInit {
+export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<Semester, ProgramSummary> implements OnInit {
   program: ProgramSummary | undefined;
 
   constructor(protected service: SemesterService,

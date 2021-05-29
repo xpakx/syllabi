@@ -4,10 +4,10 @@ import { Page } from "src/app/entity/page";
 import { ServiceWithGetAllChildren } from "src/app/service/service-with-get-all-children";
 import { PageableComponent } from "./pageable.component";
 
-export abstract class PageableGetAllChildrenComponent<T> extends  PageableComponent<T> {
+export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableComponent<T> {
     protected id: number;
 
-    constructor(protected service: ServiceWithGetAllChildren<T>, protected router: Router,
+    constructor(protected service: ServiceWithGetAllChildren<T, U>, protected router: Router,
       protected route: ActivatedRoute) { 
         super();
         this.id = Number(this.route.snapshot.paramMap.get('id'));

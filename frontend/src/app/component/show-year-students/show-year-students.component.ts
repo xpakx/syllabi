@@ -15,12 +15,12 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   templateUrl: './show-year-students.component.html',
   styleUrls: ['./show-year-students.component.css']
 })
-export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId> implements OnInit {
+export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId, CourseYearDetails> implements OnInit {
   yearName: string = '';
   yearDate: string = '';
   yearId!: number;
 
-  constructor(protected service: CourseYearStudentsAdapterService, private yearService: CourseYearService,
+  constructor(protected service: CourseYearStudentsAdapterService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) {  
       super(service, router, route);
@@ -29,7 +29,7 @@ export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<S
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.yearService.getById(this.id).subscribe(
+    this.service.getParentById(this.id).subscribe(
       (result: CourseYearDetails) => {
         this.yearName = result.parent.name;  
         this.yearDate = new Date(result.startDate).getFullYear() + '/' +

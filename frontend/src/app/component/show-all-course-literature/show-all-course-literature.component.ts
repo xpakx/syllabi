@@ -14,7 +14,7 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   templateUrl: './show-all-course-literature.component.html',
   styleUrls: ['./show-all-course-literature.component.css']
 })
-export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage> implements OnInit {
+export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage, CourseSummary> implements OnInit {
   course: CourseSummary | undefined;
 
   constructor(protected service: CourseLiteratureService, private courseService: CourseService,

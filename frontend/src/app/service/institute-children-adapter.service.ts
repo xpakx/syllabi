@@ -11,7 +11,7 @@ import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
     providedIn: 'root'
 })
 export class InstituteChildrenAdapterService
-implements ServiceWithGetAllChildren<InstituteForPage> {
+implements ServiceWithGetAllChildren<InstituteForPage, Institute> {
 
     constructor(protected http: HttpClient, private service: InstituteService) {  }
 

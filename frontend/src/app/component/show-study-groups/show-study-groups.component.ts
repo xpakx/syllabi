@@ -14,7 +14,7 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   templateUrl: './show-study-groups.component.html',
   styleUrls: ['./show-study-groups.component.css']
 })
-export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<StudyGroupForPage> implements OnInit {
+export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<StudyGroupForPage, CourseYearDetails> implements OnInit {
   parentId: number;
   parentName: string = '';
   parentDate: string = '';

@@ -14,10 +14,10 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   templateUrl: './show-all-group-literature.component.html',
   styleUrls: ['./show-all-group-literature.component.css']
 })
-export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage> implements OnInit {
+export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage, StudyGroupSummary> implements OnInit {
   group: StudyGroupSummary | undefined;
 
-  constructor(protected service: GroupLiteratureService, private groupService: StudyGroupService,
+  constructor(protected service: GroupLiteratureService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) { 
       super(service, router, route);
@@ -26,7 +26,7 @@ export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenCompo
   ngOnInit(): void {
     this.getFirstPage();
 
-    this.groupService.getByIdMin(this.id).subscribe(
+    this.service.getParentById(this.id).subscribe(
       (result: StudyGroupSummary) => {
         this.group = result;
       },

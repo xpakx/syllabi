@@ -17,7 +17,7 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-institute-programs.component.html',
   styleUrls: ['./show-institute-programs.component.css']
 })
-export class ShowInstituteProgramsComponent extends PageableGetAllChildrenComponent<ProgramForPage> implements OnInit {
+export class ShowInstituteProgramsComponent extends PageableGetAllChildrenComponent<ProgramForPage, Institute> implements OnInit {
   institute: Institute | undefined;
   
   constructor(protected service: InstituteProgramsAdapterService, private dialog: MatDialog,

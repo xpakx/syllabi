@@ -17,7 +17,7 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-user-courses.component.html',
   styleUrls: ['./show-user-courses.component.css']
 })
-export class ShowUserCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage> implements OnInit {
+export class ShowUserCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage, StudentWithUserId> implements OnInit {
   student: StudentWithUserId | undefined;
   
   constructor(protected service: UserCoursesAdapterService, 

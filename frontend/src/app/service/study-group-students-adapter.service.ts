@@ -12,7 +12,7 @@ import { StudyGroupService } from "./study-group.service";
     providedIn: 'root'
 })
 export class StudyGroupStudentsAdapterService
-implements ServiceWithGetAllChildren<StudentWithUserId> {
+implements ServiceWithGetAllChildren<StudentWithUserId, StudyGroupSummary> {
 
     constructor(protected http: HttpClient, private service: StudentService, 
         private parentService: StudyGroupService) {  }

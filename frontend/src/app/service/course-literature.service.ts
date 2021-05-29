@@ -8,8 +8,6 @@ import { LiteratureForPage } from "../entity/literature-for-page";
 import { LiteratureRequest } from "../entity/literature-request";
 import { Page } from "../entity/page";
 import { CrudWithParentService } from "./crud-with-parent.service";
-import { ServiceWithDelete } from "./service-with-delete";
-import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 
 @Injectable({
     providedIn: 'root'

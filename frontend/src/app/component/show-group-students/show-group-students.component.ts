@@ -13,7 +13,7 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   templateUrl: './show-group-students.component.html',
   styleUrls: ['./show-group-students.component.css']
 })
-export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId> implements OnInit {
+export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId, StudyGroupSummary> implements OnInit {
   group: StudyGroupSummary | undefined;
 
   constructor(protected service: StudyGroupStudentsAdapterService,

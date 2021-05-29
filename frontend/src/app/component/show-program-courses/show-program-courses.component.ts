@@ -16,7 +16,7 @@ import { PageableComponent } from '../pageable/pageable.component';
   templateUrl: './show-program-courses.component.html',
   styleUrls: ['./show-program-courses.component.css']
 })
-export class ShowProgramCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage> implements OnInit {
+export class ShowProgramCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage, Program> implements OnInit {
   program: Program | undefined;
   
   constructor(protected service: ProgramCoursesAdapterService, private dialog: MatDialog,

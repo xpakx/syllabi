@@ -15,7 +15,7 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   templateUrl: './show-course-years.component.html',
   styleUrls: ['./show-course-years.component.css']
 })
-export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<CourseYearForPage> implements OnInit {
+export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<CourseYearForPage, CourseSummary> implements OnInit {
   active: boolean = true;
   parentName: string = '';
   parentId: number;
