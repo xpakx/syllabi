@@ -3,12 +3,31 @@
 </title>
 
 <mat-dialog-content>
-    <span *ngFor="let program of programs">
-        <button mat-button color="primary" 
-        *ngIf="choiceNum.includes(program.id)" 
-        (click)="cancel(program.id)">{{program.name}}</button>
-        <button mat-button *ngIf="!choiceNum.includes(program.id)" (click)="choose(program)">{{program.name}}</button>
-    </span>
+    <div *ngIf="step===1" >
+        <span *ngFor="let program of programs">
+            <button mat-button color="primary" 
+            *ngIf="choiceNum.includes(program.id)" 
+            (click)="nextStep(program)">{{program.name}}</button>
+            <button mat-button *ngIf="!choiceNum.includes(program.id)" (click)="nextStep(program)">{{program.name}}</button>
+        </span>
+    </div>
+    <div *ngIf="step===2" >
+        Semesters for program {{program.name}}
+        <span *ngFor="let semester of semesters">
+            <button mat-button color="primary" 
+            *ngIf="choiceNum.includes(semester.id)" 
+            (click)="cancel(semester.id)">{{semester.name}}</button>
+            <button mat-button *ngIf="!choiceNum.includes(semester.id)" (click)="choose(semester)">{{semester.name}}</button>
+        </span>
+        <div *ngIf="semesters.length == 0">
+            No semesters fot this program!
+        </div>
+
+        <button mat-button (click)="prevStep()">
+            <mat-icon>arrow_left</mat-icon>
+            Back
+        </button>
+    </div>
 
     <div class="pageNav">
         <span>

@@ -3,7 +3,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Page } from 'src/app/entity/page';
 import { ProgramForPage } from 'src/app/entity/program-for-page';
+import { Semester } from 'src/app/entity/semester';
 import { ProgramService } from 'src/app/service/program.service';
+import { SemesterService } from 'src/app/service/semester.service';
 
 @Component({
   selector: 'app-modal-program-choice',
@@ -13,19 +15,23 @@ import { ProgramService } from 'src/app/service/program.service';
 export class ModalProgramChoiceComponent implements OnInit {
 
   programs: ProgramForPage[];
+  program!: ProgramForPage;
+  semesters: Semester[];
   message: string;
   totalPages: number;
   page: number;
   last: boolean;
   first: boolean;
   empty: boolean;
-  choice: ProgramForPage[];
+  choice: Semester[];
   choiceNum: number[];
+  step: number = 1;
 
-  constructor(private programService: ProgramService, 
-    @Inject(MAT_DIALOG_DATA) data: ProgramForPage[],
+  constructor(private programService: ProgramService, private semesterService: SemesterService,
+    @Inject(MAT_DIALOG_DATA) data: Semester[],
     private dialogRef: MatDialogRef<ModalProgramChoiceComponent>) { 
     this.programs = [];
+    this.semesters = [];
     this.message = '';
     this.totalPages = 0;
     this.page = 0;
@@ -47,7 +53,7 @@ export class ModalProgramChoiceComponent implements OnInit {
     )
   }
 
-  getPage(page: number): void {
+  getProgramPage(page: number): void {
     this.programService.getAllForPage(page).subscribe(
       (response: Page<ProgramForPage>) => {
         this.printPage(response);
@@ -58,8 +64,48 @@ export class ModalProgramChoiceComponent implements OnInit {
     )
   }
 
+  getSemesterPage(page: number): void {
+    this.semesterService.getAllByParentIdForPage(this.program.id, page).subscribe(
+      (response: Page<Semester>) => {
+        this.printSemesterPage(response);
+      },
+      (error: HttpErrorResponse) => {
+        this.message = error.error.message;
+      }
+    )
+  }
+
+  getPage(page: number): void {
+    if(this.step===1) {
+      this.getProgramPage(page);
+    }
+    else {
+      this.getSemesterPage(page);
+    }
+  }
+
+  nextStep(program: ProgramForPage): void {
+    this.step = 2;
+    this.program = program;
+    this.getPage(0);
+  }
+
+  prevStep(): void {
+    this.step = 1;
+    this.getPage(0);
+  }
+
   printPage(response: Page<ProgramForPage>): void {
     this.programs = response.content;
+    this.totalPages = response.totalPages;
+    this.page = response.number;
+    this.last = response.last;
+    this.first = response.first;
+    this.empty = response.empty;
+  }
+
+  printSemesterPage(response: Page<Semester>): void {
+    this.semesters = response.content;
     this.totalPages = response.totalPages;
     this.page = response.number;
     this.last = response.last;
@@ -93,9 +139,10 @@ export class ModalProgramChoiceComponent implements OnInit {
     return result;
   }
 
-  choose(program: ProgramForPage): void {
-    this.choice.push(program);
+  choose(semester: Semester): void {
+    this.choice.push(semester);
     this.choiceNum = this.choice.map((p) => p.id);
+    this.prevStep();
   }
 
   cancel(id: number): void {
