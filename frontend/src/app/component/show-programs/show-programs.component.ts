@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Page } from 'src/app/entity/page';
 import { ProgramForPage } from 'src/app/entity/program-for-page';
 import { ProgramService } from 'src/app/service/program.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalProgramDeleteComponent } from '../modal-program-delete/modal-program-delete.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
@@ -17,8 +18,8 @@ import { PageableComponent } from '../pageable/pageable.component';
 export class ShowProgramsComponent extends PageableGetAllComponent<ProgramForPage> implements OnInit {
   
   constructor(protected service: ProgramService, private dialog: MatDialog,
-    protected router: Router) { 
-      super(service, router);
+    protected router: Router, protected userService: UserService) { 
+      super(service, userService, router);
     }
 
   ngOnInit(): void {

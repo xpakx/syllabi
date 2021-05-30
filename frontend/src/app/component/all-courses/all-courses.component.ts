@@ -16,28 +16,15 @@ import { PageableComponent } from '../pageable/pageable.component';
   styleUrls: ['./all-courses.component.css']
 })
 export class AllCoursesComponent extends PageableGetAllComponent<CourseForPage> implements OnInit {
-  admin: boolean = false;
-  
+    
   constructor(protected service: CourseService, private dialog: MatDialog,
-  protected router: Router, private userService: UserService) { 
-    super(service, router); 
+  protected router: Router, protected userService: UserService) { 
+    super(service, userService, router); 
   }
 
   ngOnInit(): void {
     this.getFirstPage();
     this.checkAuthority("ROLE_COURSE_ADMIN");
-  }
-
-  checkAuthority(role: string): void {
-    this.userService.getUserById(Number(localStorage.getItem("user_id"))).subscribe(
-      (response: User) => {
-        let roles: string[] =  response.roles.map((p) => p.authority);
-        if(roles.includes(role)) {
-          this.admin = true;
-        }
-      },
-      (error: HttpErrorResponse) => {}
-    )
   }
 
   delete(id: number, name: string) {

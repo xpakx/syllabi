@@ -18,8 +18,8 @@ export class ShowUsersComponent extends PageableGetAllComponent<User> implements
   
 
   constructor(protected service: UserService,private dialog: MatDialog, 
-  protected router: Router) {  
-    super(service, router);
+  protected router: Router, protected userService: UserService) {  
+    super(service, userService, router);
   }
 
   ngOnInit(): void {

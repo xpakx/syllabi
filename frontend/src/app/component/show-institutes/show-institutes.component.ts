@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { InstituteForPage } from 'src/app/entity/institute-for-page';
 import { Page } from 'src/app/entity/page';
 import { InstituteService } from 'src/app/service/institute.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteInstituteComponent } from '../modal-delete-institute/modal-delete-institute.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
@@ -17,8 +18,8 @@ import { PageableComponent } from '../pageable/pageable.component';
 export class ShowInstitutesComponent extends PageableGetAllComponent<InstituteForPage> implements OnInit {
   
   constructor(protected service: InstituteService, private dialog: MatDialog,
-    protected router: Router) { 
-      super(service, router);
+    protected router: Router, protected userService: UserService) { 
+      super(service, userService, router);
     }
 
   ngOnInit(): void {

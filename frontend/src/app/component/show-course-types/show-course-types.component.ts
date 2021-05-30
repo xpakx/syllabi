@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseType } from 'src/app/entity/course-type';
 import { Page } from 'src/app/entity/page';
 import { CourseTypeService } from 'src/app/service/course-type.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseTypeComponent } from '../modal-delete-course-type/modal-delete-course-type.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
@@ -17,8 +18,8 @@ import { PageableComponent } from '../pageable/pageable.component';
 export class ShowCourseTypesComponent extends PageableGetAllComponent<CourseType> implements OnInit {
   
   constructor(protected service: CourseTypeService, private dialog: MatDialog,
-    protected router: Router) {
-      super(service, router);
+    protected router: Router, protected userService: UserService) {
+      super(service, userService, router);
     }
 
   ngOnInit(): void {
