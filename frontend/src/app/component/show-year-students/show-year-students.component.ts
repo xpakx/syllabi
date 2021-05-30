@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { CourseYearStudentsAdapterService } from 'src/app/service/course-year-students-adapter.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -18,10 +19,10 @@ export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<S
   yearDate: string = '';
   yearId!: number;
 
-  constructor(protected service: CourseYearStudentsAdapterService,
+  constructor(protected service: CourseYearStudentsAdapterService, protected userService: UserService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) {  
-      super(service, router, route);
+      super(service, userService, router, route);
     }
 
   ngOnInit(): void {

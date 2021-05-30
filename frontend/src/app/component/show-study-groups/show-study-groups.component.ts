@@ -6,6 +6,7 @@ import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { StudyGroupForPage } from 'src/app/entity/study-group-for-page';
 import { CourseYearService } from 'src/app/service/course-year.service';
 import { StudyGroupService } from 'src/app/service/study-group.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteStudyGroupComponent } from '../modal-delete-study-group/modal-delete-study-group.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -19,9 +20,10 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
   parentName: string = '';
   parentDate: string = '';
 
-  constructor(protected service: StudyGroupService, private parentService: CourseYearService,private dialog: MatDialog, 
+  constructor(protected service: StudyGroupService, protected userService: UserService, 
+    private parentService: CourseYearService,private dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
-      super(service, router, route);
+      super(service, userService, router, route);
       this.parentId = Number(this.route.snapshot.paramMap.get('id'));
     }
 

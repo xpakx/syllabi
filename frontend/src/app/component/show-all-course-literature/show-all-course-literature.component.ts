@@ -6,6 +6,7 @@ import { CourseSummary } from 'src/app/entity/course-summary';
 import { LiteratureForPage } from 'src/app/entity/literature-for-page';
 import { CourseLiteratureService } from 'src/app/service/course-literature.service';
 import { CourseService } from 'src/app/service/course.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -16,10 +17,10 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
 })
 export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage, CourseSummary> implements OnInit {
 
-  constructor(protected service: CourseLiteratureService,
+  constructor(protected service: CourseLiteratureService, protected userService: UserService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) { 
-      super(service, router, route);
+      super(service, userService, router, route);
      }
 
   ngOnInit(): void {

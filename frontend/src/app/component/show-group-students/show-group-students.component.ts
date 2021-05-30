@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
 import { StudyGroupStudentsAdapterService } from 'src/app/service/study-group-students-adapter.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -15,10 +16,10 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
 })
 export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<StudentWithUserId, StudyGroupSummary> implements OnInit {
 
-  constructor(protected service: StudyGroupStudentsAdapterService,
+  constructor(protected service: StudyGroupStudentsAdapterService, protected userService: UserService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) { 
-      super(service, router, route);
+      super(service, userService, router, route);
     }
 
   ngOnInit(): void {

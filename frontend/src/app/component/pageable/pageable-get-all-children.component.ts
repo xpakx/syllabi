@@ -1,15 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Page } from "src/app/entity/page";
+import { User } from "src/app/entity/user";
 import { ServiceWithGetAllChildren } from "src/app/service/service-with-get-all-children";
+import { UserService } from "src/app/service/user.service";
 import { PageableComponent } from "./pageable.component";
 
 export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableComponent<T> {
     protected id: number;
     parent!: U;
+    admin: boolean = false;
 
-  constructor(protected service: ServiceWithGetAllChildren<T, U>, protected router: Router,
-  protected route: ActivatedRoute) { 
+  constructor(protected service: ServiceWithGetAllChildren<T, U>, protected userService: UserService,
+    protected router: Router, protected route: ActivatedRoute) { 
     super();
     this.id = Number(this.route.snapshot.paramMap.get('id'));
   }
@@ -61,5 +64,17 @@ export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableCom
       this.router.navigate(['login']);
     }
     this.message = error.error.message;
+  }
+
+  checkAuthority(role: string): void {
+    this.userService.getUserById(Number(localStorage.getItem("user_id"))).subscribe(
+      (response: User) => {
+        let roles: string[] =  response.roles.map((p) => p.authority);
+        if(roles.includes(role)) {
+          this.admin = true;
+        }
+      },
+      (error: HttpErrorResponse) => {}
+    )
   }
 }

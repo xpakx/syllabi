@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LiteratureForPage } from 'src/app/entity/literature-for-page';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
 import { GroupLiteratureService } from 'src/app/service/group-literature.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteGroupLiteratureComponent } from '../modal-delete-group-literature/modal-delete-group-literature.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -15,10 +16,10 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
 })
 export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenComponent<LiteratureForPage, StudyGroupSummary> implements OnInit {
 
-  constructor(protected service: GroupLiteratureService,
+  constructor(protected service: GroupLiteratureService, protected userService: UserService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) { 
-      super(service, router, route);
+      super(service, userService, router, route);
     }
 
   ngOnInit(): void {

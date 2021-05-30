@@ -7,6 +7,7 @@ import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
 import { Page } from 'src/app/entity/page';
 import { CourseYearService } from 'src/app/service/course-year.service';
 import { CourseService } from 'src/app/service/course.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseYearComponent } from '../modal-delete-course-year/modal-delete-course-year.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -20,10 +21,10 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   parentName: string = '';
   parentId: number;
 
-  constructor(protected service: CourseYearService, protected parentService: CourseService,
+  constructor(protected service: CourseYearService, protected userService: UserService,
     private dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
-      super(service, router, route);
+      super(service, userService, router, route);
       this.parentId = this.id;
     }
 

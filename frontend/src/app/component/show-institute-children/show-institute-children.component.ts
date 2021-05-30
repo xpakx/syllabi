@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Institute } from 'src/app/entity/institute';
 import { InstituteForPage } from 'src/app/entity/institute-for-page';
 import { InstituteChildrenAdapterService } from 'src/app/service/institute-children-adapter.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteInstituteComponent } from '../modal-delete-institute/modal-delete-institute.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -15,9 +16,10 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
 })
 export class ShowInstituteChildrenComponent extends PageableGetAllChildrenComponent<InstituteForPage, Institute> implements OnInit {
 
-  constructor(protected service: InstituteChildrenAdapterService, private dialog: MatDialog,
+  constructor(protected service: InstituteChildrenAdapterService, protected userService: UserService,
+    private dialog: MatDialog,
     protected router: Router, protected route: ActivatedRoute) { 
-      super(service, router, route);
+      super(service, userService, router, route);
     }
 
   ngOnInit(): void {

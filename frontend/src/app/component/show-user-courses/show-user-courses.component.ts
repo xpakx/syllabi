@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseForPage } from 'src/app/entity/course-for-page';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { UserCoursesAdapterService } from 'src/app/service/user-courses-adapter.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
@@ -14,10 +15,10 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
 })
 export class ShowUserCoursesComponent extends PageableGetAllChildrenComponent<CourseForPage, StudentWithUserId> implements OnInit {
   
-  constructor(protected service: UserCoursesAdapterService, 
+  constructor(protected service: UserCoursesAdapterService, protected userService: UserService,
     private dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) {  
-      super(service, router, route);
+      super(service, userService, router, route);
     }
 
   ngOnInit(): void {
