@@ -24,6 +24,7 @@ export class ShowInstitutesComponent extends PageableGetAllComponent<InstituteFo
 
   ngOnInit(): void {
     this.getFirstPage();
+    this.checkAuthority("ROLE_INSTITUTE_ADMIN");
   }
   
   delete(id: number, name: string) {

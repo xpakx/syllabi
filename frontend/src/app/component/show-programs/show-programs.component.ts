@@ -24,6 +24,7 @@ export class ShowProgramsComponent extends PageableGetAllComponent<ProgramForPag
 
   ngOnInit(): void {
     this.getFirstPage();
+    this.checkAuthority("ROLE_COURSE_ADMIN");
   }
 
   delete(id: number, name: string) {

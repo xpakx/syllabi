@@ -24,6 +24,7 @@ export class ShowUsersComponent extends PageableGetAllComponent<User> implements
 
   ngOnInit(): void {
     this.getFirstPage();
+    this.admin = true;
   }
 
   delete(id: number, name: string) {

@@ -1,14 +1,11 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CourseType } from 'src/app/entity/course-type';
-import { Page } from 'src/app/entity/page';
 import { CourseTypeService } from 'src/app/service/course-type.service';
 import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseTypeComponent } from '../modal-delete-course-type/modal-delete-course-type.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-course-types',
@@ -24,6 +21,7 @@ export class ShowCourseTypesComponent extends PageableGetAllComponent<CourseType
 
   ngOnInit(): void {
     this.getFirstPage();
+    this.checkAuthority("ROLE_COURSE_ADMIN");
   }
   
   delete(id: number) {

@@ -24,6 +24,7 @@ export class ShowTeachersComponent extends PageableGetAllComponent<TeacherSummar
 
   ngOnInit(): void {
     this.getFirstPage();
+    this.admin = true;
   }
 
   delete(id: number, name: string) {
