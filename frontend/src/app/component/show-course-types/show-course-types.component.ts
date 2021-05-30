@@ -24,7 +24,7 @@ export class ShowCourseTypesComponent extends PageableGetAllComponent<CourseType
     this.checkAuthority("ROLE_COURSE_ADMIN");
   }
   
-  delete(id: number) {
+  delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
     dialogConfig.data = {id: id, name: name};
