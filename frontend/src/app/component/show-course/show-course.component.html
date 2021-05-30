@@ -38,9 +38,14 @@
         <p>Language: {{elem.language}}</p>
         <p *ngIf="elem.semesters.length > 0">
             Programs:
-            <button mat-button *ngFor="let semester of elem.semesters" [routerLink]="'/semesters/' + semester.id">
-                {{semester.name}} (semester {{semester.number}} of {{semester.program.name}})
-            </button>
+            <span *ngFor="let semester of elem.semesters">
+				<button mat-button [routerLink]="'/programs/' + semester.program.id">
+					{{semester.program.name}}
+				</button>
+				<button mat-button [routerLink]="'/semesters/' + semester.id">
+					({{semester.name}}) 
+				</button>
+            </span>
         </p>
         <p *ngIf="elem.prerequisites.length > 0">
             Prerequisites:
