@@ -25,6 +25,7 @@ export class ShowGroupStudentsComponent extends PageableGetAllChildrenComponent<
   ngOnInit(): void {
     this.getFirstPage();
     this.getParent();
+    this.checkAuthority("ROLE_USER_ADMIN");
   }
 
   delete(id: number, name: string) {

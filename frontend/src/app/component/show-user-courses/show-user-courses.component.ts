@@ -24,6 +24,7 @@ export class ShowUserCoursesComponent extends PageableGetAllChildrenComponent<Co
   ngOnInit(): void {
     this.getFirstPage();
     this.getParent();
+    this.checkAuthority("ROLE_COURSE_ADMIN");
   }
 
   delete(id: number, name: string) {

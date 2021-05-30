@@ -28,6 +28,8 @@ export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<S
   ngOnInit(): void {
     this.getFirstPage();
 
+    this.checkAuthority("ROLE_USER_ADMIN");
+
     this.service.getParentById(this.id).subscribe(
       (result: CourseYearDetails) => {
         this.yearName = result.parent.name;  

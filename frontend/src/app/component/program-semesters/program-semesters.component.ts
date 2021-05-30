@@ -25,6 +25,7 @@ export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<S
   ngOnInit(): void {
       this.getFirstPage();
       this.getParent();
+      this.checkAuthority("ROLE_INSTITUTE_ADMIN");
   }
 
   delete(id: number, name: string, programName: string) {

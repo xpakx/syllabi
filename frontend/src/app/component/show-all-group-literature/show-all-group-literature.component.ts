@@ -25,6 +25,7 @@ export class ShowAllGroupLiteratureComponent extends PageableGetAllChildrenCompo
   ngOnInit(): void {
     this.getFirstPage();
     this.getParent();
+    this.checkAuthority("ROLE_COURSE_ADMIN");
   }
 
   delete(id: number, name: string, groupName: string) {

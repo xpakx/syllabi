@@ -25,6 +25,7 @@ export class ShowInstituteChildrenComponent extends PageableGetAllChildrenCompon
   ngOnInit(): void {
     this.getFirstPage();
     this.getParent();
+    this.checkAuthority("ROLE_INSTITUTE_ADMIN");
   }
   
   delete(id: number, name: string) {

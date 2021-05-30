@@ -43,6 +43,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
     )
 
     this.getParent();
+    this.checkAuthority("ROLE_COURSE_ADMIN");
   }
 
   getActivePage(id: number, page: number): void {

@@ -30,6 +30,8 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
   ngOnInit(): void {
     this.getFirstPage();
 
+    this.checkAuthority("ROLE_COURSE_ADMIN");
+
     this.parentService.getById(this.id).subscribe(
       (response: CourseYearDetails) => {
         this.parentName = response.parent.name;  
