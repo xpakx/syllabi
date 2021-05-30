@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SemesterSummary } from 'src/app/entity/semester-summary';
 import { SemesterService } from 'src/app/service/semester.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteSemesterComponent } from '../modal-delete-semester/modal-delete-semester.component';
 import { ShowComponent } from '../show/show-component.component';
 
@@ -13,9 +14,10 @@ import { ShowComponent } from '../show/show-component.component';
 })
 export class ShowSemesterComponent extends ShowComponent<SemesterSummary> implements OnInit {
 
-  constructor(protected service: SemesterService, protected route: ActivatedRoute, 
+  constructor(protected service: SemesterService, protected userService: UserService,
+    protected route: ActivatedRoute, 
     private dialog: MatDialog, protected router: Router) {
-      super(service, router, route);
+      super(service, userService, router, route);
   }
 
   ngOnInit(): void {

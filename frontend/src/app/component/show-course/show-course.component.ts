@@ -4,6 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CourseDetails } from 'src/app/entity/course-details';
 import { CourseService } from 'src/app/service/course.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
 import { ShowComponent } from '../show/show-component.component';
 
@@ -14,9 +15,10 @@ import { ShowComponent } from '../show/show-component.component';
 })
 export class ShowCourseComponent extends ShowComponent<CourseDetails> implements OnInit {
 
-  constructor(protected courseService: CourseService, protected route: ActivatedRoute, 
+  constructor(protected courseService: CourseService, protected userService: UserService,
+     protected route: ActivatedRoute, 
     private dialog: MatDialog, protected router: Router) {  
-      super(courseService, router, route);
+      super(courseService, userService, router, route);
      }
 
   ngOnInit(): void {
