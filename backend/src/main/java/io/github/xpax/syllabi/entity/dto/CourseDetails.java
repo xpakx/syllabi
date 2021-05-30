@@ -14,7 +14,7 @@ public interface CourseDetails {
     String getLanguage();
     Boolean getFacultative();
     Boolean getStationary();
-    Set<Semester> getSemesters();
+    Set<SemesterSummary> getSemesters();
     Set<CourseSummary> getPrerequisites();
 
     String getShortDescription();
