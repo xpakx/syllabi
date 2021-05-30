@@ -8,6 +8,7 @@ import { CourseForPage } from '../../entity/course-for-page';
 import { CourseService } from '../../service/course.service';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
+import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-all-courses',
@@ -18,20 +19,20 @@ export class AllCoursesComponent extends PageableGetAllComponent<CourseForPage> 
   admin: boolean = false;
   
   constructor(protected service: CourseService, private dialog: MatDialog,
-    protected router: Router, private userService: UserService) { 
-      super(service, router); 
-    }
+  protected router: Router, private userService: UserService) { 
+    super(service, router); 
+  }
 
   ngOnInit(): void {
     this.getFirstPage();
-    this.checkAuthority();
+    this.checkAuthority("ROLE_COURSE_ADMIN");
   }
 
-  checkAuthority(): void {
+  checkAuthority(role: string): void {
     this.userService.getUserById(Number(localStorage.getItem("user_id"))).subscribe(
       (response: User) => {
         let roles: string[] =  response.roles.map((p) => p.authority);
-        if(roles.includes("ROLE_COURSE_ADMIN")) {
+        if(roles.includes(role)) {
           this.admin = true;
         }
       },
