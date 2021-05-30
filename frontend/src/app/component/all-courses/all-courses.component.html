@@ -15,14 +15,14 @@
 <mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
     <mat-grid-tile *ngFor="let course of elems">
         <mat-card class="mat-card-grid">
-            <app-course-summary [course]="course" (deleteEvent)="delete(course.id, course.name)"></app-course-summary>
+            <app-course-summary [course]="course" [admin]="admin" (deleteEvent)="delete(course.id, course.name)"></app-course-summary>
         </mat-card>
     </mat-grid-tile>
 </mat-grid-list>
 
 <div fxHide = "false" fxHide.gt-sm>
     <mat-card *ngFor="let course of elems">
-        <app-course-summary [course]="course" (deleteEvent)="delete(course.id, course.name)"></app-course-summary>
+        <app-course-summary [course]="course" [admin]="admin" (deleteEvent)="delete(course.id, course.name)"></app-course-summary>
     </mat-card>
 </div>
 

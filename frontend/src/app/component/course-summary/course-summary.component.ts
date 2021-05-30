@@ -8,6 +8,7 @@ import { CourseForPage } from 'src/app/entity/course-for-page';
 })
 export class CourseSummaryComponent {
   @Input() course!: CourseForPage;
+  @Input() admin: boolean = false;
   @Output() deleteEvent = new EventEmitter<boolean>();
 
   constructor() { }

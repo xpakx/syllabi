@@ -44,6 +44,9 @@ INSERT INTO users (password, username) VALUES
 ('$2a$10$RNjpi/CGfQ9t.abfnkgD7e2xUFcbHqjCKpbiPOQvod5VCoaw2VGJ.', 'Teacher');
 INSERT INTO teacher (user_id, name, surname) values (2, 'James', 'Bond');
 
+INSERT INTO users (password, username) VALUES
+('$2a$10$RNjpi/CGfQ9t.abfnkgD7e2xUFcbHqjCKpbiPOQvod5VCoaw2VGJ.', 'User');
+
 insert into course_semester(course_id, semester_id) values (1,1);
 insert into course_semester(course_id, semester_id) values (2,1);
 
