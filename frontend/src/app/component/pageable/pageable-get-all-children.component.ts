@@ -9,11 +9,10 @@ import { PageableComponent } from "./pageable.component";
 export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableComponent<T> {
     protected id: number;
     parent!: U;
-    admin: boolean = false;
 
   constructor(protected service: ServiceWithGetAllChildren<T, U>, protected userService: UserService,
     protected router: Router, protected route: ActivatedRoute) { 
-    super();
+    super(userService);
     this.id = Number(this.route.snapshot.paramMap.get('id'));
   }
 
@@ -64,17 +63,5 @@ export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableCom
       this.router.navigate(['login']);
     }
     this.message = error.error.message;
-  }
-
-  checkAuthority(role: string): void {
-    this.userService.getUserById(Number(localStorage.getItem("user_id"))).subscribe(
-      (response: User) => {
-        let roles: string[] =  response.roles.map((p) => p.authority);
-        if(roles.includes(role)) {
-          this.admin = true;
-        }
-      },
-      (error: HttpErrorResponse) => {}
-    )
   }
 }

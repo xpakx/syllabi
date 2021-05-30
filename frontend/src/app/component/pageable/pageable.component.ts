@@ -1,4 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Page } from 'src/app/entity/page';
+import { User } from 'src/app/entity/user';
+import { UserService } from 'src/app/service/user.service';
 
 export abstract class PageableComponent<T> {
   message: string = '';
@@ -8,8 +11,9 @@ export abstract class PageableComponent<T> {
   first: boolean = true;
   empty: boolean = true;
   elems: T[] = [];
+  admin: boolean = false;
 
-  constructor() { }
+  constructor(protected userService: UserService) { }
 
   printPage(response: Page<T>): void {
     this.elems = response.content;
@@ -42,4 +46,15 @@ export abstract class PageableComponent<T> {
     return result;
   }
 
+  checkAuthority(role: string): void {
+    this.userService.getUserById(Number(localStorage.getItem("user_id"))).subscribe(
+      (response: User) => {
+        let roles: string[] =  response.roles.map((p) => p.authority);
+        if(roles.includes(role)) {
+          this.admin = true;
+        }
+      },
+      (error: HttpErrorResponse) => {}
+    )
+  }
 }
