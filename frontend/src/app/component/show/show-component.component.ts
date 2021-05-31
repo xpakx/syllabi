@@ -9,6 +9,7 @@ export abstract class ShowComponent<T> {
   message: string = '';
   elem: T | undefined;
   admin: boolean = false;
+  redir: string = '';
 
   constructor(protected service: ServiceWithGetById<T>, protected userService: UserService,
     protected router: Router, protected route: ActivatedRoute) { 
@@ -30,8 +31,8 @@ export abstract class ShowComponent<T> {
     );
   }
 
-  loadCourse(id: number): void {
-    this.router.navigate(['courses/'+id]);
+  loadNewElem(id: number): void {
+    this.router.navigate([this.redir+id]);
     this.service.getById(id).subscribe(
       (result: T) => {
         this.elem = result;

@@ -19,6 +19,7 @@ export class ShowCourseComponent extends ShowComponent<CourseDetails> implements
      protected route: ActivatedRoute, 
     private dialog: MatDialog, protected router: Router) {  
       super(courseService, userService, router, route);
+      this.redir = 'courses/';
      }
 
   ngOnInit(): void {
