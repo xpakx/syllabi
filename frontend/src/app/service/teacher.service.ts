@@ -11,11 +11,12 @@ import { TeacherSummary } from '../entity/teacher-summary';
 import { TeacherUpdateRequest } from '../entity/teacher-update-request';
 import { ServiceWithDelete } from './service-with-delete';
 import { ServiceWithGetAll } from './service-with-get-all';
+import { ServiceWithGetById } from './service-with-get-by-id';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TeacherService implements ServiceWithDelete, ServiceWithGetAll<TeacherSummary> {
+export class TeacherService implements ServiceWithDelete, ServiceWithGetAll<TeacherSummary>, ServiceWithGetById<Teacher> {
   private url = environment.apiServerUrl;
 
   constructor(private http: HttpClient) { }
@@ -32,7 +33,7 @@ export class TeacherService implements ServiceWithDelete, ServiceWithGetAll<Teac
     return this.http.post<Teacher>(`${this.url}/users/${id}/teacher`, teacher);
   }
 
-  public getTeacherByUserId(id: number): Observable<Teacher> {
+  public getById(id: number): Observable<Teacher> {
     return this.http.get<Teacher>(`${this.url}/users/${id}/teacher`);
   }
 
