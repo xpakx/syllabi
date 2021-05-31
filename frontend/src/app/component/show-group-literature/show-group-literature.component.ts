@@ -6,56 +6,31 @@ import { Literature } from 'src/app/entity/literature';
 import { StudyGroupSummary } from 'src/app/entity/study-group-summary';
 import { GroupLiteratureService } from 'src/app/service/group-literature.service';
 import { StudyGroupService } from 'src/app/service/study-group.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteGroupLiteratureComponent } from '../modal-delete-group-literature/modal-delete-group-literature.component';
+import { ShowComponent } from '../show/show-component.component';
 
 @Component({
   selector: 'app-show-group-literature',
   templateUrl: './show-group-literature.component.html',
   styleUrls: ['./show-group-literature.component.css']
 })
-export class ShowGroupLiteratureComponent implements OnInit {
-  literature: Literature | undefined;
-  message: string = '';
+export class ShowGroupLiteratureComponent extends ShowComponent<Literature> implements OnInit {
   group: StudyGroupSummary | undefined;
 
-  constructor(private literatureService: GroupLiteratureService, private groupService: StudyGroupService,
-    private route: ActivatedRoute, 
-    private dialog: MatDialog, private router: Router) { }
+  constructor(protected literatureService: GroupLiteratureService, protected userService: UserService,
+    protected route: ActivatedRoute, 
+    private dialog: MatDialog, protected router: Router) {
+      super(literatureService, userService, router, route);
+     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.literatureService.getById(id).subscribe(
-      (result: Literature) => {
-        this.literature = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getElem();
 
 
-    this.groupService.getByIdMin(id).subscribe(
+    this.literatureService.getParentById(this.id).subscribe(
       (result: StudyGroupSummary) => {
         this.group = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
-  }
-
-  loadCourse(id: number): void {
-    this.literatureService.getById(id).subscribe(
-      (result: Literature) => {
-        this.literature = result;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {

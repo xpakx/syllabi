@@ -1,42 +1,38 @@
-<mat-card *ngIf="literature && group">
+<mat-card *ngIf="elem && group">
     <mat-card-header>
         <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
             book
         </mat-icon>
         <mat-card-title class='title'>
-            {{literature.title}}
+            {{elem.title}}
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
-                <button mat-menu-item [routerLink]="'/courses/literature/' + literature.id + '/edit'">
+                <button mat-menu-item [routerLink]="'/courses/literature/' + elem.id + '/edit'">
                     <mat-icon>edit</mat-icon>
                     Edit
                 </button>
-                <button mat-menu-item (click)="delete(literature.id, literature.title, group.name)">
+                <button mat-menu-item (click)="delete(elem.id, elem.title, group.name)">
                     <mat-icon>delete</mat-icon>
                     Remove
                 </button>
             </mat-menu>
         </mat-card-title>
-        <mat-card-subtitle>{{literature.author}}</mat-card-subtitle>
+        <mat-card-subtitle>{{elem.author}}</mat-card-subtitle>
 
     </mat-card-header>  
             
     <mat-card-content>
-        <p *ngIf="literature.obligatory"><strong>Obligatory</strong></p>
+        <p *ngIf="elem.obligatory"><strong>Obligatory</strong></p>
 
-        <p *ngIf="literature.edition">Edition: {{literature.edition}}</p>
-        <p *ngIf="literature.pages">Pages: {{literature.pages}}</p>
+        <p *ngIf="elem.edition">Edition: {{elem.edition}}</p>
+        <p *ngIf="elem.pages">Pages: {{elem.pages}}</p>
 
-        <h2 *ngIf="literature.description">Description</h2>
-        <span *ngIf="literature.description">{{literature.description}}</span>
-        
-        
+        <h2 *ngIf="elem.description">Description</h2>
+        <span *ngIf="elem.description">{{elem.description}}</span>
     </mat-card-content>
 
     <mat-card-actions>
     </mat-card-actions>
-
-
 </mat-card>
