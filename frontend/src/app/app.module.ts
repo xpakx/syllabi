@@ -33,7 +33,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { AddCourseComponent } from './component/add-course/add-course.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
 import { ModalOrganizerChoiceComponent } from './component/modal-organizer-choice/modal-organizer-choice.component';
-import { ModalDeleteCourseComponent } from './component/modal-delete-course/modal-delete-course.component';
 import { ShowCourseComponent } from './component/show-course/show-course.component';
 import { ShowCourseYearsComponent } from './component/show-course-years/show-course-years.component';
 import { ModalDeleteCourseYearComponent } from './component/modal-delete-course-year/modal-delete-course-year.component';
@@ -122,7 +121,6 @@ export function tokenGetter() {
     AddCourseComponent,
     AllCoursesComponent,
     ModalOrganizerChoiceComponent,
-    ModalDeleteCourseComponent,
     ShowCourseComponent,
     ShowCourseYearsComponent,
     ModalDeleteCourseYearComponent,

@@ -2,14 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { User } from 'src/app/entity/user';
 import { UserService } from 'src/app/service/user.service';
 import { CourseForPage } from '../../entity/course-for-page';
 import { CourseService } from '../../service/course.service';
 import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
-import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-all-courses',

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -5,7 +6,7 @@ import { CourseForPage } from 'src/app/entity/course-for-page';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { UserCoursesAdapterService } from 'src/app/service/user-courses-adapter.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -30,12 +31,28 @@ export class ShowUserCoursesComponent extends PageableGetAllChildrenComponent<Co
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalDeleteCourseComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete course", 
+      question: "Do you want to remove course " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          this.getPage(this.page);
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
+      }
+    );
+  }
+
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
+        this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
       }
     );
   }

@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { CourseForPage } from "../entity/course-for-page";
 import { Page } from "../entity/page";
 import { StudentWithUserId } from "../entity/student-with-user-id";
+import { CourseService } from "./course.service";
 import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 import { StudentService } from "./student.service";
 import { UserService } from "./user.service";
@@ -15,7 +16,8 @@ export class UserCoursesAdapterService
 implements ServiceWithGetAllChildren<CourseForPage, StudentWithUserId> {
 
     constructor(protected http: HttpClient, private service: UserService, 
-        private parentService: StudentService) {  }
+        private parentService: StudentService,
+        private courseService: CourseService) {  }
 
     public getAllByParentId(id: number): Observable<Page<CourseForPage>> {
         return this.service.getAllCoursesForUser(id);
@@ -27,5 +29,9 @@ implements ServiceWithGetAllChildren<CourseForPage, StudentWithUserId> {
 
     public getParentById(id: number): Observable<StudentWithUserId> {
         return this.parentService.getById(id);
+    }
+
+    public delete(id: number): Observable<any> {
+        return this.courseService.delete(id);
     }
 }
