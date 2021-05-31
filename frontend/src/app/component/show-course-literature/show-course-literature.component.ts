@@ -6,56 +6,33 @@ import { CourseSummary } from 'src/app/entity/course-summary';
 import { Literature } from 'src/app/entity/literature';
 import { CourseLiteratureService } from 'src/app/service/course-literature.service';
 import { CourseService } from 'src/app/service/course.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
+import { ShowComponent } from '../show/show-component.component';
 
 @Component({
   selector: 'app-show-course-literature',
   templateUrl: './show-course-literature.component.html',
   styleUrls: ['./show-course-literature.component.css']
 })
-export class ShowCourseLiteratureComponent implements OnInit {
+export class ShowCourseLiteratureComponent extends ShowComponent<Literature> implements OnInit {
   literature: Literature | undefined;
   message: string = '';
   course: CourseSummary | undefined;
 
-  constructor(private literatureService: CourseLiteratureService, private courseService: CourseService,
-    private route: ActivatedRoute, 
-    private dialog: MatDialog, private router: Router) { }
+  constructor(protected literatureService: CourseLiteratureService, protected userService: UserService,
+    protected route: ActivatedRoute, 
+    private dialog: MatDialog, protected router: Router) {
+      super(literatureService, userService, router, route);
+     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.literatureService.getById(id).subscribe(
-      (result: Literature) => {
-        this.literature = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getElem();
 
 
-    this.courseService.getByIdMin(id).subscribe(
+    this.literatureService.getParentById(this.id).subscribe(
       (result: CourseSummary) => {
         this.course = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
-  }
-
-  loadCourse(id: number): void {
-    this.literatureService.getById(id).subscribe(
-      (result: Literature) => {
-        this.literature = result;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
