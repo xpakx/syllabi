@@ -21,10 +21,11 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
   parentDate: string = '';
 
   constructor(protected service: StudyGroupService, protected userService: UserService, 
-    private parentService: CourseYearService,private dialog: MatDialog, 
+    private parentService: CourseYearService, protected dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
-      super(service, userService, router, route);
+      super(service, userService, router, route, dialog);
       this.parentId = Number(this.route.snapshot.paramMap.get('id'));
+      this.elemTypeName = "study group";
     }
 
   ngOnInit(): void {
@@ -46,34 +47,5 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
         }
       }
     )
-  }
-
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete study group", 
-      question: "Do you want to remove study group " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.service.delete(id).subscribe(
-      (response) => {
-        this.getPage(this.page);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
   }
 }

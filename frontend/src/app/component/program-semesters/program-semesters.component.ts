@@ -17,43 +17,16 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
 export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<Semester, ProgramSummary> implements OnInit {
 
   constructor(protected service: SemesterService, protected userService: UserService,
-    private dialog: MatDialog, protected route: ActivatedRoute, 
+    protected dialog: MatDialog, protected route: ActivatedRoute, 
     protected router: Router) {
-      super(service, userService, router, route);
+      super(service, userService, router, route, dialog);
+      this.elemTypeName = "semester";
+      this.parentTypeName = "program";
   }
 
   ngOnInit(): void {
       this.getFirstPage();
       this.getParent();
       this.checkAuthority("ROLE_INSTITUTE_ADMIN");
-  }
-
-  delete(id: number, name: string, programName: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete semester for program " + programName, 
-      question: "Do you want to remove semester " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.service.delete(id).subscribe(
-      (response) => {
-        this.getPage(this.page);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
   }
 }

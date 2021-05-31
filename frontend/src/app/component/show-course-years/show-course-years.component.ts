@@ -21,10 +21,11 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   parentId: number;
 
   constructor(protected service: CourseYearService, protected userService: UserService,
-    private dialog: MatDialog, 
+    protected dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
-      super(service, userService, router, route);
+      super(service, userService, router, route, dialog);
       this.parentId = this.id;
+      this.elemTypeName = "course year";
     }
 
   ngOnInit(): void {
@@ -87,34 +88,5 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
     else {
       this.getAllPage(this.id, page);
     }
-  }
-
-  delete(id: number) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete course year", 
-      question: "Do you want to remove course year?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.service.delete(id).subscribe(
-      (response) => {
-        this.getPage(this.page);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
   }
 }
