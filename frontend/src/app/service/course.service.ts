@@ -6,14 +6,9 @@ import { CourseResponse } from '../entity/course-response';
 import { CourseDetails } from '../entity/course-details';
 import { CourseForPage } from '../entity/course-for-page';
 import { Page } from '../entity/page';
-import { CourseYearForPage } from '../entity/course-year-for-page';
 import { CourseEdit } from '../entity/course-edit';
-import { CourseYear } from '../entity/course-year';
-import { CourseYearRequest } from '../entity/course-year-request';
 import { CourseSummary } from '../entity/course-summary';
 import { environment } from 'src/environments/environment';
-import { ServiceWithDelete } from './service-with-delete';
-import { ServiceWithGetAll } from './service-with-get-all';
 import { CrudService } from './crud.service';
 
 @Injectable({

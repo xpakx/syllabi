@@ -8,8 +8,6 @@ import { Program } from '../entity/program';
 import { ProgramForPage } from '../entity/program-for-page';
 import { ProgramRequest } from '../entity/program-request';
 import { CrudService } from './crud.service';
-import { ServiceWithDelete } from './service-with-delete';
-import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'

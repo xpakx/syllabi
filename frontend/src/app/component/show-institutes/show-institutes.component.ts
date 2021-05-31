@@ -16,42 +16,14 @@ import { PageableGetAllComponent } from '../pageable/pageable-get-all.component'
 })
 export class ShowInstitutesComponent extends PageableGetAllComponent<InstituteForPage> implements OnInit {
   
-  constructor(protected service: InstituteService, private dialog: MatDialog,
+  constructor(protected service: InstituteService, protected dialog: MatDialog,
     protected router: Router, protected userService: UserService) { 
-      super(service, userService, router);
+      super(service, userService, router, dialog);
+      this.elemTypeName = "institute";
     }
 
   ngOnInit(): void {
     this.getFirstPage();
     this.checkAuthority("ROLE_INSTITUTE_ADMIN");
-  }
-
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete institute", 
-      question: "Do you want to remove " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.service.delete(id).subscribe(
-      (response) => {
-        this.getPage(this.page);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
   }
 }

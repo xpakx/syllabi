@@ -6,8 +6,6 @@ import { CourseType } from '../entity/course-type';
 import { CourseTypeRequest } from '../entity/course-type-request';
 import { Page } from '../entity/page';
 import { CrudService } from './crud.service';
-import { ServiceWithDelete } from './service-with-delete';
-import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'

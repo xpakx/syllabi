@@ -15,42 +15,14 @@ import { PageableGetAllComponent } from '../pageable/pageable-get-all.component'
 })
 export class ShowTeachersComponent extends PageableGetAllComponent<TeacherSummary> implements OnInit {
 
-  constructor(protected service: TeacherService, private dialog: MatDialog,
+  constructor(protected service: TeacherService, protected dialog: MatDialog,
   protected router: Router, protected userService: UserService) {  
-    super(service, userService, router);
+    super(service, userService, router, dialog);
+    this.elemTypeName = "teacher";
   }
 
   ngOnInit(): void {
     this.getFirstPage();
     this.admin = true;
-  }
-
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete teacher", 
-      question: "Do you want to remove teacher " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.service.delete(id).subscribe(
-      (response) => {
-        this.getPage(this.page);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
   }
 }

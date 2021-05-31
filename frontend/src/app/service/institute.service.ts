@@ -9,8 +9,6 @@ import { InstituteRequest } from '../entity/institute-request';
 import { Page } from '../entity/page';
 import { ProgramSummary } from '../entity/program-summary';
 import { CrudService } from './crud.service';
-import { ServiceWithDelete } from './service-with-delete';
-import { ServiceWithGetAll } from './service-with-get-all';
 
 @Injectable({
   providedIn: 'root'
