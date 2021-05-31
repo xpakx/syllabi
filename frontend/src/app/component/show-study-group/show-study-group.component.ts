@@ -4,36 +4,25 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudyGroup } from 'src/app/entity/study-group';
 import { StudyGroupService } from 'src/app/service/study-group.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteStudyGroupComponent } from '../modal-delete-study-group/modal-delete-study-group.component';
+import { ShowComponent } from '../show/show-component.component';
 
 @Component({
   selector: 'app-show-study-group',
   templateUrl: './show-study-group.component.html',
   styleUrls: ['./show-study-group.component.css']
 })
-export class ShowStudyGroupComponent implements OnInit {
-  group: StudyGroup | undefined;
-  message: string = '';
-  id: number;
+export class ShowStudyGroupComponent extends ShowComponent<StudyGroup> implements OnInit {
 
-  constructor(private groupService: StudyGroupService, private route: ActivatedRoute, 
-    private dialog: MatDialog, private router: Router) { 
-      this.id = Number(this.route.snapshot.paramMap.get('id'));
+  constructor(protected groupService: StudyGroupService, protected userService: UserService,
+    protected route: ActivatedRoute, 
+    private dialog: MatDialog, protected router: Router) { 
+      super(groupService, userService, router, route)
     }
 
   ngOnInit(): void {
-    this.groupService.getById(this.id).subscribe(
-      (result: StudyGroup) => {
-        this.group = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getElem();
   }
 
   delete(id: number, name: string) {
@@ -44,7 +33,7 @@ export class ShowStudyGroupComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(
       (data: boolean) => {
-          this.router.navigate(["years/"+this.group?.year.id+"/groups"]);
+          this.router.navigate(["years/"+this.elem?.year.id+"/groups"]);
       }
     );
   }
