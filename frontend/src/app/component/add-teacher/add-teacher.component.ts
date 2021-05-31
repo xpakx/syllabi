@@ -39,7 +39,7 @@ export class AddTeacherComponent implements OnInit {
 
   ngOnInit(): void { 
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.userService.getUserById(id).subscribe(
+    this.userService.getById(id).subscribe(
       (response: User) => {
         this.name = response.username;
       },

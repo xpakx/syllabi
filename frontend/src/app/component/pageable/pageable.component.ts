@@ -47,7 +47,7 @@ export abstract class PageableComponent<T> {
   }
 
   checkAuthority(role: string): void {
-    this.userService.getUserById(Number(localStorage.getItem("user_id"))).subscribe(
+    this.userService.getById(Number(localStorage.getItem("user_id"))).subscribe(
       (response: User) => {
         let roles: string[] =  response.roles.map((p) => p.authority);
         if(roles.includes(role)) {

@@ -9,11 +9,12 @@ import { RoleRequest } from '../entity/role-request';
 import { User } from '../entity/user';
 import { ServiceWithDelete } from './service-with-delete';
 import { ServiceWithGetAll } from './service-with-get-all';
+import { ServiceWithGetById } from './service-with-get-by-id';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService implements ServiceWithDelete, ServiceWithGetAll<User> {
+export class UserService implements ServiceWithDelete, ServiceWithGetAll<User>, ServiceWithGetById<User> {
   private url = environment.apiServerUrl + "/users";
 
   constructor(private http: HttpClient) { }
@@ -34,7 +35,7 @@ export class UserService implements ServiceWithDelete, ServiceWithGetAll<User> {
     return this.http.delete<any>(`${this.url}/${id}`);
   }
 
-  public getUserById(id: number): Observable<User> {
+  public getById(id: number): Observable<User> {
     return this.http.get<User>(`${this.url}/${id}`);
   }
 

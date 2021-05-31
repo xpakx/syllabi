@@ -1,34 +1,31 @@
-<mat-card *ngIf="user">
+<mat-card *ngIf="elem">
     <mat-card-header>
         <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
             person
         </mat-icon>
         <mat-card-title class='title'>
-            {{user.username}}
+            {{elem.username}}
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
-                <button mat-menu-item [routerLink]="'/users/' + user.id + '/edit'">
+                <button mat-menu-item [routerLink]="'/users/' + elem.id + '/edit'">
                     <mat-icon>edit</mat-icon>
                     Edit
                 </button>
-                <button mat-menu-item (click)="delete(user.id, user.username)">
+                <button mat-menu-item (click)="delete(elem.id, elem.username)">
                     <mat-icon>delete</mat-icon>
                     Remove
                 </button>
             </mat-menu>
         </mat-card-title>
         <mat-card-subtitle>User profile</mat-card-subtitle>
-
     </mat-card-header>  
             
     <mat-card-content>
-            <ul *ngFor="let role of user.roles">{{role.authority}}</ul>
+            <ul *ngFor="let role of elem.roles">{{role.authority}}</ul>
     </mat-card-content>
 
     <mat-card-actions>
     </mat-card-actions>
-
-
 </mat-card>

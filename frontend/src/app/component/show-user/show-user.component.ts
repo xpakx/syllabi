@@ -5,48 +5,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/entity/user';
 import { UserService } from 'src/app/service/user.service';
 import { ModalUserDeleteComponent } from '../modal-user-delete/modal-user-delete.component';
+import { ShowComponent } from '../show/show-component.component';
 
 @Component({
   selector: 'app-show-user',
   templateUrl: './show-user.component.html',
   styleUrls: ['./show-user.component.css']
 })
-export class ShowUserComponent implements OnInit {
-  user: User | undefined;
-  message: string = '';
+export class ShowUserComponent extends ShowComponent<User> implements OnInit {
 
-  constructor(private userService: UserService, private route: ActivatedRoute, 
-    private dialog: MatDialog, private router: Router) { }
+  constructor(protected userService: UserService, protected route: ActivatedRoute, 
+    private dialog: MatDialog, protected router: Router) { 
+        super(userService, userService, router, route);
+    }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.userService.getUserById(id).subscribe(
-      (result: User) => {
-        this.user = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
-  }
-
-  loadCourse(id: number): void {
-    this.userService.getUserById(id).subscribe(
-      (result: User) => {
-        this.user = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getElem();
   }
 
   delete(id: number, name: string) {
