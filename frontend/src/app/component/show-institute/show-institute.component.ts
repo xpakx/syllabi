@@ -1,10 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Institute } from 'src/app/entity/institute';
 import { InstituteService } from 'src/app/service/institute.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteInstituteComponent } from '../modal-delete-institute/modal-delete-institute.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { ShowComponent } from '../show/show-component.component';
 
 @Component({
@@ -28,14 +29,29 @@ export class ShowInstituteComponent extends ShowComponent<Institute> implements 
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalDeleteInstituteComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete institute", 
+      question: "Do you want to remove " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          //redir
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
       }
     );
   }
 
+  deleteElem(id: number) {
+    this.instituteService.delete(id).subscribe(
+      (response) => {
+        this.router.navigate(['institutes']);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
+      }
+    );
+  }
 }

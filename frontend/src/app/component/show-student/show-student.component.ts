@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { StudentService } from 'src/app/service/student.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { ShowComponent } from '../show/show-component.component';
 
 @Component({
@@ -30,14 +30,29 @@ export class ShowStudentComponent extends ShowComponent<StudentWithUserId> imple
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalStudentDeleteComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete student", 
+      question: "Do you want to remove student " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          //redir
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
       }
     );
   }
 
+  deleteElem(id: number) {
+    this.studentService.delete(id).subscribe(
+      (response) => {
+        //redir
+      },
+      (error: HttpErrorResponse) => {
+        //show error
+      }
+    );
+  }
 }

@@ -5,9 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseSummary } from 'src/app/entity/course-summary';
 import { Literature } from 'src/app/entity/literature';
 import { CourseLiteratureService } from 'src/app/service/course-literature.service';
-import { CourseService } from 'src/app/service/course.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { ShowComponent } from '../show/show-component.component';
 
 @Component({
@@ -45,12 +44,28 @@ export class ShowCourseLiteratureComponent extends ShowComponent<Literature> imp
   delete(id: number, name: string, courseName: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name, parentName: courseName};
-    const dialogRef = this.dialog.open(ModalDeleteCourseLiteratureComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete literature for course " + courseName + "?", 
+      question: "Do you want to remove literature " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          //redir
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
+      }
+    );
+  }
+
+  deleteElem(id: number) {
+    this.literatureService.delete(id).subscribe(
+      (response) => {
+        //redir
+      },
+      (error: HttpErrorResponse) => {
+        //show error
       }
     );
   }

@@ -6,7 +6,7 @@ import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { CourseYearStudentsAdapterService } from 'src/app/service/course-year-students-adapter.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -50,14 +50,29 @@ export class ShowYearStudentsComponent extends PageableGetAllChildrenComponent<S
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalStudentDeleteComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete student", 
+      question: "Do you want to remove student " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          this.getPage(this.page);
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
       }
     );
   }
 
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
+        this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
+      }
+    );
+  }
 }

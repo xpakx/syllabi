@@ -5,9 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseSummary } from 'src/app/entity/course-summary';
 import { LiteratureForPage } from 'src/app/entity/literature-for-page';
 import { CourseLiteratureService } from 'src/app/service/course-literature.service';
-import { CourseService } from 'src/app/service/course.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteCourseLiteratureComponent } from '../modal-delete-course-literature/modal-delete-course-literature.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -32,12 +31,28 @@ export class ShowAllCourseLiteratureComponent extends PageableGetAllChildrenComp
   delete(id: number, name: string, courseName: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name, parentName: courseName};
-    const dialogRef = this.dialog.open(ModalDeleteCourseLiteratureComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete literature for course " + courseName + "?", 
+      question: "Do you want to remove literature " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          this.getPage(this.page);
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
+      }
+    );
+  }
+
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
+        this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
       }
     );
   }

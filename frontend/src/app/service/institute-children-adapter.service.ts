@@ -26,4 +26,8 @@ implements ServiceWithGetAllChildren<InstituteForPage, Institute> {
     public getParentById(id: number): Observable<Institute> {
         return this.service.getById(id);
     }
+
+    public delete(id: number): Observable<any> {
+        return this.service.delete(id);
+    }
 }

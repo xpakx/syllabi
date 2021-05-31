@@ -7,7 +7,7 @@ import { StudyGroupForPage } from 'src/app/entity/study-group-for-page';
 import { CourseYearService } from 'src/app/service/course-year.service';
 import { StudyGroupService } from 'src/app/service/study-group.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteStudyGroupComponent } from '../modal-delete-study-group/modal-delete-study-group.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -47,16 +47,32 @@ export class ShowStudyGroupsComponent extends PageableGetAllChildrenComponent<St
       }
     )
   }
-  
+
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalDeleteStudyGroupComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete study group", 
+      question: "Do you want to remove study group " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
+      }
+    );
+  }
+
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
         this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
       }
     );
   }

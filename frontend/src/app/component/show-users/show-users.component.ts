@@ -1,13 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Page } from 'src/app/entity/page';
+import { Router } from '@angular/router';
 import { User } from 'src/app/entity/user';
 import { UserService } from 'src/app/service/user.service';
-import { ModalUserDeleteComponent } from '../modal-user-delete/modal-user-delete.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-users',
@@ -30,14 +28,29 @@ export class ShowUsersComponent extends PageableGetAllComponent<User> implements
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalUserDeleteComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete user", 
+      question: "Do you want to remove user " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          this.getPage(this.page);
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
       }
     );
   }
 
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
+        this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
+      }
+    );
+  }
 }

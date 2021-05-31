@@ -6,7 +6,7 @@ import { ProgramSummary } from 'src/app/entity/program-summary';
 import { Semester } from 'src/app/entity/semester';
 import { SemesterService } from 'src/app/service/semester.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteSemesterComponent } from '../modal-delete-semester/modal-delete-semester.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -31,12 +31,28 @@ export class ProgramSemestersComponent extends PageableGetAllChildrenComponent<S
   delete(id: number, name: string, programName: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name, parentName: programName};
-    const dialogRef = this.dialog.open(ModalDeleteSemesterComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete semester for program " + programName, 
+      question: "Do you want to remove semester " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          this.getPage(this.page);
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
+      }
+    );
+  }
+
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
+        this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
       }
     );
   }

@@ -28,4 +28,8 @@ implements ServiceWithGetAllChildren<StudentWithUserId, CourseYearDetails> {
     public getParentById(id: number): Observable<CourseYearDetails> {
         return this.parentService.getById(id);
     }
+
+    public delete(id: number): Observable<any> {
+        return this.service.delete(id);
+    }
 }

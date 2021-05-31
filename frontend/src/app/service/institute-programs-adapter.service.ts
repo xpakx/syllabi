@@ -5,6 +5,7 @@ import { Institute } from "../entity/institute";
 import { Page } from "../entity/page";
 import { ProgramForPage } from "../entity/program-for-page";
 import { InstituteService } from "./institute.service";
+import { ProgramService } from "./program.service";
 import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 
 @Injectable({
@@ -13,7 +14,8 @@ import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 export class InstituteProgramsAdapterService
 implements ServiceWithGetAllChildren<ProgramForPage, Institute> {
 
-    constructor(protected http: HttpClient, private service: InstituteService) {  }
+    constructor(protected http: HttpClient, private service: InstituteService,
+        private programService: ProgramService) {  }
 
     public getAllByParentId(id: number): Observable<Page<ProgramForPage>> {
         return this.service.getAllPrograms(id);
@@ -25,5 +27,9 @@ implements ServiceWithGetAllChildren<ProgramForPage, Institute> {
 
     public getParentById(id: number): Observable<Institute> {
         return this.service.getById(id);
+    }
+
+    public delete(id: number): Observable<any> {
+        return this.programService.delete(id);
     }
 }

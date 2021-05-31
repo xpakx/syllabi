@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Teacher } from 'src/app/entity/teacher';
 import { TeacherService } from 'src/app/service/teacher.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalTeacherDeleteComponent } from '../modal-teacher-delete/modal-teacher-delete.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { ShowComponent } from '../show/show-component.component';
 
 @Component({
@@ -30,14 +30,29 @@ export class ShowTeacherComponent extends ShowComponent<Teacher> implements OnIn
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalTeacherDeleteComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete teacher", 
+      question: "Do you want to remove teacher " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          //redir
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
       }
     );
   }
 
+  deleteElem(id: number) {
+    this.teacherService.delete(id).subscribe(
+      (response) => {
+        //redir
+      },
+      (error: HttpErrorResponse) => {
+        //show error
+      }
+    );
+  }
 }

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { CourseYearService } from 'src/app/service/course-year.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteCourseYearComponent } from '../modal-delete-course-year/modal-delete-course-year.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { ShowComponent } from '../show/show-component.component';
 
 @Component({
@@ -28,16 +28,29 @@ export class ShowCourseYearComponent extends ShowComponent<CourseYearDetails> im
   delete(id: number) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id};
-    const dialogRef = this.dialog.open(ModalDeleteCourseYearComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete course year", 
+      question: "Do you want to remove course year?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       (data: boolean) => {
-        if(data) {
-         this.router.navigate(['courses/'+this.elem?.parent.id+'/years']);
-       }
+          if(data) {
+            this.deleteElem(id);
+          }
       }
     );
   }
 
+  deleteElem(id: number) {
+    this.yearService.delete(id).subscribe(
+      (response) => {
+        this.router.navigate(['courses/'+this.elem?.parent.id+'/years']);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
+      }
+    );
+  }
 }

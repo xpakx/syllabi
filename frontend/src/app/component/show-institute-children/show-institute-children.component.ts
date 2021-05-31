@@ -6,7 +6,7 @@ import { Institute } from 'src/app/entity/institute';
 import { InstituteForPage } from 'src/app/entity/institute-for-page';
 import { InstituteChildrenAdapterService } from 'src/app/service/institute-children-adapter.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteInstituteComponent } from '../modal-delete-institute/modal-delete-institute.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -27,18 +27,33 @@ export class ShowInstituteChildrenComponent extends PageableGetAllChildrenCompon
     this.getParent();
     this.checkAuthority("ROLE_INSTITUTE_ADMIN");
   }
-  
+
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalDeleteInstituteComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete institute", 
+      question: "Do you want to remove " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-        this.getPage(this.page);
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
       }
     );
   }
 
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
+        this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
+      }
+    );
+  }
 }

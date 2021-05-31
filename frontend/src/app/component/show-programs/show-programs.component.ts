@@ -2,13 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Page } from 'src/app/entity/page';
 import { ProgramForPage } from 'src/app/entity/program-for-page';
 import { ProgramService } from 'src/app/service/program.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalProgramDeleteComponent } from '../modal-program-delete/modal-program-delete.component';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
-import { PageableComponent } from '../pageable/pageable.component';
 
 @Component({
   selector: 'app-show-programs',
@@ -30,12 +28,28 @@ export class ShowProgramsComponent extends PageableGetAllComponent<ProgramForPag
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalProgramDeleteComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete program", 
+      question: "Do you want to remove program " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
+      }
+    );
+  }
+
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
         this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
       }
     );
   }
