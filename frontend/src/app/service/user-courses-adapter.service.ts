@@ -26,6 +26,6 @@ implements ServiceWithGetAllChildren<CourseForPage, StudentWithUserId> {
     }
 
     public getParentById(id: number): Observable<StudentWithUserId> {
-        return this.parentService.getStudentByUserId(id);
+        return this.parentService.getById(id);
     }
 }

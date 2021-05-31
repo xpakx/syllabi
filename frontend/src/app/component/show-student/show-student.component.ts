@@ -4,49 +4,27 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { StudentService } from 'src/app/service/student.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalStudentDeleteComponent } from '../modal-student-delete/modal-student-delete.component';
+import { ShowComponent } from '../show/show-component.component';
 
 @Component({
   selector: 'app-show-student',
   templateUrl: './show-student.component.html',
   styleUrls: ['./show-student.component.css']
 })
-export class ShowStudentComponent implements OnInit {
+export class ShowStudentComponent extends ShowComponent<StudentWithUserId> implements OnInit {
   student: StudentWithUserId | undefined;
   message: string = '';
 
-  constructor(private studentService: StudentService, private route: ActivatedRoute, 
-    private dialog: MatDialog, private router: Router) { }
+  constructor(protected studentService: StudentService, protected userService: UserService,
+    protected route: ActivatedRoute, 
+    private dialog: MatDialog, protected router: Router) {
+      super(studentService, userService, router, route);
+     }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.studentService.getStudentByUserId(id).subscribe(
-      (result: StudentWithUserId) => {
-        this.student = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
-  }
-
-  loadCourse(id: number): void {
-    this.studentService.getStudentByUserId(id).subscribe(
-      (result: StudentWithUserId) => {
-        this.student = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getElem();
   }
 
   delete(id: number, name: string) {

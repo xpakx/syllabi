@@ -25,7 +25,7 @@ export class EditStudentComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.studentService.getStudentByUserId(id).subscribe(
+    this.studentService.getById(id).subscribe(
       (result: StudentWithUserId) => {
         this.student = result;
         this.form = this.fb.group({
