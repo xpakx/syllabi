@@ -1,52 +1,50 @@
-<mat-card *ngIf="year">
+<mat-card *ngIf="elem">
     <mat-card-header>
         <mat-icon class="circle" mat-card-avatar [ngStyle]="{'background-color': '#3670b2'}" >
             school
         </mat-icon>
         <mat-card-title class='title'>
-            Year {{year.startDate | date: 'yyyy'}}/{{year.endDate | date: 'yyyy'}}
+            Year {{elem.startDate | date: 'yyyy'}}/{{elem.endDate | date: 'yyyy'}}
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
-                <button mat-menu-item [routerLink]="'/years/' + year.id + '/edit'">
+                <button mat-menu-item [routerLink]="'/years/' + elem.id + '/edit'">
                     <mat-icon>edit</mat-icon>
                     Edit
                 </button>
-                <button mat-menu-item (click)="delete(year.id)">
+                <button mat-menu-item (click)="delete(elem.id)">
                     <mat-icon>delete</mat-icon>
                     Remove
                 </button>
             </mat-menu>
         </mat-card-title>
-        <mat-card-subtitle>{{year.parent.name}}</mat-card-subtitle>
+        <mat-card-subtitle>{{elem.parent.name}}</mat-card-subtitle>
 
     </mat-card-header>  
             
     <mat-card-content>
 
-        <p>Start Date: {{year.startDate | date: 'dd-MM-yyyy'}}</p>
-        <p>End Date: {{year.endDate | date: 'dd-MM-yyyy'}}</p>
+        <p>Start Date: {{elem.startDate | date: 'dd-MM-yyyy'}}</p>
+        <p>End Date: {{elem.endDate | date: 'dd-MM-yyyy'}}</p>
 
         <h3>Coordinators</h3>
-        <button mat-button *ngFor="let teacher of year.coordinatedBy">
+        <button mat-button *ngFor="let teacher of elem.coordinatedBy">
             {{teacher.name}} {{teacher.surname}}
         </button>
        
         <h3>Description</h3>
-        {{year.description}}
+        {{elem.description}}
 
         <h3>Assessment rules</h3>
-        {{year.assessmentRules}}
+        {{elem.assessmentRules}}
 
         <h3>Commentary</h3>
-        {{year.commentary}}
-        
-        
+        {{elem.commentary}}
     </mat-card-content>
 
     <mat-card-actions>
-        <button mat-button [routerLink]="'/years/' + year.id + '/groups'">
+        <button mat-button [routerLink]="'/years/' + elem.id + '/groups'">
             <mat-icon>school</mat-icon>
             Study Groups
         </button>

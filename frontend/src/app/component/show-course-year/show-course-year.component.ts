@@ -4,36 +4,25 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { CourseYearService } from 'src/app/service/course-year.service';
+import { UserService } from 'src/app/service/user.service';
 import { ModalDeleteCourseYearComponent } from '../modal-delete-course-year/modal-delete-course-year.component';
+import { ShowComponent } from '../show/show-component.component';
 
 @Component({
   selector: 'app-show-course-year',
   templateUrl: './show-course-year.component.html',
   styleUrls: ['./show-course-year.component.css']
 })
-export class ShowCourseYearComponent implements OnInit {
-  year: CourseYearDetails | undefined;
-  message: string = '';
-  id: number;
+export class ShowCourseYearComponent extends ShowComponent<CourseYearDetails> implements OnInit {
 
-  constructor(private yearService: CourseYearService, private route: ActivatedRoute, 
-    private dialog: MatDialog, private router: Router) { 
-      this.id = Number(this.route.snapshot.paramMap.get('id'));
+  constructor(protected yearService: CourseYearService, protected userService: UserService,
+    protected route: ActivatedRoute, 
+    private dialog: MatDialog, protected router: Router) { 
+      super(yearService, userService, router, route);
     }
 
   ngOnInit(): void {
-    this.yearService.getById(this.id).subscribe(
-      (result: CourseYearDetails) => {
-        this.year = result;
-      },
-      (error: HttpErrorResponse) => {
-        if(error.status === 401) {
-          localStorage.removeItem("token");
-          this.router.navigate(['login']);
-        }
-        this.message = error.error.message;
-      }
-    );
+    this.getElem();
   }
 
   delete(id: number) {
@@ -45,7 +34,7 @@ export class ShowCourseYearComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       (data: boolean) => {
         if(data) {
-         this.router.navigate(['courses/'+this.year?.parent.id+'/years']);
+         this.router.navigate(['courses/'+this.elem?.parent.id+'/years']);
        }
       }
     );

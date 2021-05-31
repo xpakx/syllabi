@@ -16,8 +16,6 @@ import { ShowComponent } from '../show/show-component.component';
   styleUrls: ['./show-course-literature.component.css']
 })
 export class ShowCourseLiteratureComponent extends ShowComponent<Literature> implements OnInit {
-  literature: Literature | undefined;
-  message: string = '';
   course: CourseSummary | undefined;
 
   constructor(protected literatureService: CourseLiteratureService, protected userService: UserService,
