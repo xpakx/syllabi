@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SemesterService } from 'src/app/service/semester.service';
-import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
+import { ModalDeleteComponent } from '../modal-delete-abstract/modal-delete.component';
 
 @Component({
   selector: 'app-modal-delete-semester',

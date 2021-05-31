@@ -1,0 +1,16 @@
+<title mat-dialog-title>
+    {{title}}
+</title>
+
+<mat-dialog-content>
+    {{question}}
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
+
+    <button mat-button color="primary" (click)="delete()">
+        <mat-icon>delete</mat-icon>
+        REMOVE
+    </button>
+</mat-dialog-actions>

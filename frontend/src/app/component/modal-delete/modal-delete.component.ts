@@ -1,35 +1,23 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { HostListener } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { ServiceWithDelete } from 'src/app/service/service-with-delete';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-export abstract class ModalDeleteComponent {
-  name: string;
-  parentName!: string;
-  id: number;
-  message: string = '';
-  deletingFailed: boolean = false;
+@Component({
+  selector: 'app-modal-delete',
+  templateUrl: './modal-delete.component.html',
+  styleUrls: ['./modal-delete.component.css']
+})
+export class ModalDeleteComponent {
+  title: string;
+  question: string;
 
-  constructor(public service: ServiceWithDelete, 
-    public dialogRef: MatDialogRef<ModalDeleteComponent>,
-    data: any) { 
-      this.name = data.name;
-      this.id = data.id;
-      if(data.parentName) {
-        this.parentName = data.parentName;
-      }
-    }
+  constructor(public dialogRef: MatDialogRef<ModalDeleteComponent>, 
+    @Inject(MAT_DIALOG_DATA)  data: {title: string, question: string}) { 
+    this.title = data.title;
+    this.question = data.question;
+  }
 
   delete(): void {
-    this.service.delete(this.id).subscribe(
-      (response) => {
-        this.dialogRef.close(true);
-      },
-      (error: HttpErrorResponse) => {
-        this.deletingFailed = true;
-        this.message = error.error.message;
-      }
-    );
+    this.dialogRef.close(true);
   }
 
   cancel(): void {
