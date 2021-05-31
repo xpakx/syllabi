@@ -6,6 +6,7 @@ import { User } from 'src/app/entity/user';
 import { UserService } from 'src/app/service/user.service';
 import { CourseForPage } from '../../entity/course-for-page';
 import { CourseService } from '../../service/course.service';
+import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { ModalDeleteCourseComponent } from '../modal-delete-course/modal-delete-course.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 import { PageableComponent } from '../pageable/pageable.component';
@@ -30,12 +31,28 @@ export class AllCoursesComponent extends PageableGetAllComponent<CourseForPage> 
   delete(id: number, name: string) {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {id: id, name: name};
-    const dialogRef = this.dialog.open(ModalDeleteCourseComponent, dialogConfig);
+    dialogConfig.data = {
+      title: "Delete course", 
+      question: "Do you want to remove course " + name + "?"
+    };
+    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      (data) => {
-          this.getPage(this.page);
+      (data: boolean) => {
+          if(data) {
+            this.deleteElem(id);
+          }
+      }
+    );
+  }
+
+  deleteElem(id: number) {
+    this.service.delete(id).subscribe(
+      (response) => {
+        this.getPage(this.page);
+      },
+      (error: HttpErrorResponse) => {
+        //show error
       }
     );
   }
