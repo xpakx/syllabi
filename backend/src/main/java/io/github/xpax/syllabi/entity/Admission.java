@@ -25,6 +25,7 @@ public class Admission {
 
     private Date startDate;
     private Date endDate;
+    private Integer studentLimit;
 
     private boolean closed;
     private String name;

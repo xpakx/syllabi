@@ -23,10 +23,6 @@ public class StudyGroup {
     private Boolean ongoing;
 
     @JsonIgnore
-    @ManyToMany(mappedBy =  "groups")
-    private Set<Admission> admissions;
-
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "course_year_id")
     private CourseYear year;

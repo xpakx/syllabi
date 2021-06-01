@@ -13,5 +13,6 @@ public class CreateAdmissionRequest {
     private Date startDate;
     private Date endDate;
     private String name;
+    private Integer studentLimit;
     private List<AdmissionWeightRequest> weights;
 }

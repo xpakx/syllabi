@@ -7,6 +7,7 @@ import io.github.xpax.syllabi.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,14 +20,16 @@ public class AdmissionService {
     private final UserRepository userRepository;
     private final AdmissionWeightRepository admissionWeightRepository;
     private final AdmissionFormRepository admissionFormRepository;
+    private final AdmissionPointsRepository admissionPointsRepository;
 
     @Autowired
-    public AdmissionService(AdmissionRepository admissionRepository, ProgramRepository programRepository, UserRepository userRepository, AdmissionWeightRepository admissionWeightRepository, AdmissionFormRepository admissionFormRepository) {
+    public AdmissionService(AdmissionRepository admissionRepository, ProgramRepository programRepository, UserRepository userRepository, AdmissionWeightRepository admissionWeightRepository, AdmissionFormRepository admissionFormRepository, AdmissionPointsRepository admissionPointsRepository) {
         this.admissionRepository = admissionRepository;
         this.programRepository = programRepository;
         this.userRepository = userRepository;
         this.admissionWeightRepository = admissionWeightRepository;
         this.admissionFormRepository = admissionFormRepository;
+        this.admissionPointsRepository = admissionPointsRepository;
     }
 
 
@@ -42,6 +45,7 @@ public class AdmissionService {
                 .closed(false)
                 .program(program)
                 .weights(weights)
+                .studentLimit(admissionRequest.getStudentLimit())
                 .build();
         weights.forEach((w) -> w.setAdmission(admission));
         return admissionRepository.save(admission);
@@ -97,6 +101,12 @@ public class AdmissionService {
         form.setDocumentId(admissionRequest.getDocumentId());
         if(admissionRequest.isVerify()) {
             form.setVerified(true);
+            List<AdmissionPoints> points = admissionPointsRepository.findByFormId(formId);
+            int sum = 0;
+            for(AdmissionPoints point : points) {
+                sum+= point.getPoints() * point.getWeight().getWeight();
+            }
+            form.setPoints(points);
         }
         else {
             form.setDiscarded(true);
@@ -106,5 +116,12 @@ public class AdmissionService {
 
     public Page<AdmissionForm> getAllForms(Integer admissionId, Integer page, Integer size) {
         return admissionFormRepository.getAllByAdmissionId(admissionId, PageRequest.of(page, size));
+    }
+
+    public Page<AdmissionForm> getResults(Integer admissionId, Integer page, Integer size) {
+        Admission admission = admissionRepository.findById(admissionId)
+                .orElseThrow(() -> new NotFoundException(("No admission with id " + admissionId + " found!")));
+        return admissionFormRepository.getAllByAdmissionId(admissionId,
+                PageRequest.of(0, admission.getStudentLimit(), Sort.Direction.DESC,"pointsSum"));
     }
 }

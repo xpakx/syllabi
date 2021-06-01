@@ -67,4 +67,13 @@ public class AdmissionController {
                 admissionService.getAllForms(admissionId, page.orElse(0), size.orElse(20)),
                 HttpStatus.OK);
     }
+
+    @GetMapping("/admissions/{admissionId}/results")
+    public ResponseEntity<Page<AdmissionForm>> getAdmissionResults(@PathVariable Integer admissionId,
+                                                                 @RequestParam Optional<Integer> page,
+                                                                 @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                admissionService.getResults(admissionId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK);
+    }
 }

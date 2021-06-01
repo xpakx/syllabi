@@ -24,6 +24,7 @@ public class AdmissionForm {
     private String name;
     private String surname;
     private String documentId;
+    private Integer pointsSum;
 
     @JsonIgnore
     @ManyToOne
