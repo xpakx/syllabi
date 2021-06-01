@@ -1,6 +1,8 @@
 package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Admission;
+import io.github.xpax.syllabi.entity.AdmissionForm;
+import io.github.xpax.syllabi.entity.dto.AdmissionFormRequest;
 import io.github.xpax.syllabi.entity.dto.CreateAdmissionRequest;
 import io.github.xpax.syllabi.service.AdmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,16 @@ public class AdmissionController {
             @PathVariable Integer programId) {
         return new ResponseEntity<>(
                 admissionService.createAdmission(programId, admissionRequest),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/admissions/{admissionId}/apply/{userId}")
+    public ResponseEntity<AdmissionForm> apply(@RequestBody AdmissionFormRequest admissionRequest,
+                                               @PathVariable Integer admissionId,
+                                               @PathVariable Integer userId) {
+        return new ResponseEntity<>(
+                admissionService.createAdmissionForm(admissionId, userId, admissionRequest),
                 HttpStatus.OK
         );
     }

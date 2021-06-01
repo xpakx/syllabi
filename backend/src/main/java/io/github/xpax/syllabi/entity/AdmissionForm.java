@@ -17,6 +17,7 @@ public class AdmissionForm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private boolean verified;
     private boolean accepted;
 
     private String name;
