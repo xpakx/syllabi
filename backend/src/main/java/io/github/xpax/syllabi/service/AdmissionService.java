@@ -1,14 +1,10 @@
 package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.*;
-import io.github.xpax.syllabi.entity.dto.AdmissionFormRequest;
-import io.github.xpax.syllabi.entity.dto.AdmissionPointRequest;
-import io.github.xpax.syllabi.entity.dto.AdmissionWeightRequest;
-import io.github.xpax.syllabi.entity.dto.CreateAdmissionRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,6 +75,7 @@ public class AdmissionService {
                 .admission(admission)
                 .accepted(false)
                 .verified(false)
+                .discarded(false)
                 .build();
         points.forEach((p) -> p.setForm(form));
         return admissionFormRepository.save(form);
@@ -87,5 +84,22 @@ public class AdmissionService {
     public AdmissionForm getForm(Integer admissionId) {
         return admissionFormRepository.findById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
+    }
+
+    public AdmissionForm verifyAdmissionForm(Integer formId, AdmissionFormVerifyRequest admissionRequest) {
+        AdmissionForm form = admissionFormRepository.findById(formId)
+                .orElseThrow(() -> new NotFoundException(("No admission form with id " + formId + " found!")));
+
+        form.setName(admissionRequest.getName());
+        form.setSurname(admissionRequest.getSurname());
+        form.setDocumentId(admissionRequest.getDocumentId());
+        if(admissionRequest.isVerify()) {
+            form.setVerified(true);
+        }
+        else {
+            form.setDiscarded(true);
+        }
+
+        return admissionFormRepository.save(form);
     }
 }

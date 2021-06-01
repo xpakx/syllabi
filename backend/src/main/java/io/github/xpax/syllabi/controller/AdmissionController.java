@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.controller;
 import io.github.xpax.syllabi.entity.Admission;
 import io.github.xpax.syllabi.entity.AdmissionForm;
 import io.github.xpax.syllabi.entity.dto.AdmissionFormRequest;
+import io.github.xpax.syllabi.entity.dto.AdmissionFormVerifyRequest;
 import io.github.xpax.syllabi.entity.dto.CreateAdmissionRequest;
 import io.github.xpax.syllabi.service.AdmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,17 @@ public class AdmissionController {
         );
     }
 
-    @GetMapping("/students/admissions/{fromId}")
-    public ResponseEntity<AdmissionForm> showAdmission(@PathVariable Integer admissionId) {
-        return new ResponseEntity<>(admissionService.getForm(admissionId), HttpStatus.OK);
+    @GetMapping("/students/admissions/{formId}")
+    public ResponseEntity<AdmissionForm> showAdmission(@PathVariable Integer formId) {
+        return new ResponseEntity<>(admissionService.getForm(formId), HttpStatus.OK);
+    }
+
+    @PutMapping("/students/admissions/{formId}")
+    public ResponseEntity<AdmissionForm> verifyByAdmin(@PathVariable Integer formId,
+                                                       @RequestBody AdmissionFormVerifyRequest admissionRequest) {
+        return new ResponseEntity<>(
+                admissionService.verifyAdmissionForm(formId, admissionRequest),
+                HttpStatus.OK
+        );
     }
 }

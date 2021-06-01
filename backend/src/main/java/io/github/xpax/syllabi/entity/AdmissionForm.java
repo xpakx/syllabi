@@ -19,6 +19,7 @@ public class AdmissionForm {
 
     private boolean verified;
     private boolean accepted;
+    private boolean discarded;
 
     private String name;
     private String surname;
