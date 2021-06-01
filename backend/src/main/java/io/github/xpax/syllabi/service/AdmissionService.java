@@ -5,6 +5,8 @@ import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +39,7 @@ public class AdmissionService {
                 .endDate(admissionRequest.getEndDate())
                 .startDate(admissionRequest.getStartDate())
                 .name(admissionRequest.getName())
-                .phase(0)
+                .closed(false)
                 .program(program)
                 .weights(weights)
                 .build();
@@ -99,7 +101,10 @@ public class AdmissionService {
         else {
             form.setDiscarded(true);
         }
-
         return admissionFormRepository.save(form);
+    }
+
+    public Page<AdmissionForm> getAllForms(Integer admissionId, Integer page, Integer size) {
+        return admissionFormRepository.getAllByAdmissionId(admissionId, PageRequest.of(page, size));
     }
 }

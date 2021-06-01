@@ -26,7 +26,7 @@ public class Admission {
     private Date startDate;
     private Date endDate;
 
-    private Integer phase;
+    private boolean closed;
     private String name;
 
     @JsonIgnore

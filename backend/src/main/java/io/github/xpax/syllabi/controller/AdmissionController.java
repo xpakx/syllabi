@@ -7,11 +7,13 @@ import io.github.xpax.syllabi.entity.dto.AdmissionFormVerifyRequest;
 import io.github.xpax.syllabi.entity.dto.CreateAdmissionRequest;
 import io.github.xpax.syllabi.service.AdmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 
 @RestController
@@ -55,5 +57,14 @@ public class AdmissionController {
                 admissionService.verifyAdmissionForm(formId, admissionRequest),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/admissions/{admissionId}/forms")
+    public ResponseEntity<Page<AdmissionForm>> getAdmissionForms(@PathVariable Integer admissionId,
+                                                                 @RequestParam Optional<Integer> page,
+                                                                 @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                admissionService.getAllForms(admissionId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK);
     }
 }
