@@ -1,10 +1,11 @@
 package io.github.xpax.syllabi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,18 +18,18 @@ public class Admission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name="admission_student",
-            joinColumns={@JoinColumn(name="admission_id")},
-            inverseJoinColumns={@JoinColumn(name="student_id")})
-    private Set<Student> students;
-
-    @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name="admission_group",
-            joinColumns={@JoinColumn(name="admission_id")},
-            inverseJoinColumns={@JoinColumn(name="study_group_id")})
-    private Set<StudyGroup> groups;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "program_id")
+    private Program program;
 
     private Date startDate;
     private Date endDate;
+
+    private Integer phase;
+    private String name;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="admission", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AdmissionWeight> weights;
 }
