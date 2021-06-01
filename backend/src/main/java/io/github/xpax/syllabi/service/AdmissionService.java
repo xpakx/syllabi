@@ -5,6 +5,7 @@ import io.github.xpax.syllabi.entity.dto.AdmissionFormRequest;
 import io.github.xpax.syllabi.entity.dto.AdmissionPointRequest;
 import io.github.xpax.syllabi.entity.dto.AdmissionWeightRequest;
 import io.github.xpax.syllabi.entity.dto.CreateAdmissionRequest;
+import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -81,5 +82,10 @@ public class AdmissionService {
                 .build();
         points.forEach((p) -> p.setForm(form));
         return admissionFormRepository.save(form);
+    }
+
+    public AdmissionForm getForm(Integer admissionId) {
+        return admissionFormRepository.findById(admissionId)
+                .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
     }
 }
