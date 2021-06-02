@@ -74,6 +74,7 @@ public class AdmissionController {
                 HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @GetMapping("/admissions/{admissionId}/results")
     public ResponseEntity<Page<AdmissionForm>> getAdmissionResults(@PathVariable Integer admissionId,
                                                                  @RequestParam Optional<Integer> page,
