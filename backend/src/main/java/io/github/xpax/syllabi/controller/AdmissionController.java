@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +26,7 @@ public class AdmissionController {
         this.admissionService = admissionService;
     }
 
+    @Secured("ROLE_ADMISSION_ADMIN")
     @PostMapping("/programs/{programId}/admissions")
     public ResponseEntity<Admission> createAdmission(
             @RequestBody @Valid CreateAdmissionRequest admissionRequest,
@@ -44,11 +47,14 @@ public class AdmissionController {
         );
     }
 
+    @PostAuthorize("hasRole('ROLE_ADMISSION_ADMIN') or hasRole('ROLE_RECRUITER') or" +
+            "returnObject.getBody().getUser().getId().toString() == authentication.principal.username")
     @GetMapping("/students/admissions/{formId}")
     public ResponseEntity<AdmissionForm> showAdmission(@PathVariable Integer formId) {
         return new ResponseEntity<>(admissionService.getForm(formId), HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @PutMapping("/students/admissions/{formId}")
     public ResponseEntity<AdmissionForm> verifyByAdmin(@PathVariable Integer formId,
                                                        @RequestBody AdmissionFormVerifyRequest admissionRequest) {
@@ -58,6 +64,7 @@ public class AdmissionController {
         );
     }
 
+    @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @GetMapping("/admissions/{admissionId}/forms")
     public ResponseEntity<Page<AdmissionForm>> getAdmissionForms(@PathVariable Integer admissionId,
                                                                  @RequestParam Optional<Integer> page,
@@ -76,6 +83,7 @@ public class AdmissionController {
                 HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMISSION_ADMIN")
     @PutMapping("/admissions/{admissionId}/limit")
     public ResponseEntity<Admission> changeStudentLimit (@PathVariable Integer admissionId,
                                                   @RequestBody AdmissionChangeLimit admissionRequest) {
@@ -84,6 +92,7 @@ public class AdmissionController {
                 HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMISSION_ADMIN")
     @PostMapping("/admissions/{admissionId}/close")
     public ResponseEntity<Admission> changeStudentLimit (@PathVariable Integer admissionId,
                                                          @RequestBody CloseAdmissionRequest request) {
@@ -92,6 +101,7 @@ public class AdmissionController {
                 HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @GetMapping("/admissions/{admissionId}/forms/verified")
     public ResponseEntity<Page<AdmissionForm>> getVerifiedAdmissionForms(@PathVariable Integer admissionId,
                                                                  @RequestParam Optional<Integer> page,
@@ -101,6 +111,7 @@ public class AdmissionController {
                 HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @PostMapping("/users/{userId}/student/program")
     public ResponseEntity<StudentProgram> addStudentProgram(@PathVariable Integer userId,
                                                             @RequestBody StudentProgramRequest request) {
