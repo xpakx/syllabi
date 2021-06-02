@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Admission;
 import io.github.xpax.syllabi.entity.AdmissionForm;
+import io.github.xpax.syllabi.entity.StudentProgram;
 import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.AdmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,5 +99,13 @@ public class AdmissionController {
         return new ResponseEntity<>(
                 admissionService.getAllVerifiedForms(admissionId, page.orElse(0), size.orElse(20)),
                 HttpStatus.OK);
+    }
+
+    @PostMapping("/users/{userId}/student/program")
+    public ResponseEntity<StudentProgram> addStudentProgram(@PathVariable Integer userId,
+                                                            @RequestBody StudentProgramRequest request) {
+        return new ResponseEntity<>(
+                admissionService.createStudentProgram(userId, request),
+                HttpStatus.CREATED);
     }
 }

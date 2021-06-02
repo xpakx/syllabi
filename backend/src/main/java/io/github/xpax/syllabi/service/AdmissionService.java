@@ -23,14 +23,19 @@ public class AdmissionService {
     private final AdmissionFormRepository admissionFormRepository;
     private final AdmissionPointsRepository admissionPointsRepository;
 
+    private final StudentRepository studentRepository;
+    private final StudentProgramRepository studentProgramRepository;
+
     @Autowired
-    public AdmissionService(AdmissionRepository admissionRepository, ProgramRepository programRepository, UserRepository userRepository, AdmissionWeightRepository admissionWeightRepository, AdmissionFormRepository admissionFormRepository, AdmissionPointsRepository admissionPointsRepository) {
+    public AdmissionService(AdmissionRepository admissionRepository, ProgramRepository programRepository, UserRepository userRepository, AdmissionWeightRepository admissionWeightRepository, AdmissionFormRepository admissionFormRepository, AdmissionPointsRepository admissionPointsRepository, StudentRepository studentRepository, StudentProgramRepository studentProgramRepository) {
         this.admissionRepository = admissionRepository;
         this.programRepository = programRepository;
         this.userRepository = userRepository;
         this.admissionWeightRepository = admissionWeightRepository;
         this.admissionFormRepository = admissionFormRepository;
         this.admissionPointsRepository = admissionPointsRepository;
+        this.studentRepository = studentRepository;
+        this.studentProgramRepository = studentProgramRepository;
     }
 
 
@@ -105,9 +110,9 @@ public class AdmissionService {
             List<AdmissionPoints> points = admissionPointsRepository.findByFormId(formId);
             int sum = 0;
             for(AdmissionPoints point : points) {
-                sum+= point.getPoints() * point.getWeight().getWeight();
+                sum += point.getPoints() * point.getWeight().getWeight();
             }
-            form.setPoints(points);
+            form.setPointsSum(sum);
         }
         else {
             form.setDiscarded(true);
@@ -155,5 +160,20 @@ public class AdmissionService {
 
         admissionFormRepository.saveAll(forms);
         return admissionRepository.save(admission);
+    }
+
+    public StudentProgram createStudentProgram(Integer userId, StudentProgramRequest request) {
+        Student student = studentRepository.findById(userId)
+                .orElse(Student.builder()
+                        .name(request.getName())
+                        .surname(request.getName())
+                        .build());
+        Program program = programRepository.getOne(request.getProgramId());
+        StudentProgram studentProgram = StudentProgram.builder()
+                .student(student)
+                .program(program)
+                .semester(1)
+                .build();
+        return studentProgramRepository.save(studentProgram);
     }
 }
