@@ -124,4 +124,11 @@ public class AdmissionService {
         return admissionFormRepository.getAllByAdmissionId(admissionId,
                 PageRequest.of(0, admission.getStudentLimit(), Sort.Direction.DESC,"pointsSum"));
     }
+
+    public Admission changeLimit(Integer admissionId, AdmissionChangeLimit admissionRequest) {
+        Admission admission = admissionRepository.findById(admissionId)
+                .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
+        admission.setStudentLimit(admissionRequest.getStudentLimit());
+        return admissionRepository.save(admission);
+    }
 }

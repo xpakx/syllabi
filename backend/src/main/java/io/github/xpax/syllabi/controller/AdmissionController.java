@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Admission;
 import io.github.xpax.syllabi.entity.AdmissionForm;
+import io.github.xpax.syllabi.entity.dto.AdmissionChangeLimit;
 import io.github.xpax.syllabi.entity.dto.AdmissionFormRequest;
 import io.github.xpax.syllabi.entity.dto.AdmissionFormVerifyRequest;
 import io.github.xpax.syllabi.entity.dto.CreateAdmissionRequest;
@@ -74,6 +75,14 @@ public class AdmissionController {
                                                                  @RequestParam Optional<Integer> size) {
         return new ResponseEntity<>(
                 admissionService.getResults(admissionId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK);
+    }
+
+    @PutMapping("/admissions/{admissionId}/limit")
+    public ResponseEntity<Admission> changeStudentLimit (@PathVariable Integer admissionId,
+                                                  @RequestBody AdmissionChangeLimit admissionRequest) {
+        return new ResponseEntity<>(
+                admissionService.changeLimit(admissionId, admissionRequest),
                 HttpStatus.OK);
     }
 }
