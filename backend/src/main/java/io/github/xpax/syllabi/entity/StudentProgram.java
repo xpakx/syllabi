@@ -17,17 +17,12 @@ public class StudentProgram {
     private Integer id;
 
     @JsonIgnore
-    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinTable(name="student_student_programs",
-            joinColumns={@JoinColumn(name="student_program_id")},
-            inverseJoinColumns={@JoinColumn(name="student_id")})
+    @ManyToOne
+    @JoinColumn(name = "student_id")
     private Student student;
 
-    @JsonIgnore
-    @ManyToMany(cascade={CascadeType.MERGE})
-    @JoinTable(name="program_student_programs",
-            joinColumns={@JoinColumn(name="student_program_id")},
-            inverseJoinColumns={@JoinColumn(name="program_id")})
+    @ManyToOne
+    @JoinColumn(name = "program_id")
     private Program program;
 
     private Integer semester;

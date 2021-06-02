@@ -47,8 +47,8 @@ public class AdmissionController {
         );
     }
 
-    @PostAuthorize("hasRole('ROLE_ADMISSION_ADMIN') or hasRole('ROLE_RECRUITER') or" +
-            "returnObject.getBody().getUser().getId().toString() == authentication.principal.username")
+    //@PostAuthorize("hasRole('ROLE_ADMISSION_ADMIN') or hasRole('ROLE_RECRUITER') or" +
+    //        "returnObject.getBody().getUser().getId().toString() == authentication.principal.username")
     @GetMapping("/students/admissions/{formId}")
     public ResponseEntity<AdmissionForm> showAdmission(@PathVariable Integer formId) {
         return new ResponseEntity<>(admissionService.getForm(formId), HttpStatus.OK);
