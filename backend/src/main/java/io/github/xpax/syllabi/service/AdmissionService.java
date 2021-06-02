@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -129,6 +130,25 @@ public class AdmissionService {
         Admission admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
         admission.setStudentLimit(admissionRequest.getStudentLimit());
+        return admissionRepository.save(admission);
+    }
+
+    @Transactional
+    public Admission closeAdmissions(Integer admissionId, CloseAdmissionRequest request) {
+        Admission admission = admissionRepository.findById(admissionId)
+                .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
+        List<AdmissionForm> forms = admissionFormRepository.findAllByAdmissionId(admissionId);
+
+        admission.setClosed(true);
+
+        forms.stream()
+                .filter((f) -> request.getAcceptedStudentsIds().contains(f.getId()))
+                .forEach((f) -> f.setAccepted(true));
+        forms.stream()
+                .filter((f) -> !f.isAccepted())
+                .forEach((f) -> f.setDiscarded(true));
+
+        admissionFormRepository.saveAll(forms);
         return admissionRepository.save(admission);
     }
 }

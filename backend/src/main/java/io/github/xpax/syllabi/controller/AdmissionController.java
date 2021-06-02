@@ -2,10 +2,7 @@ package io.github.xpax.syllabi.controller;
 
 import io.github.xpax.syllabi.entity.Admission;
 import io.github.xpax.syllabi.entity.AdmissionForm;
-import io.github.xpax.syllabi.entity.dto.AdmissionChangeLimit;
-import io.github.xpax.syllabi.entity.dto.AdmissionFormRequest;
-import io.github.xpax.syllabi.entity.dto.AdmissionFormVerifyRequest;
-import io.github.xpax.syllabi.entity.dto.CreateAdmissionRequest;
+import io.github.xpax.syllabi.entity.dto.*;
 import io.github.xpax.syllabi.service.AdmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -83,6 +80,14 @@ public class AdmissionController {
                                                   @RequestBody AdmissionChangeLimit admissionRequest) {
         return new ResponseEntity<>(
                 admissionService.changeLimit(admissionId, admissionRequest),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/admissions/{admissionId}/close")
+    public ResponseEntity<Admission> changeStudentLimit (@PathVariable Integer admissionId,
+                                                         @RequestBody CloseAdmissionRequest request) {
+        return new ResponseEntity<>(
+                admissionService.closeAdmissions(admissionId, request),
                 HttpStatus.OK);
     }
 }
