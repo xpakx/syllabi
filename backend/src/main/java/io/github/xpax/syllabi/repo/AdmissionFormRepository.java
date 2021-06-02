@@ -11,5 +11,6 @@ import java.util.List;
 @Repository
 public interface AdmissionFormRepository extends JpaRepository<AdmissionForm, Integer> {
     Page<AdmissionForm> getAllByAdmissionId(Integer admissionId, Pageable page);
+    Page<AdmissionForm> getAllByAdmissionIdAndVerified(Integer admissionId, Boolean verified, Pageable page);
     List<AdmissionForm> findAllByAdmissionId(Integer admissionId);
 }

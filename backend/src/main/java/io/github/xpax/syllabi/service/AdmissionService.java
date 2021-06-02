@@ -126,6 +126,11 @@ public class AdmissionService {
                 PageRequest.of(0, admission.getStudentLimit(), Sort.Direction.DESC,"pointsSum"));
     }
 
+    public Page<AdmissionForm> getAllVerifiedForms(Integer admissionId, Integer page, Integer size) {
+        return admissionFormRepository.getAllByAdmissionIdAndVerified(admissionId, true,
+                PageRequest.of(page, size, Sort.Direction.DESC,"pointsSum"));
+    }
+
     public Admission changeLimit(Integer admissionId, AdmissionChangeLimit admissionRequest) {
         Admission admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));

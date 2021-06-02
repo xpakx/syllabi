@@ -90,4 +90,13 @@ public class AdmissionController {
                 admissionService.closeAdmissions(admissionId, request),
                 HttpStatus.OK);
     }
+
+    @GetMapping("/admissions/{admissionId}/forms/verified")
+    public ResponseEntity<Page<AdmissionForm>> getVerifiedAdmissionForms(@PathVariable Integer admissionId,
+                                                                 @RequestParam Optional<Integer> page,
+                                                                 @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                admissionService.getAllVerifiedForms(admissionId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK);
+    }
 }
