@@ -176,4 +176,8 @@ public class AdmissionService {
                 .build();
         return studentProgramRepository.save(studentProgram);
     }
+
+    public Page<AdmissionForm> getAllUserForms(Integer userId, Integer page, Integer size) {
+        return admissionFormRepository.getAllByUserId(userId, PageRequest.of(page, size));
+    }
 }

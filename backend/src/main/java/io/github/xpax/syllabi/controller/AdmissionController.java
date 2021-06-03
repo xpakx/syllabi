@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -120,4 +121,16 @@ public class AdmissionController {
                 admissionService.createStudentProgram(userId, request),
                 HttpStatus.CREATED);
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMISSION_ADMIN') or #userId.toString() == authentication.principal.username")
+    @GetMapping("/users/{userId}/admissions")
+    public ResponseEntity<Page<AdmissionForm>> getUserAdmissionForms(@PathVariable Integer userId,
+                                                                         @RequestParam Optional<Integer> page,
+                                                                         @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                admissionService.getAllUserForms(userId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
+
 }

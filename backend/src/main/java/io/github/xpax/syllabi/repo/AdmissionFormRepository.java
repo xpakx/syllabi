@@ -3,6 +3,7 @@ package io.github.xpax.syllabi.repo;
 import io.github.xpax.syllabi.entity.Admission;
 import io.github.xpax.syllabi.entity.AdmissionForm;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,6 @@ public interface AdmissionFormRepository extends JpaRepository<AdmissionForm, In
     List<AdmissionForm> findAllByAdmissionId(Integer admissionId);
 
     Optional<Admission> getByAdmissionId(Integer admissionId);
+
+    Page<AdmissionForm> getAllByUserId(Integer userId, Pageable page);
 }
