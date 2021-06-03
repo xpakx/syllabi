@@ -30,6 +30,7 @@ import { LoginComponent } from './component/login/login.component';
 import { NotFoundComponent } from './component/not-found/not-found.component';
 import { ProgramSemestersComponent } from './component/program-semesters/program-semesters.component';
 import { RegisterComponent } from './component/register/register.component';
+import { ShowAdmissionsComponent } from './component/show-admissions/show-admissions.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
 import { ShowAllGroupLiteratureComponent } from './component/show-all-group-literature/show-all-group-literature.component';
 import { ShowCourseLiteratureComponent } from './component/show-course-literature/show-course-literature.component';
@@ -287,6 +288,10 @@ const routes: Routes = [
   {
     path: 'programs/:id/semesters/add',
     component: AddSemesterComponent
+  },
+  {
+    path: 'admissions',
+    component: ShowAdmissionsComponent
   },
   {
     path: '404',

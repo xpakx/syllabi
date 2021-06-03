@@ -1,6 +1,7 @@
 INSERT INTO role (authority) VALUES ('ROLE_COURSE_ADMIN');
 INSERT INTO role (authority) VALUES ('ROLE_INSTITUTE_ADMIN');
 INSERT INTO role (authority) VALUES ('ROLE_USER_ADMIN');
+INSERT INTO role (authority) VALUES ('ROLE_ADMISSION_ADMIN');
 
 INSERT INTO users (password, username) VALUES
 ('$2a$10$RNjpi/CGfQ9t.abfnkgD7e2xUFcbHqjCKpbiPOQvod5VCoaw2VGJ.', 'Admin');
@@ -8,6 +9,7 @@ INSERT INTO users (password, username) VALUES
 insert into user_roles (user_id, role_id) values (1,1);
 insert into user_roles (user_id, role_id) values (1,2);
 insert into user_roles (user_id, role_id) values (1,3);
+insert into user_roles (user_id, role_id) values (1,4);
 
 insert into course (name, course_code, isced_code, erasmus_code, ects, language, facultative, stationary) values ('Epistemology', 'EP-001', '01.6', '0223', 10, 'english', true, true);
 insert into course (name, course_code, isced_code, erasmus_code, ects, language, facultative, stationary) values ('Ethics', 'ET-001', '01.6', '0223', 10, 'english', true, true);
@@ -23,6 +25,8 @@ insert into prerequisites (child_id, prerequisite_id) values (2,1);
 
 insert into program (name, description) values ('Philosophy', 'Blah blah');
 insert into program (name) values ('Cognitive Science');
+
+insert into admission (name, program_id, student_limit, closed) values ('Philosophy 2020', 1, 150, false);
 
 insert into semester (name, number, program_id) values ('Summer 2021', 1, 1);
 
