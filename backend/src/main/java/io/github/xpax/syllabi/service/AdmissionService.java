@@ -88,6 +88,7 @@ public class AdmissionService {
                 .accepted(false)
                 .verified(false)
                 .discarded(false)
+                .points(points)
                 .build();
         points.forEach((p) -> p.setForm(form));
         return admissionFormRepository.save(form);
