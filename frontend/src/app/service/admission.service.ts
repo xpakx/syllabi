@@ -29,12 +29,10 @@ export class AdmissionService implements ServiceWithGetAll<Admission>, ServiceWi
   }
 
   delete(id: number): Observable<any> {
-    throw new Error('Method not implemented.');
+    return this.http.delete<any>(`${this.url}/admissions/${id}`);
   }
 
   addNew(id: number, admission: AdmissionRequest): Observable<Admission> {
     return this.http.post<Admission>(`${this.url}/programs/${id}/admissions`, admission);
   }
-
-
 }

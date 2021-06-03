@@ -98,7 +98,7 @@ import { ShowAdmissionsComponent } from './component/show-admissions/show-admiss
 import { AdmissionSummaryComponent } from './component/admission-summary/admission-summary.component';
 import { ShowAdmissionComponent } from './component/show-admission/show-admission.component';
 import { AddAdmissionComponent } from './component/add-admission/add-admission.component';
-
+import { ModalAddWeightComponent } from './component/modal-add-weight/modal-add-weight.component';
 
 //import { MatOptionModule } from '@angular/material/op';
 
@@ -178,7 +178,8 @@ export function tokenGetter() {
     ShowAdmissionsComponent,
     AdmissionSummaryComponent,
     ShowAdmissionComponent,
-    AddAdmissionComponent
+    AddAdmissionComponent,
+    ModalAddWeightComponent
   ],
   imports: [
     BrowserModule,

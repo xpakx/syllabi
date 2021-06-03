@@ -8,6 +8,7 @@ import { AdmissionWeight } from 'src/app/entity/admission-weight';
 import { Program } from 'src/app/entity/program';
 import { AdmissionService } from 'src/app/service/admission.service';
 import { ProgramService } from 'src/app/service/program.service';
+import { ModalAddWeightComponent } from '../modal-add-weight/modal-add-weight.component';
 
 @Component({
   selector: 'app-add-admission',
@@ -73,17 +74,17 @@ export class AddAdmissionComponent implements OnInit {
     }
   }
 
-  addCoordinators(): void {
+  addWeight(): void {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
-    /*const dialogRef = this.dialog.open(ModalCoordinatorsChoiceComponent, dialogConfig);
+    const dialogRef = this.dialog.open(ModalAddWeightComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       (data) => {
         if(data) {
-          
+          this.weights.push({name: data.name, weight: data.weight});
         }
       }
-    );*/
+    );
   }
 }
