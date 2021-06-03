@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AddAdmissionComponent } from './component/add-admission/add-admission.component';
 import { AddCourseLiteratureComponent } from './component/add-course-literature/add-course-literature.component';
 import { AddCourseTypeComponent } from './component/add-course-type/add-course-type.component';
 import { AddCourseYearComponent } from './component/add-course-year/add-course-year.component';
@@ -297,6 +298,10 @@ const routes: Routes = [
   {
     path: 'admissions/:id',
     component: ShowAdmissionComponent
+  },
+  {
+    path: 'programs/:id/admissions/add',
+    component: AddAdmissionComponent
   },
   {
     path: '404',

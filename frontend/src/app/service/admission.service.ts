@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Admission } from '../entity/admission';
+import { AdmissionRequest } from '../entity/admission-request';
 import { Page } from '../entity/page';
 import { ServiceWithGetAll } from './service-with-get-all';
 import { ServiceWithGetById } from './service-with-get-by-id';
@@ -29,6 +30,10 @@ export class AdmissionService implements ServiceWithGetAll<Admission>, ServiceWi
 
   delete(id: number): Observable<any> {
     throw new Error('Method not implemented.');
+  }
+
+  addNew(id: number, admission: AdmissionRequest): Observable<Admission> {
+    return this.http.post<Admission>(`${this.url}/programs/${id}/admissions`, admission);
   }
 
 
