@@ -184,4 +184,8 @@ public class AdmissionService {
     public Page<Admission> getAllAdmissions(Integer page, Integer size) {
         return admissionRepository.findAll(PageRequest.of(page, size));
     }
+
+    public void deleteAdmission(Integer admissionId) {
+        admissionRepository.deleteById(admissionId);
+    }
 }
