@@ -1,5 +1,6 @@
 package io.github.xpax.syllabi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class AdmissionWeight {
     private String name;
     private Integer weight;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Admission admission;
 }

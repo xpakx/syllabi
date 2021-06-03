@@ -188,4 +188,9 @@ public class AdmissionService {
     public void deleteAdmission(Integer admissionId) {
         admissionRepository.deleteById(admissionId);
     }
+
+    public AdmissionDetails getAdmissionById(Integer admissionId) {
+        return admissionRepository.findProjectedById(admissionId)
+                .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
+    }
 }

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -145,5 +144,13 @@ public class AdmissionController {
     public ResponseEntity<?> deleteAdmission(@PathVariable Integer admissionId) {
         admissionService.deleteAdmission(admissionId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/admissions/{admissionId}")
+    public ResponseEntity<AdmissionDetails> getAdmission(@PathVariable Integer admissionId) {
+        return new ResponseEntity<>(
+                admissionService.getAdmissionById(admissionId),
+                HttpStatus.OK
+        );
     }
 }
