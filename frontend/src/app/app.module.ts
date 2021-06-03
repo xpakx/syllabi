@@ -96,6 +96,7 @@ import { ShowSemesterCoursesComponent } from './component/show-semester-courses/
 import { ModalDeleteComponent } from './component/modal-delete/modal-delete.component';
 import { ShowAdmissionsComponent } from './component/show-admissions/show-admissions.component';
 import { AdmissionSummaryComponent } from './component/admission-summary/admission-summary.component';
+import { ShowAdmissionComponent } from './component/show-admission/show-admission.component';
 
 
 //import { MatOptionModule } from '@angular/material/op';
@@ -174,7 +175,8 @@ export function tokenGetter() {
     ShowSemesterCoursesComponent,
     ModalDeleteComponent,
     ShowAdmissionsComponent,
-    AdmissionSummaryComponent
+    AdmissionSummaryComponent,
+    ShowAdmissionComponent
   ],
   imports: [
     BrowserModule,
