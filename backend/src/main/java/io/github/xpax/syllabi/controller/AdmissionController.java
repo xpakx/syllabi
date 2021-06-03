@@ -140,7 +140,7 @@ public class AdmissionController {
     }
 
     @Secured("ROLE_ADMISSION_ADMIN")
-    @DeleteMapping("/{admissionId}")
+    @DeleteMapping("/admissions/{admissionId}")
     public ResponseEntity<?> deleteAdmission(@PathVariable Integer admissionId) {
         admissionService.deleteAdmission(admissionId);
         return new ResponseEntity<>(HttpStatus.OK);
