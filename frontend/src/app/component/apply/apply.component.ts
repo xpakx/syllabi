@@ -48,7 +48,7 @@ export class ApplyComponent implements OnInit {
           documentId: ["", Validators.required],
         });
         for(let weight of admission.weights) {
-          this.form.addControl(""+weight.id, new FormControl(""));
+          this.form.addControl(""+weight.id, new FormControl("", Validators.pattern("^[0-9]*$")));
         }
       })      
     ).subscribe();
@@ -59,7 +59,7 @@ export class ApplyComponent implements OnInit {
     for(let field in this.form.controls) {
       let id = Number(field);
       if(!isNaN(id)) {
-        points.push({weightId: id, points: this.form.controls[field].value});
+        points.push({weightId: id, points: Number(this.form.controls[field].value)});
       }
     }
 
