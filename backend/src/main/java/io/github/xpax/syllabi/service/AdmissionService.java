@@ -124,7 +124,7 @@ public class AdmissionService {
         return admissionFormRepository.getAllByAdmissionId(admissionId, PageRequest.of(page, size));
     }
 
-    public Page<AdmissionForm> getResults(Integer admissionId, Integer page, Integer size) {
+    public Page<AdmissionForm> getResults(Integer admissionId) {
         Admission admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission with id " + admissionId + " found!")));
         return admissionFormRepository.getAllByAdmissionId(admissionId,
@@ -179,5 +179,9 @@ public class AdmissionService {
 
     public Page<AdmissionForm> getAllUserForms(Integer userId, Integer page, Integer size) {
         return admissionFormRepository.getAllByUserId(userId, PageRequest.of(page, size));
+    }
+
+    public Page<Admission> getAllAdmissions(Integer page, Integer size) {
+        return admissionRepository.findAll(PageRequest.of(page, size));
     }
 }

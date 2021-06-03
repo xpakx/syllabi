@@ -77,11 +77,9 @@ public class AdmissionController {
 
     @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @GetMapping("/admissions/{admissionId}/results")
-    public ResponseEntity<Page<AdmissionForm>> getAdmissionResults(@PathVariable Integer admissionId,
-                                                                 @RequestParam Optional<Integer> page,
-                                                                 @RequestParam Optional<Integer> size) {
+    public ResponseEntity<Page<AdmissionForm>> getAdmissionResults(@PathVariable Integer admissionId) {
         return new ResponseEntity<>(
-                admissionService.getResults(admissionId, page.orElse(0), size.orElse(20)),
+                admissionService.getResults(admissionId),
                 HttpStatus.OK);
     }
 
@@ -133,4 +131,12 @@ public class AdmissionController {
         );
     }
 
+    @GetMapping("/admissions")
+    public ResponseEntity<Page<Admission>> getAllAdmissions(@RequestParam Optional<Integer> page,
+                                                                 @RequestParam Optional<Integer> size) {
+        return new ResponseEntity<>(
+                admissionService.getAllAdmissions(page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
 }
