@@ -1,4 +1,5 @@
 import { AdmissionWeight } from "./admission-weight";
+import { AdmissionWeightDetails } from "./admission-weight-details";
 import { ProgramSummary } from "./program-summary";
 
 export interface AdmissionDetails {
@@ -9,5 +10,5 @@ export interface AdmissionDetails {
     startDate: Date;
     endDate: Date;
     program: ProgramSummary;
-    weights: AdmissionWeight[];
+    weights: AdmissionWeightDetails[];
 }

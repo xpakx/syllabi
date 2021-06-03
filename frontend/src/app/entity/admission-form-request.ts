@@ -1,3 +1,8 @@
+import { AdmissionPoints } from "./admission-points";
+
 export interface AdmissionFormRequest {
-    id: number;
+    name: string;
+    surname: string;
+    documentId: string;
+    points: AdmissionPoints[];
 }

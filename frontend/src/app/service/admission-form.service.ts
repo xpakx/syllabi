@@ -32,7 +32,8 @@ export class AdmissionFormService implements ServiceWithGetAllChildren<Admission
     throw new Error('Method not implemented.');
   }
 
-  addNew(admissionId: number, userId: number, form: AdmissionFormRequest): Observable<AdmissionForm> {
+  addNew(admissionId: number, form: AdmissionFormRequest): Observable<AdmissionForm> {
+    let userId = localStorage.getItem("user_id")
     return this.http.post<AdmissionForm>(`${this.url}/admissions/${admissionId}/apply/${userId}`, form);
   }
 }

@@ -14,6 +14,7 @@ import { AddStudyGroupComponent } from './component/add-study-group/add-study-gr
 import { AddTeacherComponent } from './component/add-teacher/add-teacher.component';
 import { AddUserRoleComponent } from './component/add-user-role/add-user-role.component';
 import { AllCoursesComponent } from './component/all-courses/all-courses.component';
+import { ApplyComponent } from './component/apply/apply.component';
 import { ChangePasswordComponent } from './component/change-password/change-password.component';
 import { EditCourseLiteratureComponent } from './component/edit-course-literature/edit-course-literature.component';
 import { EditCourseTypeComponent } from './component/edit-course-type/edit-course-type.component';
@@ -61,6 +62,7 @@ import { ShowUserCoursesComponent } from './component/show-user-courses/show-use
 import { ShowUserComponent } from './component/show-user/show-user.component';
 import { ShowUsersComponent } from './component/show-users/show-users.component';
 import { ShowYearStudentsComponent } from './component/show-year-students/show-year-students.component';
+import { AdmissionFormService } from './service/admission-form.service';
 
 const routes: Routes = [
   {
@@ -302,6 +304,10 @@ const routes: Routes = [
   {
     path: 'programs/:id/admissions/add',
     component: AddAdmissionComponent
+  },
+  {
+    path: 'admissions/:id/apply',
+    component: ApplyComponent
   },
   {
     path: '404',

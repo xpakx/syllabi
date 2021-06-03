@@ -80,7 +80,7 @@ public class AdmissionService {
                 .map(this::transformPoint)
                 .collect(Collectors.toList());
         AdmissionForm form = AdmissionForm.builder()
-                .name(admission.getName())
+                .name(admissionRequest.getName())
                 .surname(admissionRequest.getSurname())
                 .documentId(admissionRequest.getDocumentId())
                 .user(user)
