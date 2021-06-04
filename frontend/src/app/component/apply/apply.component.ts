@@ -63,8 +63,6 @@ export class ApplyComponent implements OnInit {
       }
     }
 
-    alert(JSON.stringify(points));
-
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
       this.formService.addNew(id, {

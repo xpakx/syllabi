@@ -32,6 +32,7 @@ import { LoginComponent } from './component/login/login.component';
 import { NotFoundComponent } from './component/not-found/not-found.component';
 import { ProgramSemestersComponent } from './component/program-semesters/program-semesters.component';
 import { RegisterComponent } from './component/register/register.component';
+import { ShowAdmissionFormComponent } from './component/show-admission-form/show-admission-form.component';
 import { ShowAdmissionComponent } from './component/show-admission/show-admission.component';
 import { ShowAdmissionsComponent } from './component/show-admissions/show-admissions.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
@@ -308,6 +309,10 @@ const routes: Routes = [
   {
     path: 'admissions/:id/apply',
     component: ApplyComponent
+  },
+  {
+    path: 'admissions/forms/:id',
+    component: ShowAdmissionFormComponent
   },
   {
     path: '404',

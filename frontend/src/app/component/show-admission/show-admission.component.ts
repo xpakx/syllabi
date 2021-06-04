@@ -24,6 +24,7 @@ export class ShowAdmissionComponent extends ShowComponent<AdmissionDetails> impl
 
   ngOnInit(): void {
     this.getElem();
+    this.checkAuthority("ROLE_ADMISSION_ADMIN");
   }
 
   delete(id: number, name: string) {
