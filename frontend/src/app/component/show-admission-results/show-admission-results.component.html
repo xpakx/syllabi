@@ -1,1 +1,34 @@
-<p>show-admission-results works!</p>
+<h2 *ngIf="parent">Admission results for {{parent.name}}</h2> 
+
+<button mat-button [routerLink]="'/admissions/'+ parent.id" *ngIf="parent">
+    <mat-icon>arrow_left</mat-icon>
+    Back to {{parent.name}}
+</button>
+
+<div *ngIf="message">
+    <div>Error</div>
+</div>
+
+<button mat-button color="primary" (click)="close()" *ngIf="admin">CLOSE ADMISSIONS</button>
+
+<app-pagination [totalPages]="totalPages" [page]="page" [last]="last" 
+[first]="first" [pagesMin]="getPagesMin()" [pagesFull]="getPagesFull()"
+(newPageEvent)="getPage($event)"></app-pagination>
+
+<mat-grid-list cols="3" rowHeight="15em" *ngIf="elems.length > 0"  fxShow="false" fxShow.gt-sm>
+    <mat-grid-tile *ngFor="let form of elems">
+        <mat-card class="mat-card-grid">
+            <app-admission-form-summary [form]="form" [admin]="admin" (deleteEvent)="delete(form.id, form.name)"></app-admission-form-summary>
+        </mat-card>
+    </mat-grid-tile>
+</mat-grid-list>
+
+<div fxHide = "false" fxHide.gt-sm>
+    <mat-card *ngFor="let form of elems">
+        <app-admission-form-summary [form]="form" [admin]="admin" (deleteEvent)="delete(form.id, form.name)"></app-admission-form-summary>
+    </mat-card>
+</div>
+
+<div *ngIf="elems.length == 0">
+    <div>No admission forms for this admission!</div>
+</div>

@@ -10,6 +10,8 @@ import { Page } from '../entity/page';
 import { ServiceWithGetAllChildren } from './service-with-get-all-children';
 import { ServiceWithGetById } from './service-with-get-by-id';
 import { AdmissionFormReviewRequest } from '../entity/admission-form-review-request';
+import { CloseAdmissionRequest } from '../entity/close-admission-request';
+import { Admission } from '../entity/admission';
 
 @Injectable({
   providedIn: 'root'
@@ -55,5 +57,9 @@ ServiceWithGetById<AdmissionFormDetails> {
 
   getAllResultsByParentIdForPage(id: number, page: number): Observable<Page<AdmissionForm>> {
     return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/results?page=${page}`);
+  }
+
+  close(admissionId: number, students: CloseAdmissionRequest) {
+    return this.http.post<Admission>(`${this.url}/admissions/${admissionId}/close`, students);
   }
 }

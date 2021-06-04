@@ -16,7 +16,6 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
 })
 export class ShowAdmissionFormsComponent extends PageableGetAllChildrenComponent<AdmissionForm, AdmissionDetails> implements OnInit {
 
-
   constructor(protected service: AdmissionFormService, protected userService: UserService, 
     private parentService: AdmissionService, protected dialog: MatDialog, 
     protected route: ActivatedRoute, protected router: Router) { 
