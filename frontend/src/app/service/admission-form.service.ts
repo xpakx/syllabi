@@ -9,6 +9,7 @@ import { AdmissionFormRequest } from '../entity/admission-form-request';
 import { Page } from '../entity/page';
 import { ServiceWithGetAllChildren } from './service-with-get-all-children';
 import { ServiceWithGetById } from './service-with-get-by-id';
+import { AdmissionFormReviewRequest } from '../entity/admission-form-review-request';
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,9 @@ ServiceWithGetById<AdmissionFormDetails> {
   addNew(admissionId: number, form: AdmissionFormRequest): Observable<AdmissionForm> {
     let userId = localStorage.getItem("user_id")
     return this.http.post<AdmissionForm>(`${this.url}/admissions/${admissionId}/apply/${userId}`, form);
+  }
+
+  review(id: number, form: AdmissionFormReviewRequest): Observable<AdmissionFormDetails> {
+    return this.http.put<AdmissionFormDetails>(`${this.url}/students/admissions/${id}`, form);
   }
 }

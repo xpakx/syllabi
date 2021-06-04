@@ -1,0 +1,24 @@
+<mat-card *ngIf="admissionForm">
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="review()">
+            <h2>Review admission form</h2>
+            <mat-error *ngIf="loginInvalid">
+                Error: {{message}}
+            </mat-error>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Name" formControlName="name" required>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Surname" formControlName="surname" required>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+                <input matInput placeholder="Document ID" formControlName="documentId" required>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="verify">Verified</mat-checkbox>
+
+            <button mat-raised-button color="secondary">Review</button>
+        </form>
+    </mat-card-content>
+</mat-card>    
+

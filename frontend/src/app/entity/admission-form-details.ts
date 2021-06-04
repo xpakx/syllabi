@@ -3,4 +3,7 @@ export interface AdmissionFormDetails {
     name: string;
     surname: string;
     documentId: string;
+    verified: boolean;
+    accepted: boolean;
+    discarded: boolean;
 }
