@@ -25,7 +25,19 @@
     <mat-card-content>
         <div>Name: {{elem.name}}</div>
         <div>Surname: {{elem.surname}}</div>
-        <div>Verified: {{elem.verified}}</div>
+
+        <div class='textWithIcon verified' *ngIf="elem.verified && !elem.accepted">  
+            <mat-icon class="iconForTextWithIcon">thumb_up</mat-icon>
+            <span class="spanForTextWithIcon">verified by reviewer</span>
+        </div>
+        <div class='textWithIcon discarded' *ngIf="elem.discarded">  
+            <mat-icon class="iconForTextWithIcon">thumb_down</mat-icon>
+            <span class="spanForTextWithIcon">discarded by reviewer</span>
+        </div>
+        <div class='textWithIcon verified' *ngIf="elem.accepted">  
+            <mat-icon class="iconForTextWithIcon">verified</mat-icon>
+            <span class="spanForTextWithIcon">accepted</span>
+        </div>
         
         <h3>Points</h3>
         <!-- <div *ngFor="let weight of elem.weights">{{weight.name}}: {{weight.weight}}</div> -->

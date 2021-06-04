@@ -36,3 +36,11 @@ mat-card-actions {
     position:absolute;
     padding-top:5px;
 }
+
+.verified {
+    color: #228b22;
+}
+
+.discarded {
+    color: #8b2222;
+}
