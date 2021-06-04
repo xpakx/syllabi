@@ -34,6 +34,7 @@ import { ProgramSemestersComponent } from './component/program-semesters/program
 import { RegisterComponent } from './component/register/register.component';
 import { ReviewAdmissionFormComponent } from './component/review-admission-form/review-admission-form.component';
 import { ShowAdmissionFormComponent } from './component/show-admission-form/show-admission-form.component';
+import { ShowAdmissionFormsComponent } from './component/show-admission-forms/show-admission-forms.component';
 import { ShowAdmissionComponent } from './component/show-admission/show-admission.component';
 import { ShowAdmissionsComponent } from './component/show-admissions/show-admissions.component';
 import { ShowAllCourseLiteratureComponent } from './component/show-all-course-literature/show-all-course-literature.component';
@@ -318,6 +319,10 @@ const routes: Routes = [
   {
     path: 'admissions/forms/:id/review',
     component: ReviewAdmissionFormComponent
+  },
+  {
+    path: 'admissions/:id/forms',
+    component: ShowAdmissionFormsComponent
   },
   {
     path: '404',

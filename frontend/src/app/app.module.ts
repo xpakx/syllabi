@@ -102,6 +102,8 @@ import { ModalAddWeightComponent } from './component/modal-add-weight/modal-add-
 import { ApplyComponent } from './component/apply/apply.component';
 import { ShowAdmissionFormComponent } from './component/show-admission-form/show-admission-form.component';
 import { ReviewAdmissionFormComponent } from './component/review-admission-form/review-admission-form.component';
+import { ShowAdmissionFormsComponent } from './component/show-admission-forms/show-admission-forms.component';
+import { AdmissionFormSummaryComponent } from './component/admission-form-summary/admission-form-summary.component';
 
 //import { MatOptionModule } from '@angular/material/op';
 
@@ -185,7 +187,9 @@ export function tokenGetter() {
     ModalAddWeightComponent,
     ApplyComponent,
     ShowAdmissionFormComponent,
-    ReviewAdmissionFormComponent
+    ReviewAdmissionFormComponent,
+    ShowAdmissionFormsComponent,
+    AdmissionFormSummaryComponent
   ],
   imports: [
     BrowserModule,
