@@ -23,6 +23,7 @@ export class ShowAdmissionFormComponent extends ShowComponent<AdmissionFormDetai
 
  ngOnInit(): void {
    this.getElem();
+   this.checkAuthority("ROLE_ADMISSION_ADMIN");
  }
 
  delete(id: number, name: string) {
