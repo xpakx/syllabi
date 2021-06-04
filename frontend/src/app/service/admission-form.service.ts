@@ -25,11 +25,11 @@ ServiceWithGetById<AdmissionFormDetails> {
   }
 
   getAllByParentId(id: number): Observable<Page<AdmissionForm>> {
-    throw new Error('Method not implemented.');
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/forms`);
   }
 
   getAllByParentIdForPage(id: number, page: number): Observable<Page<AdmissionForm>> {
-    throw new Error('Method not implemented.');
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/forms?page=${page}`);
   }
 
   getParentById(id: number): Observable<AdmissionDetails> {
@@ -47,5 +47,13 @@ ServiceWithGetById<AdmissionFormDetails> {
 
   review(id: number, form: AdmissionFormReviewRequest): Observable<AdmissionFormDetails> {
     return this.http.put<AdmissionFormDetails>(`${this.url}/students/admissions/${id}`, form);
+  }
+
+  getAllResultsByParentId(id: number): Observable<Page<AdmissionForm>> {
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/results`);
+  }
+
+  getAllResultsByParentIdForPage(id: number, page: number): Observable<Page<AdmissionForm>> {
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/results?page=${page}`);
   }
 }
