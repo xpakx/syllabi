@@ -50,7 +50,7 @@ public class AdmissionController {
     //@PostAuthorize("hasRole('ROLE_ADMISSION_ADMIN') or hasRole('ROLE_RECRUITER') or" +
     //        "returnObject.getBody().getUser().getId().toString() == authentication.principal.username")
     @GetMapping("/students/admissions/{formId}")
-    public ResponseEntity<AdmissionForm> showAdmission(@PathVariable Integer formId) {
+    public ResponseEntity<AdmissionFormDetails> showAdmission(@PathVariable Integer formId) {
         return new ResponseEntity<>(admissionService.getForm(formId), HttpStatus.OK);
     }
 
@@ -66,7 +66,7 @@ public class AdmissionController {
 
     @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @GetMapping("/admissions/{admissionId}/forms")
-    public ResponseEntity<Page<AdmissionForm>> getAdmissionForms(@PathVariable Integer admissionId,
+    public ResponseEntity<Page<AdmissionFormSummary>> getAdmissionForms(@PathVariable Integer admissionId,
                                                                  @RequestParam Optional<Integer> page,
                                                                  @RequestParam Optional<Integer> size) {
         return new ResponseEntity<>(
@@ -76,7 +76,7 @@ public class AdmissionController {
 
     @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @GetMapping("/admissions/{admissionId}/results")
-    public ResponseEntity<Page<AdmissionForm>> getAdmissionResults(@PathVariable Integer admissionId) {
+    public ResponseEntity<Page<AdmissionFormSummary>> getAdmissionResults(@PathVariable Integer admissionId) {
         return new ResponseEntity<>(
                 admissionService.getResults(admissionId),
                 HttpStatus.OK);
@@ -102,7 +102,7 @@ public class AdmissionController {
 
     @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
     @GetMapping("/admissions/{admissionId}/forms/verified")
-    public ResponseEntity<Page<AdmissionForm>> getVerifiedAdmissionForms(@PathVariable Integer admissionId,
+    public ResponseEntity<Page<AdmissionFormSummary>> getVerifiedAdmissionForms(@PathVariable Integer admissionId,
                                                                  @RequestParam Optional<Integer> page,
                                                                  @RequestParam Optional<Integer> size) {
         return new ResponseEntity<>(
@@ -121,7 +121,7 @@ public class AdmissionController {
 
     @PreAuthorize("hasRole('ROLE_ADMISSION_ADMIN') or #userId.toString() == authentication.principal.username")
     @GetMapping("/users/{userId}/admissions")
-    public ResponseEntity<Page<AdmissionForm>> getUserAdmissionForms(@PathVariable Integer userId,
+    public ResponseEntity<Page<AdmissionFormSummary>> getUserAdmissionForms(@PathVariable Integer userId,
                                                                          @RequestParam Optional<Integer> page,
                                                                          @RequestParam Optional<Integer> size) {
         return new ResponseEntity<>(

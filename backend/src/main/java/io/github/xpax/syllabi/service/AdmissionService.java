@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -84,7 +83,7 @@ public class AdmissionService {
     public AdmissionForm createAdmissionForm(Integer admissionId, Integer userId,
                                                              AdmissionFormRequest admissionRequest) {
 
-        if(admissionFormRepository.existsAdmissinFormByUserIdAndAdmissionId(userId, admissionId)) {
+        if(admissionFormRepository.existsAdmissionFormByUserIdAndAdmissionId(userId, admissionId)) {
             throw new EntityExistsException("Form for this admission and user already exists!");
         }
 
@@ -128,8 +127,8 @@ public class AdmissionService {
         return admissionFormRepository.save(form);
     }
 
-    public AdmissionForm getForm(Integer admissionId) {
-        return admissionFormRepository.findById(admissionId)
+    public AdmissionFormDetails getForm(Integer admissionId) {
+        return admissionFormRepository.findProjectedById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
     }
 
@@ -155,18 +154,18 @@ public class AdmissionService {
         return admissionFormRepository.save(form);
     }
 
-    public Page<AdmissionForm> getAllForms(Integer admissionId, Integer page, Integer size) {
+    public Page<AdmissionFormSummary> getAllForms(Integer admissionId, Integer page, Integer size) {
         return admissionFormRepository.getAllByAdmissionId(admissionId, PageRequest.of(page, size));
     }
 
-    public Page<AdmissionForm> getResults(Integer admissionId) {
+    public Page<AdmissionFormSummary> getResults(Integer admissionId) {
         Admission admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission with id " + admissionId + " found!")));
         return admissionFormRepository.getAllByAdmissionId(admissionId,
                 PageRequest.of(0, admission.getStudentLimit(), Sort.Direction.DESC,"pointsSum"));
     }
 
-    public Page<AdmissionForm> getAllVerifiedForms(Integer admissionId, Integer page, Integer size) {
+    public Page<AdmissionFormSummary> getAllVerifiedForms(Integer admissionId, Integer page, Integer size) {
         return admissionFormRepository.getAllByAdmissionIdAndVerified(admissionId, true,
                 PageRequest.of(page, size, Sort.Direction.DESC,"pointsSum"));
     }
@@ -212,7 +211,7 @@ public class AdmissionService {
         return studentProgramRepository.save(studentProgram);
     }
 
-    public Page<AdmissionForm> getAllUserForms(Integer userId, Integer page, Integer size) {
+    public Page<AdmissionFormSummary> getAllUserForms(Integer userId, Integer page, Integer size) {
         return admissionFormRepository.getAllByUserId(userId, PageRequest.of(page, size));
     }
 
