@@ -96,7 +96,7 @@ public class AdmissionService {
 
         Date now = Calendar.getInstance().getTime();
         if(admission.getStartDate().after(now) || admission.getEndDate().before(now)) {
-            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate startDate = admission.getStartDate().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
@@ -161,7 +161,7 @@ public class AdmissionService {
     public Page<AdmissionFormSummary> getResults(Integer admissionId) {
         Admission admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission with id " + admissionId + " found!")));
-        return admissionFormRepository.getAllByAdmissionId(admissionId,
+        return admissionFormRepository.getAllByAdmissionIdAndVerified(admissionId, true,
                 PageRequest.of(0, admission.getStudentLimit(), Sort.Direction.DESC,"pointsSum"));
     }
 

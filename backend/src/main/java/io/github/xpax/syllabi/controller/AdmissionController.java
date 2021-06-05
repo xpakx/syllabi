@@ -84,7 +84,7 @@ public class AdmissionController {
 
     @Secured("ROLE_ADMISSION_ADMIN")
     @PutMapping("/admissions/{admissionId}/limit")
-    public ResponseEntity<Admission> changeStudentLimit (@PathVariable Integer admissionId,
+    public ResponseEntity<Admission> changeStudentLimit(@PathVariable Integer admissionId,
                                                   @RequestBody AdmissionChangeLimit admissionRequest) {
         return new ResponseEntity<>(
                 admissionService.changeLimit(admissionId, admissionRequest),
