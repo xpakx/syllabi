@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.*;
+import io.github.xpax.syllabi.error.EntityExistsException;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +73,14 @@ public class AdmissionService {
                 .build();
     }
 
+    @Transactional
     public AdmissionForm createAdmissionForm(Integer admissionId, Integer userId,
                                                              AdmissionFormRequest admissionRequest) {
+
+        if(admissionFormRepository.existsAdmissinFormByUserIdAndAdmissionId(userId, admissionId)) {
+            throw new EntityExistsException("Form for this admission and user already exists!");
+        }
+
         Admission admission = admissionRepository.getOne(admissionId);
         User user = userRepository.getOne(userId);
         List<AdmissionPoints> points = admissionRequest.getPoints().stream()

@@ -20,4 +20,6 @@ public interface AdmissionFormRepository extends JpaRepository<AdmissionForm, In
     Optional<Admission> getByAdmissionId(Integer admissionId);
 
     Page<AdmissionForm> getAllByUserId(Integer userId, Pageable page);
+
+    boolean existsAdmissinFormByUserIdAndAdmissionId(Integer userId, Integer admissionId);
 }
