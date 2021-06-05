@@ -2,6 +2,7 @@ package io.github.xpax.syllabi.service;
 
 import io.github.xpax.syllabi.entity.*;
 import io.github.xpax.syllabi.entity.dto.*;
+import io.github.xpax.syllabi.error.AdmissionsBlockedException;
 import io.github.xpax.syllabi.error.EntityExistsException;
 import io.github.xpax.syllabi.error.NotFoundException;
 import io.github.xpax.syllabi.repo.*;
@@ -12,6 +13,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,7 +88,27 @@ public class AdmissionService {
             throw new EntityExistsException("Form for this admission and user already exists!");
         }
 
-        Admission admission = admissionRepository.getOne(admissionId);
+        Admission admission = admissionRepository.findById(admissionId)
+                .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
+
+        if(admission.isClosed()) {
+            throw new AdmissionsBlockedException("Admissions are closed!");
+        }
+
+        Date now = Calendar.getInstance().getTime();
+        if(admission.getStartDate().after(now) || admission.getEndDate().before(now)) {
+            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDate startDate = admission.getStartDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            LocalDate endDate = admission.getEndDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            throw new AdmissionsBlockedException("Registering is not possible before "+
+                    dataFormatter.format(startDate) +
+                    " and after " + dataFormatter.format(endDate));
+        }
+
         User user = userRepository.getOne(userId);
         List<AdmissionPoints> points = admissionRequest.getPoints().stream()
                 .map(this::transformPoint)
