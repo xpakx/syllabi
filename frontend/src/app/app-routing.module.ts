@@ -52,6 +52,7 @@ import { ShowInstituteCoursesComponent } from './component/show-institute-course
 import { ShowInstituteProgramsComponent } from './component/show-institute-programs/show-institute-programs.component';
 import { ShowInstituteComponent } from './component/show-institute/show-institute.component';
 import { ShowInstitutesComponent } from './component/show-institutes/show-institutes.component';
+import { ShowProgramAdmissionsComponent } from './component/show-program-admissions/show-program-admissions.component';
 import { ShowProgramCoursesComponent } from './component/show-program-courses/show-program-courses.component';
 import { ShowProgramComponent } from './component/show-program/show-program.component';
 import { ShowProgramsComponent } from './component/show-programs/show-programs.component';
@@ -328,6 +329,10 @@ const routes: Routes = [
   {
     path: 'admissions/:id/results',
     component: ShowAdmissionResultsComponent
+  },
+  {
+    path: 'programs/:id/admissions',
+    component: ShowProgramAdmissionsComponent
   },
   {
     path: '404',

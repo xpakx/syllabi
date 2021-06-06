@@ -36,4 +36,12 @@ export class AdmissionService implements ServiceWithGetAll<Admission>, ServiceWi
   addNew(id: number, admission: AdmissionRequest): Observable<Admission> {
     return this.http.post<Admission>(`${this.url}/programs/${id}/admissions`, admission);
   }
+
+  getAllForProgram(id: number): Observable<Page<Admission>> {
+    return this.http.get<Page<Admission>>(`${this.url}/programs/${id}/admissions`);
+  }
+
+  getAllForProgramForPage(id: number, page: number): Observable<Page<Admission>> {
+    return this.http.get<Page<Admission>>(`${this.url}/programs/${id}/admissions?page=${page}`);
+  }
 }
