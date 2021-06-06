@@ -9,6 +9,14 @@
     <div>Error</div>
 </div>
 
+<form [formGroup]="form" (ngSubmit)="changeLimit()" *ngIf="form">
+    <h3>ChangeLimit</h3>
+    <mat-form-field class="full-width-input">
+        <input matInput placeholder="Student limit" formControlName="studentLimit" required>
+    </mat-form-field>
+    <button mat-raised-button color="secondary">Change</button>
+</form>
+
 <button mat-button color="primary" (click)="close()" *ngIf="admin">CLOSE ADMISSIONS</button>
 
 <app-pagination [totalPages]="totalPages" [page]="page" [last]="last" 

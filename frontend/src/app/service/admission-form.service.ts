@@ -59,7 +59,11 @@ ServiceWithGetById<AdmissionFormDetails> {
     return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/results?page=${page}`);
   }
 
-  close(admissionId: number, students: CloseAdmissionRequest) {
+  close(admissionId: number, students: CloseAdmissionRequest): Observable<Admission> {
     return this.http.post<Admission>(`${this.url}/admissions/${admissionId}/close`, students);
+  }
+
+  changeLimit(admissionId: number, limit: number): Observable<Admission>  {
+    return this.http.put<Admission>(`${this.url}/admissions/${admissionId}/limit`, {studentLimit: limit});
   }
 }

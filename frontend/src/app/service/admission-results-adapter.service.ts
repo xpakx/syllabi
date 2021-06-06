@@ -36,4 +36,8 @@ implements ServiceWithGetAllChildren<AdmissionForm, AdmissionDetails> {
     public close(id: number, students: CloseAdmissionRequest): Observable<Admission> {
         return this.service.close(id, students);
     }
+
+    changeLimit(admissionId: number, limit: number): Observable<Admission>  {
+        return this.service.changeLimit(admissionId, limit);
+    }
 }

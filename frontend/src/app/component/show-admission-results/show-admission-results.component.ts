@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Admission } from 'src/app/entity/admission';
@@ -15,10 +16,11 @@ import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-ch
   styleUrls: ['./show-admission-results.component.css']
 })
 export class ShowAdmissionResultsComponent extends PageableGetAllChildrenComponent<AdmissionForm, AdmissionDetails> implements OnInit {
+  form!: FormGroup;
 
   constructor(protected service: AdmissionResultsAdapterService, protected userService: UserService, 
     protected dialog: MatDialog, 
-    protected route: ActivatedRoute, protected router: Router) { 
+    protected route: ActivatedRoute, protected router: Router, private fb: FormBuilder) { 
       super(service, userService, router, route, dialog);
       this.elemTypeName = "admission form";
     }
@@ -29,11 +31,29 @@ export class ShowAdmissionResultsComponent extends PageableGetAllChildrenCompone
     this.checkAuthority("ROLE_ADMISSION_ADMIN");
   }
 
+  afterGetParentSuccess(result: AdmissionDetails) {
+    super.afterGetParentSuccess(result);
+    this.form = this.fb.group({
+      studentLimit: [result.studentLimit, Validators.pattern("^[0-9]*$")]
+    });
+  }  
+
   close(): void {
     let students: number[] = this.elems.map((a) => a.id);
     this.service.close(this.id, {acceptedStudentsIds: students}).subscribe(
       (response: Admission) => {
         //
+      },
+      (error: HttpErrorResponse) => {
+        this.message = error.error.message;
+      }
+    )
+  }
+
+  changeLimit(): void {
+    this.service.changeLimit(this.id, this.form.controls.studentLimit.value).subscribe(
+      (response: Admission) => {
+        this.getFirstPage();
       },
       (error: HttpErrorResponse) => {
         this.message = error.error.message;
