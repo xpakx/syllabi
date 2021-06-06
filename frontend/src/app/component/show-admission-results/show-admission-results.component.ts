@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Admission } from 'src/app/entity/admission';
 import { AdmissionDetails } from 'src/app/entity/admission-details';
 import { AdmissionForm } from 'src/app/entity/admission-form';
 import { AdmissionResultsAdapterService } from 'src/app/service/admission-results-adapter.service';
 import { UserService } from 'src/app/service/user.service';
+import { ModalCloseAdmissionComponent } from '../modal-close-admission/modal-close-admission.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -38,16 +39,27 @@ export class ShowAdmissionResultsComponent extends PageableGetAllChildrenCompone
     });
   }  
 
-  close(): void {
-    let students: number[] = this.elems.map((a) => a.id);
-    this.service.close(this.id, {acceptedStudentsIds: students}).subscribe(
-      (response: Admission) => {
-        //
-      },
-      (error: HttpErrorResponse) => {
-        this.message = error.error.message;
+  close() {
+    const dialogConfig: MatDialogConfig = new MatDialogConfig();
+    dialogConfig.hasBackdrop = true;
+    
+    const dialogRef = this.dialog.open(ModalCloseAdmissionComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      (data: boolean) => {
+          if(data) {
+            let students: number[] = this.elems.map((a) => a.id);
+            this.service.close(this.id, {acceptedStudentsIds: students}).subscribe(
+              (response: Admission) => {
+                //
+              },
+              (error: HttpErrorResponse) => {
+                this.message = error.error.message;
+              }
+            )
+          }
       }
-    )
+    );
   }
 
   changeLimit(): void {
