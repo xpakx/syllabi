@@ -12,6 +12,8 @@ import { ServiceWithGetById } from './service-with-get-by-id';
 import { AdmissionFormReviewRequest } from '../entity/admission-form-review-request';
 import { CloseAdmissionRequest } from '../entity/close-admission-request';
 import { Admission } from '../entity/admission';
+import { StudentProgram } from '../entity/student-program';
+import { StudentProgramRequest } from '../entity/student-program-request';
 
 @Injectable({
   providedIn: 'root'
@@ -65,5 +67,9 @@ ServiceWithGetById<AdmissionFormDetails> {
 
   changeLimit(admissionId: number, limit: number): Observable<Admission>  {
     return this.http.put<Admission>(`${this.url}/admissions/${admissionId}/limit`, {studentLimit: limit});
+  }
+
+  recruit(userId: number, request: StudentProgramRequest): Observable<StudentProgram> {
+    return this.http.post<StudentProgram>(`${this.url}/users/${userId}/students/programs`, request);
   }
 }

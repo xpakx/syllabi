@@ -1,3 +1,6 @@
+import { AdmissionWithNameAndId } from "./admission-with-name-and-id";
+import { UserWithOnlyId } from "./user-with-only-id";
+
 export interface AdmissionFormDetails {
     id: number;
     name: string;
@@ -6,4 +9,6 @@ export interface AdmissionFormDetails {
     verified: boolean;
     accepted: boolean;
     discarded: boolean;
+    user: UserWithOnlyId;
+    admission: AdmissionWithNameAndId;
 }
