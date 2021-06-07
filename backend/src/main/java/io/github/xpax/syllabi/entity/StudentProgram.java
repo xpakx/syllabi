@@ -21,6 +21,7 @@ public class StudentProgram {
     @JoinColumn(name = "student_id")
     private Student student;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "program_id")
     private Program program;

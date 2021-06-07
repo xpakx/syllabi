@@ -198,10 +198,11 @@ public class AdmissionService {
 
     public StudentProgram createStudentProgram(Integer userId, StudentProgramRequest request) {
         Student student = studentRepository.findById(userId)
-                .orElse(Student.builder()
+                .orElse(studentRepository.save(Student.builder()
                         .name(request.getName())
                         .surname(request.getName())
-                        .build());
+                        .user(userRepository.getOne(userId))
+                        .build()));
         Program program = programRepository.getOne(request.getProgramId());
         StudentProgram studentProgram = StudentProgram.builder()
                 .student(student)
