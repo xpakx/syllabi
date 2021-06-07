@@ -4,7 +4,7 @@
             <div class="initials">A</div>
         </div>
         <mat-card-title class='title'>
-            elem.name
+            {{elem.admission.name}}
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
                 <mat-icon>more_vert</mat-icon>
             </button>
@@ -19,7 +19,7 @@
                 </button>
             </mat-menu>
         </mat-card-title>
-        <mat-card-subtitle></mat-card-subtitle>
+        <mat-card-subtitle>Admission form</mat-card-subtitle>
     </mat-card-header>  
             
     <mat-card-content>
@@ -40,7 +40,7 @@
         </div>
         
         <h3>Points</h3>
-        <!-- <div *ngFor="let weight of elem.weights">{{weight.name}}: {{weight.weight}}</div> -->
+        <div *ngFor="let points of elem.points">{{points.weight.name}}: {{points.points}}pts. (weight {{points.weight.weight}})</div>
     </mat-card-content>
 
     <mat-card-actions>

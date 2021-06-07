@@ -1,3 +1,4 @@
+import { AdmissionPointsSummary } from "./admission-points-summary";
 import { AdmissionWithNameAndId } from "./admission-with-name-and-id";
 import { UserWithOnlyId } from "./user-with-only-id";
 
@@ -11,4 +12,5 @@ export interface AdmissionFormDetails {
     discarded: boolean;
     user: UserWithOnlyId;
     admission: AdmissionWithNameAndId;
+    points: AdmissionPointsSummary[];
 }
