@@ -111,7 +111,7 @@ public class AdmissionController {
     }
 
     @Secured({"ROLE_ADMISSION_ADMIN", "ROLE_RECRUITER"})
-    @PostMapping("/users/{userId}/student/program")
+    @PostMapping("/users/{userId}/students/program")
     public ResponseEntity<StudentProgram> addStudentProgram(@PathVariable Integer userId,
                                                             @RequestBody StudentProgramRequest request) {
         return new ResponseEntity<>(
