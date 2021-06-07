@@ -198,11 +198,7 @@ public class AdmissionService {
 
     public StudentProgram createStudentProgram(Integer userId, StudentProgramRequest request) {
         Student student = studentRepository.findById(userId)
-                .orElse(studentRepository.save(Student.builder()
-                        .name(request.getName())
-                        .surname(request.getName())
-                        .user(userRepository.getOne(userId))
-                        .build()));
+                .orElse(getNewStudent(userId, request));
         Program program = programRepository.getOne(request.getProgramId());
         StudentProgram studentProgram = StudentProgram.builder()
                 .student(student)
@@ -210,6 +206,14 @@ public class AdmissionService {
                 .semester(1)
                 .build();
         return studentProgramRepository.save(studentProgram);
+    }
+
+    private Student getNewStudent(Integer userId, StudentProgramRequest request) {
+        return studentRepository.save(Student.builder()
+                .name(request.getName())
+                .surname(request.getName())
+                .user(userRepository.getOne(userId))
+                .build());
     }
 
     public Page<AdmissionFormSummary> getAllUserForms(Integer userId, Integer page, Integer size) {
