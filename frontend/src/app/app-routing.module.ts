@@ -64,6 +64,7 @@ import { ShowStudyGroupComponent } from './component/show-study-group/show-study
 import { ShowStudyGroupsComponent } from './component/show-study-groups/show-study-groups.component';
 import { ShowTeacherComponent } from './component/show-teacher/show-teacher.component';
 import { ShowTeachersComponent } from './component/show-teachers/show-teachers.component';
+import { ShowUserAdmissionsComponent } from './component/show-user-admissions/show-user-admissions.component';
 import { ShowUserCoursesComponent } from './component/show-user-courses/show-user-courses.component';
 import { ShowUserComponent } from './component/show-user/show-user.component';
 import { ShowUsersComponent } from './component/show-users/show-users.component';
@@ -338,6 +339,10 @@ const routes: Routes = [
   {
     path: 'programs/:id/admissions',
     component: ShowProgramAdmissionsComponent
+  },
+  {
+    path: 'users/:id/admissions',
+    component: ShowUserAdmissionsComponent
   },
   {
     path: '404',

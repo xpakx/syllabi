@@ -108,6 +108,7 @@ import { ShowAdmissionResultsComponent } from './component/show-admission-result
 import { ShowProgramAdmissionsComponent } from './component/show-program-admissions/show-program-admissions.component';
 import { ModalCloseAdmissionComponent } from './component/modal-close-admission/modal-close-admission.component';
 import { RecruitStudentComponent } from './component/recruit-student/recruit-student.component';
+import { ShowUserAdmissionsComponent } from './component/show-user-admissions/show-user-admissions.component';
 
 //import { MatOptionModule } from '@angular/material/op';
 
@@ -197,7 +198,8 @@ export function tokenGetter() {
     ShowAdmissionResultsComponent,
     ShowProgramAdmissionsComponent,
     ModalCloseAdmissionComponent,
-    RecruitStudentComponent
+    RecruitStudentComponent,
+    ShowUserAdmissionsComponent
   ],
   imports: [
     BrowserModule,

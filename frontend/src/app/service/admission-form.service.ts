@@ -72,4 +72,12 @@ ServiceWithGetById<AdmissionFormDetails> {
   recruit(userId: number, request: StudentProgramRequest): Observable<StudentProgram> {
     return this.http.post<StudentProgram>(`${this.url}/users/${userId}/student/programs`, request);
   }
+
+  getAllForUser(id: number): Observable<Page<AdmissionForm>> {
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/users/${id}/admissions`);
+  }
+
+  getAllForUserForPage(id: number, page: number): Observable<Page<AdmissionForm>> {
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/users/${id}/admissions?page=${page}`);
+  }
 }

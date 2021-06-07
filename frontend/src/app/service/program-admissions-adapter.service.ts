@@ -2,11 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Admission } from "../entity/admission";
-import { CourseForPage } from "../entity/course-for-page";
 import { Page } from "../entity/page";
 import { Program } from "../entity/program";
 import { AdmissionService } from "./admission.service";
-import { CourseService } from "./course.service";
 import { ProgramService } from "./program.service";
 import { ServiceWithGetAllChildren } from "./service-with-get-all-children";
 
