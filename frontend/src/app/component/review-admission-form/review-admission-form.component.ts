@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdmissionForm } from 'src/app/entity/admission-form';
@@ -35,6 +35,9 @@ export class ReviewAdmissionFormComponent implements OnInit {
           documentId: [this.admissionForm.documentId, Validators.required],
           verify: [''],
         });
+        for(let points of this.admissionForm.points) {
+          this.form.addControl(""+points.id, new FormControl(points.points, Validators.pattern("^[0-9]*$")));
+        }
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {

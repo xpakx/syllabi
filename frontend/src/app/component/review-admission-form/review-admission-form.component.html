@@ -15,6 +15,11 @@
                 <input matInput placeholder="Document ID" formControlName="documentId" required>
             </mat-form-field>
 
+            <h3>Points</h3>
+            <mat-form-field class="full-width-input" *ngFor="let points of admissionForm.points">
+                <input matInput [placeholder]="points.weight.name" [formControlName]="points.id" required>
+            </mat-form-field>
+
             <mat-checkbox formControlName="verify">Verified</mat-checkbox>
 
             <button mat-raised-button color="secondary">Review</button>
