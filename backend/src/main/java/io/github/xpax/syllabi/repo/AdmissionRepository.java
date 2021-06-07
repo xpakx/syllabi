@@ -17,4 +17,6 @@ public interface AdmissionRepository extends JpaRepository<Admission, Integer> {
     @EntityGraph(value = "AdmissionDetails", type = EntityGraph.EntityGraphType.FETCH,
             attributePaths = {"program", "weights"})
     Optional<AdmissionDetails> findProjectedById(Integer id);
+
+    Page<Admission> getAllByProgramId(Integer programId, Pageable page);
 }

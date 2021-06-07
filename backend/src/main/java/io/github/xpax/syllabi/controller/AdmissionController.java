@@ -153,4 +153,14 @@ public class AdmissionController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/programs/{programId}/admissions")
+    public ResponseEntity<Page<Admission>> getAllAdmissionsForProgram(@RequestParam Optional<Integer> page,
+                                                            @RequestParam Optional<Integer> size,
+                                                                      @PathVariable Integer programId) {
+        return new ResponseEntity<>(
+                admissionService.getAllAdmissionsForProgram(programId, page.orElse(0), size.orElse(20)),
+                HttpStatus.OK
+        );
+    }
 }

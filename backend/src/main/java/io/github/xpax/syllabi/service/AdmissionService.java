@@ -227,4 +227,8 @@ public class AdmissionService {
         return admissionRepository.findProjectedById(admissionId)
                 .orElseThrow(() -> new NotFoundException(("No admission form with id " + admissionId + " found!")));
     }
+
+    public Page<Admission> getAllAdmissionsForProgram(Integer programId, Integer page, Integer size) {
+        return admissionRepository.getAllByProgramId(programId, PageRequest.of(page, size));
+    }
 }

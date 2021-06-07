@@ -26,6 +26,7 @@
         <p>Start Date: {{elem.startDate | date: 'dd-MM-yyyy'}}</p>
         <p>End Date: {{elem.endDate | date: 'dd-MM-yyyy'}}</p>
         <p>Student limit: {{elem.studentLimit}}</p>
+        <p>Closed: {{elem.closed}}</p>
         <h3>Admission criteria</h3>
         <div *ngFor="let weight of elem.weights">{{weight.name}}: {{weight.weight}}</div>
     </mat-card-content>
