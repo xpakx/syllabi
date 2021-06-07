@@ -70,6 +70,6 @@ ServiceWithGetById<AdmissionFormDetails> {
   }
 
   recruit(userId: number, request: StudentProgramRequest): Observable<StudentProgram> {
-    return this.http.post<StudentProgram>(`${this.url}/users/${userId}/students/programs`, request);
+    return this.http.post<StudentProgram>(`${this.url}/users/${userId}/student/programs`, request);
   }
 }
