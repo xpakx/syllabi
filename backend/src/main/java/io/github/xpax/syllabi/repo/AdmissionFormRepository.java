@@ -1,11 +1,9 @@
 package io.github.xpax.syllabi.repo;
 
-import io.github.xpax.syllabi.entity.Admission;
 import io.github.xpax.syllabi.entity.AdmissionForm;
 import io.github.xpax.syllabi.entity.dto.AdmissionFormDetails;
 import io.github.xpax.syllabi.entity.dto.AdmissionFormSummary;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +23,6 @@ public interface AdmissionFormRepository extends JpaRepository<AdmissionForm, In
     boolean existsAdmissionFormByUserIdAndAdmissionId(Integer userId, Integer admissionId);
 
     @EntityGraph(value = "AdmissionFormDetails", type = EntityGraph.EntityGraphType.FETCH,
-            attributePaths = {"user", "admission", "points.weight"})
+            attributePaths = {"user", "admission", "admission.program", "points.weight"})
     Optional<AdmissionFormDetails> findProjectedById(Integer admissionId);
 }
