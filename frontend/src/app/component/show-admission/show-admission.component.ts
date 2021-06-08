@@ -20,39 +20,11 @@ export class ShowAdmissionComponent extends ShowComponent<AdmissionDetails> impl
     protected dialog: MatDialog, protected router: Router) {  
       super(service, userService, router, route, dialog);
       this.redir = 'admissions/';
+      this.deleteRedir = 'admissions/';
+      this.elemTypeName = "admission";
      }
 
   ngOnInit(): void {
     this.getElem();
   }
-
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete admission", 
-      question: "Do you want to remove admission " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.service.delete(id).subscribe(
-      (response) => {
-        this.router.navigate(['admissions']);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
-  }
-
 }

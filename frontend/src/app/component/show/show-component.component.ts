@@ -12,6 +12,7 @@ export abstract class ShowComponent<T> {
   elem: T | undefined;
   admin: boolean = false;
   redir: string = '';
+  deleteRedir: string = '';
   elemTypeName: string = "";
   parentTypeName: string = "";
 
@@ -93,7 +94,7 @@ export abstract class ShowComponent<T> {
   }
 
   afterDeleteSuccess() {
-    
+    this.router.navigate([this.deleteRedir]);
   }
 
   afterDeleteError(error: HttpErrorResponse) {

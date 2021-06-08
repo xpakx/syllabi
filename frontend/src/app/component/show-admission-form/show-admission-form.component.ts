@@ -19,6 +19,8 @@ export class ShowAdmissionFormComponent extends ShowComponent<AdmissionFormDetai
    protected dialog: MatDialog, protected router: Router) {  
      super(service, userService, router, route, dialog);
      this.redir = 'admissions/';
+     this.elemTypeName = "admission form";
+     this.parentTypeName = "form";
     }
 
  ngOnInit(): void {
@@ -26,32 +28,8 @@ export class ShowAdmissionFormComponent extends ShowComponent<AdmissionFormDetai
    this.checkAuthority("ROLE_ADMISSION_ADMIN");
  }
 
- delete(id: number, name: string) {
-   const dialogConfig: MatDialogConfig = new MatDialogConfig();
-   dialogConfig.hasBackdrop = true;
-   dialogConfig.data = {
-     title: "Delete admission form", 
-     question: "Do you want to remove admission form " + name + "?"
-   };
-   const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-   dialogRef.afterClosed().subscribe(
-     (data: boolean) => {
-         if(data) {
-           this.deleteElem(id);
-         }
-     }
-   );
- }
-
- deleteElem(id: number) {
-   this.service.delete(id).subscribe(
-     (response) => {
-       this.router.navigate(['admissions']);
-     },
-     (error: HttpErrorResponse) => {
-       //show error
-     }
-   );
- }
+  afterDeleteSuccess() {
+    this.router.navigate(['admissions/'+this.elem?.admission.id]);
+  }
+ 
 }

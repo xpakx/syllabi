@@ -21,6 +21,8 @@ export class ShowCourseLiteratureComponent extends ShowComponent<Literature> imp
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) {
       super(literatureService, userService, router, route, dialog);
+      this.elemTypeName = "literature";
+      this.parentTypeName = "course";
      }
 
   ngOnInit(): void {
@@ -41,34 +43,7 @@ export class ShowCourseLiteratureComponent extends ShowComponent<Literature> imp
     );
   }
 
-  delete(id: number, name: string, courseName: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete literature for course " + courseName + "?", 
-      question: "Do you want to remove literature " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['courses/'+this.course?.id]);
   }
-
-  deleteElem(id: number) {
-    this.literatureService.delete(id).subscribe(
-      (response) => {
-        //redir
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
-  }
-
-
 }
