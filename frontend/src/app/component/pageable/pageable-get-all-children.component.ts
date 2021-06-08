@@ -103,6 +103,6 @@ export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableCom
   }
 
   afterDeleteError(error: HttpErrorResponse) {
-
+    this.message = error.error.message;
   }
 }

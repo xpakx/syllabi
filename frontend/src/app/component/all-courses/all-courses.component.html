@@ -5,7 +5,7 @@
     Add new course
 </button>
 <div *ngIf="message">
-    <div>Error</div>
+    <div>Error: {{message}}</div>
 </div>
 
 <app-pagination [totalPages]="totalPages" [page]="page" [last]="last" 

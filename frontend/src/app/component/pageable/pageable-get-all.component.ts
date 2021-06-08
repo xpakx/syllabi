@@ -76,6 +76,6 @@ export abstract class PageableGetAllComponent<T> extends  PageableComponent<T> {
   }
 
   afterDeleteError(error: HttpErrorResponse) {
-
+    this.message = error.error.message;
   }
 }
