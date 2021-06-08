@@ -17,8 +17,8 @@ export class ShowProgramComponent extends ShowComponent<Program> implements OnIn
 
   constructor(protected programService: ProgramService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) {
-      super(programService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) {
+      super(programService, userService, router, route, dialog);
      }
 
   ngOnInit(): void {

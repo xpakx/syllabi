@@ -17,8 +17,8 @@ export class ShowSemesterComponent extends ShowComponent<SemesterSummary> implem
 
   constructor(protected service: SemesterService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) {
-      super(service, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) {
+      super(service, userService, router, route, dialog);
   }
 
   ngOnInit(): void {

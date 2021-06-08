@@ -19,8 +19,8 @@ export class ShowStudentComponent extends ShowComponent<StudentWithUserId> imple
 
   constructor(protected studentService: StudentService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) {
-      super(studentService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) {
+      super(studentService, userService, router, route, dialog);
      }
 
   ngOnInit(): void {

@@ -19,8 +19,8 @@ export class ShowTeacherComponent extends ShowComponent<Teacher> implements OnIn
 
   constructor(protected teacherService: TeacherService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) {
-        super(teacherService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) {
+        super(teacherService, userService, router, route, dialog);
      }
 
   ngOnInit(): void {

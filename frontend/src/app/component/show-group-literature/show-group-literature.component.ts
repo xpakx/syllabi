@@ -19,8 +19,8 @@ export class ShowGroupLiteratureComponent extends ShowComponent<Literature> impl
 
   constructor(protected literatureService: GroupLiteratureService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) {
-      super(literatureService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) {
+      super(literatureService, userService, router, route, dialog);
      }
 
   ngOnInit(): void {

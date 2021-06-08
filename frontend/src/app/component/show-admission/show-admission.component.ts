@@ -17,8 +17,8 @@ export class ShowAdmissionComponent extends ShowComponent<AdmissionDetails> impl
 
   constructor(protected service: AdmissionService, protected userService: UserService,
      protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) {  
-      super(service, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) {  
+      super(service, userService, router, route, dialog);
       this.redir = 'admissions/';
      }
 

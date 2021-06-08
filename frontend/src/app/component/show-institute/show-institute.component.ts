@@ -18,8 +18,8 @@ export class ShowInstituteComponent extends ShowComponent<Institute> implements 
 
   constructor(protected instituteService: InstituteService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) { 
-      super(instituteService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) { 
+      super(instituteService, userService, router, route, dialog);
     }
 
   ngOnInit(): void {

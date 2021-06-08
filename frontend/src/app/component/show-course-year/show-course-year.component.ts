@@ -17,8 +17,8 @@ export class ShowCourseYearComponent extends ShowComponent<CourseYearDetails> im
 
   constructor(protected yearService: CourseYearService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) { 
-      super(yearService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) { 
+      super(yearService, userService, router, route, dialog);
     }
 
   ngOnInit(): void {

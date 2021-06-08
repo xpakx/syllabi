@@ -16,8 +16,8 @@ import { ShowComponent } from '../show/show-component.component';
 export class ShowAdmissionFormComponent extends ShowComponent<AdmissionFormDetails> implements OnInit {
   constructor(protected service: AdmissionFormService, protected userService: UserService,
     protected route: ActivatedRoute, 
-   private dialog: MatDialog, protected router: Router) {  
-     super(service, userService, router, route);
+   protected dialog: MatDialog, protected router: Router) {  
+     super(service, userService, router, route, dialog);
      this.redir = 'admissions/';
     }
 

@@ -17,8 +17,8 @@ export class ShowStudyGroupComponent extends ShowComponent<StudyGroup> implement
 
   constructor(protected groupService: StudyGroupService, protected userService: UserService,
     protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) { 
-      super(groupService, userService, router, route)
+    protected dialog: MatDialog, protected router: Router) { 
+      super(groupService, userService, router, route, dialog)
     }
 
   ngOnInit(): void {

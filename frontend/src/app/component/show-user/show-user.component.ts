@@ -15,8 +15,8 @@ import { ShowComponent } from '../show/show-component.component';
 export class ShowUserComponent extends ShowComponent<User> implements OnInit {
 
   constructor(protected userService: UserService, protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) { 
-        super(userService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) { 
+        super(userService, userService, router, route, dialog);
     }
 
   ngOnInit(): void {

@@ -17,8 +17,8 @@ export class ShowCourseComponent extends ShowComponent<CourseDetails> implements
 
   constructor(protected courseService: CourseService, protected userService: UserService,
      protected route: ActivatedRoute, 
-    private dialog: MatDialog, protected router: Router) {  
-      super(courseService, userService, router, route);
+    protected dialog: MatDialog, protected router: Router) {  
+      super(courseService, userService, router, route, dialog);
       this.redir = 'courses/';
      }
 
