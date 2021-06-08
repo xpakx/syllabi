@@ -38,8 +38,7 @@ export class RecruitStudentComponent implements OnInit {
           name: [this.admissionForm.name, Validators.required],
           surname: [this.admissionForm.surname, Validators.required],
           documentId: [this.admissionForm.documentId, Validators.required],
-        });
-        
+        });        
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -49,12 +48,14 @@ export class RecruitStudentComponent implements OnInit {
         this.message = error.error.message;
       }
     );
+
+    
    }
 
   apply(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    if(this.form.valid && this.student) {
-      this.formService.recruit(this.student.user.id, {
+    if(this.form.valid && this.admissionForm) {
+      this.formService.recruit(this.admissionForm.user.id, {
         name: this.form.controls.name.value,
         surname: this.form.controls.surname.value,
         documentId: this.form.controls.documentId.value,
