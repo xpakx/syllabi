@@ -211,7 +211,7 @@ public class AdmissionService {
     private Student getNewStudent(Integer userId, StudentProgramRequest request) {
         return studentRepository.save(Student.builder()
                 .name(request.getName())
-                .surname(request.getSurame())
+                .surname(request.getSurname())
                 .user(userRepository.getOne(userId))
                 .build());
     }
