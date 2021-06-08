@@ -32,6 +32,14 @@
     </mat-card-content>
 
     <mat-card-actions>
+        <button mat-button [routerLink]="'/admissions/' + elem.id + '/results'">
+            <mat-icon>plus</mat-icon>
+            RESULTS
+        </button>
+        <button mat-button [routerLink]="'/admissions/' + elem.id + '/forms'">
+            <mat-icon>plus</mat-icon>
+            FORMS
+        </button>
         <button mat-button [routerLink]="'/admissions/' + elem.id + '/apply'">
             <mat-icon>plus</mat-icon>
             APPLY

@@ -53,8 +53,8 @@ export class RecruitStudentComponent implements OnInit {
 
   apply(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    if(this.form.valid) {
-      this.formService.recruit(id, {
+    if(this.form.valid && this.student) {
+      this.formService.recruit(this.student.user.id, {
         name: this.form.controls.name.value,
         surname: this.form.controls.surname.value,
         documentId: this.form.controls.documentId.value,

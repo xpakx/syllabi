@@ -48,6 +48,10 @@
             <mat-icon>glass</mat-icon>
             REVIEW
         </button>
+        <button mat-button color="primary" [routerLink]="'/admissions/forms/' + elem.id + '/recruit'" *ngIf="admin && elem.accepted">
+            <mat-icon>glass</mat-icon>
+            RECRUIT
+        </button>
     </mat-card-actions>
 
 

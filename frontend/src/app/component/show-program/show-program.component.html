@@ -17,6 +17,11 @@
                     <mat-icon>delete</mat-icon>
                     Remove
                 </button>
+
+                <button mat-menu-item  [routerLink]="'/programs/' + elem.id + '/admissions/add'">
+                    <mat-icon>note_add</mat-icon>
+                    Add admission
+                </button>
             </mat-menu>
         </mat-card-title>
         <mat-card-subtitle *ngIf="elem.organizer">{{elem.organizer.name}}</mat-card-subtitle>
@@ -28,6 +33,12 @@
     </mat-card-content>
 
     <mat-card-actions>
+        <button mat-button color="primary" [routerLink]="'/programs/' + elem.id + '/admissions'">
+            <mat-icon>
+                school
+            </mat-icon>
+            ADMISSIONS
+        </button>
         <button mat-button color="primary" [routerLink]="'/programs/' + elem.id + '/semesters'">
             <mat-icon>
                 school
