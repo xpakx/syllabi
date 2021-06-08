@@ -36,6 +36,14 @@ ServiceWithGetById<AdmissionFormDetails> {
     return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/forms?page=${page}`);
   }
 
+  getAllVerifiedByParentId(id: number): Observable<Page<AdmissionForm>> {
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/forms/veridied`);
+  }
+
+  getAllVerifiedByParentIdForPage(id: number, page: number): Observable<Page<AdmissionForm>> {
+    return this.http.get<Page<AdmissionForm>>(`${this.url}/admissions/${id}/forms/verified?page=${page}`);
+  }
+
   getParentById(id: number): Observable<AdmissionDetails> {
     return this.http.get<AdmissionDetails>(`${this.url}/admissions/${id}`);
   }

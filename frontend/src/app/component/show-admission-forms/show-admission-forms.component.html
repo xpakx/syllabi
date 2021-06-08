@@ -9,6 +9,9 @@
     <div>Error</div>
 </div>
 
+<button mat-button *ngIf="verified" (click)="switchVerified()">Show all</button>
+<button mat-button *ngIf="!verified" (click)="switchVerified()">Show only verified</button>
+
 <app-pagination [totalPages]="totalPages" [page]="page" [last]="last" 
 [first]="first" [pagesMin]="getPagesMin()" [pagesFull]="getPagesFull()"
 (newPageEvent)="getPage($event)"></app-pagination>
