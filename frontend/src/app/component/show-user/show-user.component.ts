@@ -17,38 +17,14 @@ export class ShowUserComponent extends ShowComponent<User> implements OnInit {
   constructor(protected userService: UserService, protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) { 
         super(userService, userService, router, route, dialog);
+        this.elemTypeName = "user";
     }
 
   ngOnInit(): void {
     this.getElem();
   }
 
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete user", 
-      question: "Do you want to remove user " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.userService.delete(id).subscribe(
-      (response) => {
-        //redir
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['users/']);
   }
 }

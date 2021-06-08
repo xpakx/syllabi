@@ -21,38 +21,14 @@ export class ShowStudentComponent extends ShowComponent<StudentWithUserId> imple
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) {
       super(studentService, userService, router, route, dialog);
+      this.elemTypeName = "student";
      }
 
   ngOnInit(): void {
     this.getElem();
   }
 
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete student", 
-      question: "Do you want to remove student " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.studentService.delete(id).subscribe(
-      (response) => {
-        //redir
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['users/'+this.elem?.user.id]);
   }
 }

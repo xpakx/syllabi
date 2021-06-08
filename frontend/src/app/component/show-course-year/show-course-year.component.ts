@@ -19,38 +19,14 @@ export class ShowCourseYearComponent extends ShowComponent<CourseYearDetails> im
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) { 
       super(yearService, userService, router, route, dialog);
+      this.elemTypeName = "course year";
     }
 
   ngOnInit(): void {
     this.getElem();
   }
 
-  delete(id: number) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete course year", 
-      question: "Do you want to remove course year?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.yearService.delete(id).subscribe(
-      (response) => {
-        this.router.navigate(['courses/'+this.elem?.parent.id+'/years']);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['courses/'+this.elem?.parent.id+'/years']);
   }
 }

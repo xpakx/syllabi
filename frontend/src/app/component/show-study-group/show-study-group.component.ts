@@ -18,39 +18,15 @@ export class ShowStudyGroupComponent extends ShowComponent<StudyGroup> implement
   constructor(protected groupService: StudyGroupService, protected userService: UserService,
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) { 
-      super(groupService, userService, router, route, dialog)
+      super(groupService, userService, router, route, dialog);
+      this.elemTypeName = "study group";
     }
 
   ngOnInit(): void {
     this.getElem();
   }
 
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete study group", 
-      question: "Do you want to remove study group " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.groupService.delete(id).subscribe(
-      (response) => {
-        this.router.navigate(["years/"+this.elem?.year.id+"/groups"]);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(["years/"+this.elem?.year.id+"/groups"]);
   }
 }

@@ -44,6 +44,6 @@ export class ShowCourseLiteratureComponent extends ShowComponent<Literature> imp
   }
 
   afterDeleteSuccess() {
-    this.router.navigate(['courses/'+this.course?.id]);
+    this.router.navigate(['courses/'+this.course?.id+'/literature']);
   }
 }

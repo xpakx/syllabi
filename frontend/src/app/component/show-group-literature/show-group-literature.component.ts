@@ -21,6 +21,8 @@ export class ShowGroupLiteratureComponent extends ShowComponent<Literature> impl
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) {
       super(literatureService, userService, router, route, dialog);
+      this.elemTypeName = "literature";
+      this.parentTypeName = "group";
      }
 
   ngOnInit(): void {
@@ -41,32 +43,7 @@ export class ShowGroupLiteratureComponent extends ShowComponent<Literature> impl
     );
   }
 
-  delete(id: number, name: string, groupName: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete literature for group " + groupName, 
-      question: "Do you want to remove literature " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.literatureService.delete(id).subscribe(
-      (response) => {
-        //redir
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['groups/'+this.group?.id+'/literature']);
   }
 }

@@ -19,38 +19,15 @@ export class ShowSemesterComponent extends ShowComponent<SemesterSummary> implem
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) {
       super(service, userService, router, route, dialog);
+      this.elemTypeName = "semester";
+      this.parentTypeName = "program";
   }
 
   ngOnInit(): void {
     this.getElem();
   }
 
-  delete(id: number, name: string, programName: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete semester for program " + programName, 
-      question: "Do you want to remove semester " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.service.delete(id).subscribe(
-      (response) => {
-        this.router.navigate(['programs/'+this.elem?.program.id+"/semesters"]);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['programs/'+this.elem?.program.id+"/semesters"]);
   }
 }

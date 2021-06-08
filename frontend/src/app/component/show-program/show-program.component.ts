@@ -19,38 +19,14 @@ export class ShowProgramComponent extends ShowComponent<Program> implements OnIn
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) {
       super(programService, userService, router, route, dialog);
+      this.elemTypeName = "program";
      }
 
   ngOnInit(): void {
     this.getElem();
   }
 
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete program", 
-      question: "Do you want to remove program " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.programService.delete(id).subscribe(
-      (response) => {
-        //redir
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['programs']);
   }
 }

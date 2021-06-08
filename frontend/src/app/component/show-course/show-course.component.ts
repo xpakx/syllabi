@@ -20,39 +20,11 @@ export class ShowCourseComponent extends ShowComponent<CourseDetails> implements
     protected dialog: MatDialog, protected router: Router) {  
       super(courseService, userService, router, route, dialog);
       this.redir = 'courses/';
+      this.deleteRedir = 'courses/';
+      this.elemTypeName = "course";
      }
 
   ngOnInit(): void {
     this.getElem();
   }
-
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete course", 
-      question: "Do you want to remove course " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.courseService.delete(id).subscribe(
-      (response) => {
-        this.router.navigate(['courses']);
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
-  }
-
 }

@@ -21,38 +21,13 @@ export class ShowTeacherComponent extends ShowComponent<Teacher> implements OnIn
     protected route: ActivatedRoute, 
     protected dialog: MatDialog, protected router: Router) {
         super(teacherService, userService, router, route, dialog);
+        this.elemTypeName = "teacher";
      }
 
   ngOnInit(): void {
     this.getElem();
   }
-
-  delete(id: number, name: string) {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    dialogConfig.data = {
-      title: "Delete teacher", 
-      question: "Do you want to remove teacher " + name + "?"
-    };
-    const dialogRef = this.dialog.open(ModalDeleteComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data: boolean) => {
-          if(data) {
-            this.deleteElem(id);
-          }
-      }
-    );
-  }
-
-  deleteElem(id: number) {
-    this.teacherService.delete(id).subscribe(
-      (response) => {
-        //redir
-      },
-      (error: HttpErrorResponse) => {
-        //show error
-      }
-    );
+  afterDeleteSuccess() {
+    this.router.navigate(['users/'+this.elem?.user.id]);
   }
 }
