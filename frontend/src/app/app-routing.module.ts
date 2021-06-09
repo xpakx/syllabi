@@ -306,6 +306,10 @@ const routes: Routes = [
     component: ShowAdmissionsComponent
   },
   {
+    path: 'admissions/my',
+    component: ShowUserAdmissionsComponent
+  },
+  {
     path: 'admissions/:id',
     component: ShowAdmissionComponent
   },
@@ -343,10 +347,6 @@ const routes: Routes = [
   },
   {
     path: 'users/:id/admissions',
-    component: ShowUserAdmissionsComponent
-  },
-  {
-    path: 'admissions/my',
     component: ShowUserAdmissionsComponent
   },
   {
