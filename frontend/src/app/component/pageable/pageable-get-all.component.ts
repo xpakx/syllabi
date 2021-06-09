@@ -2,7 +2,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { Page } from "src/app/entity/page";
-import { User } from "src/app/entity/user";
 import { ServiceWithGetAll } from "src/app/service/service-with-get-all";
 import { UserService } from "src/app/service/user.service";
 import { ModalDeleteComponent } from "../modal-delete/modal-delete.component";

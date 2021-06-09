@@ -28,6 +28,7 @@ import { EditStudentComponent } from './component/edit-student/edit-student.comp
 import { EditStudyGroupComponent } from './component/edit-study-group/edit-study-group.component';
 import { EditTeacherJobComponent } from './component/edit-teacher-job/edit-teacher-job.component';
 import { EditTeacherComponent } from './component/edit-teacher/edit-teacher.component';
+import { HomeComponent } from './component/home/home.component';
 import { LoginComponent } from './component/login/login.component';
 import { NotFoundComponent } from './component/not-found/not-found.component';
 import { ProgramSemestersComponent } from './component/program-semesters/program-semesters.component';
@@ -343,6 +344,14 @@ const routes: Routes = [
   {
     path: 'users/:id/admissions',
     component: ShowUserAdmissionsComponent
+  },
+  {
+    path: 'home',
+    component: HomeComponent
+  },
+  {
+    path: '',
+    component: HomeComponent
   },
   {
     path: '404',
