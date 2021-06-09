@@ -28,7 +28,11 @@ export abstract class PageableGetAllComponent<T> extends  PageableComponent<T> {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
         }
-        this.message = error.error.message;
+        if(error.error.message) {
+          this.message = error.error.message;
+        } else {
+          this.message = "Unknown error"
+        }
         this.ready = true;
       }
     )

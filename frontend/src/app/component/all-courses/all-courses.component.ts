@@ -1,11 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
 import { CourseForPage } from '../../entity/course-for-page';
 import { CourseService } from '../../service/course.service';
-import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllComponent } from '../pageable/pageable-get-all.component';
 
 @Component({

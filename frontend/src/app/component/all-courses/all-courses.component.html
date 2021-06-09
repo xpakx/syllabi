@@ -5,7 +5,10 @@
     Add new course
 </button>
 <div *ngIf="message">
-    <div>Error: {{message}}</div>
+    <mat-error>
+        <mat-icon>dangerous</mat-icon>
+        Error: {{message}}
+    </mat-error>
 </div>
 
 <app-pagination [totalPages]="totalPages" [page]="page" [last]="last" 
