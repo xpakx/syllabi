@@ -20,7 +20,7 @@ export class UserService implements ServiceWithDelete, ServiceWithGetAll<User>, 
   constructor(private http: HttpClient) { }
 
   public addRole(userId: number, role: RoleRequest): Observable<User> {
-    return this.http.post<User>(`${this.url}//${userId}/roles`, role);
+    return this.http.post<User>(`${this.url}/${userId}/roles`, role);
   }
   
   public getAll(): Observable<Page<User>> {
