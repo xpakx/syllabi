@@ -18,6 +18,10 @@ export class ShowUserAdmissionsComponent extends PageableGetAllChildrenComponent
   protected router: Router, protected userService: UserService, protected route: ActivatedRoute) { 
     super(service, userService, router, route, dialog); 
     this.elemTypeName = "admission form";
+
+    if(!this.id && localStorage.getItem("user_id")) {
+      this.id = Number(localStorage.getItem("user_id"));
+    }
   }
 
   ngOnInit(): void {

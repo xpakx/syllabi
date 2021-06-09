@@ -346,6 +346,10 @@ const routes: Routes = [
     component: ShowUserAdmissionsComponent
   },
   {
+    path: 'admissions/my',
+    component: ShowUserAdmissionsComponent
+  },
+  {
     path: 'home',
     component: HomeComponent
   },
