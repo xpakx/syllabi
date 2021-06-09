@@ -5,6 +5,7 @@ import { UserService } from 'src/app/service/user.service';
 
 export abstract class PageableComponent<T> {
   message: string = '';
+
   totalPages: number = 0;
   page: number = 0;
   last: boolean = true;
@@ -12,6 +13,8 @@ export abstract class PageableComponent<T> {
   empty: boolean = true;
   elems: T[] = [];
   admin: boolean = false;
+
+  ready: boolean = false;
 
   constructor(protected userService: UserService) { }
 

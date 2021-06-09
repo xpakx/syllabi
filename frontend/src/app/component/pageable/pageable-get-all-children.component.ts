@@ -2,7 +2,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Page } from "src/app/entity/page";
-import { User } from "src/app/entity/user";
 import { ServiceWithGetAllChildren } from "src/app/service/service-with-get-all-children";
 import { UserService } from "src/app/service/user.service";
 import { ModalDeleteComponent } from "../modal-delete/modal-delete.component";
@@ -21,14 +20,17 @@ export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableCom
   }
 
   getFirstPage(): void {
+    this.ready = false;
     this.service.getAllByParentId(this.id).subscribe(
       (response: Page<T>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
+          this.ready = true;
         }
         this.message = error.error.message;
       }
@@ -36,12 +38,15 @@ export abstract class PageableGetAllChildrenComponent<T, U> extends  PageableCom
   }
 
   getPage(page: number): void {
+    this.ready = false;
     this.service.getAllByParentIdForPage(this.id, page).subscribe(
       (response: Page<T>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         this.message = error.error.message;
+        this.ready = true;
       }
     )
   }

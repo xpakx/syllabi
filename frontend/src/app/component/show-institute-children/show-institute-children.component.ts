@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,7 +5,6 @@ import { Institute } from 'src/app/entity/institute';
 import { InstituteForPage } from 'src/app/entity/institute-for-page';
 import { InstituteChildrenAdapterService } from 'src/app/service/institute-children-adapter.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({

@@ -17,9 +17,11 @@ export abstract class PageableGetAllComponent<T> extends  PageableComponent<T> {
   }
 
   getFirstPage(): void {
+    this.ready = false;
     this.service.getAll().subscribe(
       (response: Page<T>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -27,17 +29,21 @@ export abstract class PageableGetAllComponent<T> extends  PageableComponent<T> {
           this.router.navigate(['login']);
         }
         this.message = error.error.message;
+        this.ready = true;
       }
     )
   }
   
   getPage(page: number): void {
+    this.ready = false;
     this.service.getAllForPage(page).subscribe(
       (response: Page<T>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         this.message = error.error.message;
+        this.ready = true;
       }
     )
   }

@@ -7,7 +7,6 @@ import { CourseYearForPage } from 'src/app/entity/course-year-for-page';
 import { Page } from 'src/app/entity/page';
 import { CourseYearService } from 'src/app/service/course-year.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({
@@ -29,9 +28,11 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
     }
 
   ngOnInit(): void {
+    this.ready = false;
     this.service.getAllActiveByParentId(this.parentId).subscribe(
       (response: Page<CourseYearForPage>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -39,6 +40,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
           this.router.navigate(['login']);
         }
         this.message = error.error.message;
+        this.ready = true;
       }
     )
 
@@ -47,9 +49,11 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
   }
 
   getActivePage(id: number, page: number): void {
+    this.ready = false;
     this.service.getAllActiveByParentIdForPage(id, page).subscribe(
       (response: Page<CourseYearForPage>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -57,14 +61,17 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
           this.router.navigate(['login']);
         }
         this.message = error.error.message;
+        this.ready = true;
       }
     )
   }
 
   getAllPage(id: number, page: number): void {
+    this.ready = false;
     this.service.getAllByParentIdForPage(id, page).subscribe(
       (response: Page<CourseYearForPage>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -72,6 +79,7 @@ export class ShowCourseYearsComponent extends PageableGetAllChildrenComponent<Co
           this.router.navigate(['login']);
         }
         this.message = error.error.message;
+        this.ready = true;
       }
     )
   }

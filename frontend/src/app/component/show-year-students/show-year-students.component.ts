@@ -6,7 +6,6 @@ import { CourseYearDetails } from 'src/app/entity/course-year-details';
 import { StudentWithUserId } from 'src/app/entity/student-with-user-id';
 import { CourseYearStudentsAdapterService } from 'src/app/service/course-year-students-adapter.service';
 import { UserService } from 'src/app/service/user.service';
-import { ModalDeleteComponent } from '../modal-delete/modal-delete.component';
 import { PageableGetAllChildrenComponent } from '../pageable/pageable-get-all-children.component';
 
 @Component({

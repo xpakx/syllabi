@@ -46,9 +46,11 @@ export class ShowAdmissionFormsComponent extends PageableGetAllChildrenComponent
   }
 
   getVerifiedPage(page: number): void {
+    this.ready = false;
     this.service.getAllVerifiedByParentIdForPage(this.id, page).subscribe(
       (response: Page<AdmissionForm>) => {
         this.printPage(response);
+        this.ready = true;
       },
       (error: HttpErrorResponse) => {
         if(error.status === 401) {
@@ -56,6 +58,7 @@ export class ShowAdmissionFormsComponent extends PageableGetAllChildrenComponent
           this.router.navigate(['login']);
         }
         this.message = error.error.message;
+        this.ready = true;
       }
     )
   }
