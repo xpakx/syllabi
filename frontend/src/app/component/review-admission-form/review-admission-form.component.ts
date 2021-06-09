@@ -5,6 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdmissionForm } from 'src/app/entity/admission-form';
 import { AdmissionFormDetails } from 'src/app/entity/admission-form-details';
+import { AdmissionPoints } from 'src/app/entity/admission-points';
+import { AdmissionPointsReview } from 'src/app/entity/admission-points-review';
 import { AdmissionFormService } from 'src/app/service/admission-form.service';
 
 @Component({
@@ -53,6 +55,15 @@ export class ReviewAdmissionFormComponent implements OnInit {
 
   review(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+
+    let points: AdmissionPointsReview[] = []
+    for(let field in this.form.controls) {
+      let id = Number(field);
+      if(!isNaN(id)) {
+        points.push({pointsId: id, points: Number(this.form.controls[field].value)});
+      }
+    }
+
     if(this.form.valid) {
       this.formService.review(id, {
         name: this.form.controls.name.value,
