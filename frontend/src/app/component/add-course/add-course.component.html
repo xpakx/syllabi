@@ -46,7 +46,11 @@
                 </textarea>
             </mat-form-field>
             
-            <mat-checkbox formControlName="facultative"> Facultative Course</mat-checkbox>
+            <div class="checkbox">
+                <mat-checkbox formControlName="facultative"> Facultative Course</mat-checkbox>
+                <hr/>
+            </div>
+            
             <mat-checkbox formControlName="stationary"> Stationary Course</mat-checkbox>
             <div>
                 <button mat-button type="button" (click)="addInstitutes()">{{instituteName}}</button>
