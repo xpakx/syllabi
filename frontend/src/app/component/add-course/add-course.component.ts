@@ -27,7 +27,7 @@ export class AddCourseComponent implements OnInit {
       courseCode: ['', Validators.required],
       iscedCode: ['', Validators.required],
       erasmusCode: ['', Validators.required],
-      ects: ['', Validators.required],
+      ects: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
       language: ['', Validators.required],
       shortDescription: ['', Validators.maxLength(300)],
       description: ['', Validators.maxLength(600)],
