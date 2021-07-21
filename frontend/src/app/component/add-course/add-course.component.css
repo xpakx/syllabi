@@ -16,5 +16,5 @@ mat-form-field {
 
 .checkbox { 
     display: block;
+    text-align: left;
 }
-.checkbox mat-checkbox { width: 100%; text-align: left; }
