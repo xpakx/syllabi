@@ -41,3 +41,19 @@ mat-list h3 .buttonWrapper {
 mat-list h3 .buttonWrapper button mat-icon {
     font-size: 15px;
 }
+
+.textWithIcon {
+    position:relative;
+    padding-top:4px;
+    width: 100%;
+}
+
+.iconForTextWithIcon {
+    position:relative;
+    padding-right: 5px;
+}
+
+.spanForTextWithIcon { 
+    position:absolute;
+    padding-top:5px;
+}

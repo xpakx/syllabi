@@ -14,7 +14,7 @@ import { CourseResponse } from 'src/app/entity/course-response';
 })
 export class AddCourseComponent implements OnInit {
   form: FormGroup;
-  public loginInvalid: boolean = false;
+  public invalid: boolean = false;
   public message: string = '';
   private formSubmitAttempt: boolean = false;
   institute: number | undefined;
@@ -69,9 +69,12 @@ export class AddCourseComponent implements OnInit {
             this.router.navigate(['login']);
           }
           this.message = error.error.message;
-          this.loginInvalid = true;
+          this.invalid = true;
         }
       )
+    } else {
+      this.invalid = true;
+      this.message = "Invalid form"; //this.form.getError.toString();
     }
   }
 
