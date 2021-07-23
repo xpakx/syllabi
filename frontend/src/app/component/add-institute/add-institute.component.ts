@@ -73,4 +73,9 @@ export class AddInstituteComponent implements OnInit {
       }
     );
   }
+
+  deleteParent(): void {
+    this.parent = undefined;
+    this.parentName = "Choose parent";
+  }
 }
