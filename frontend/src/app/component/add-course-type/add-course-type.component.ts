@@ -34,7 +34,7 @@ export class AddCourseTypeComponent implements OnInit {
         name: this.form.controls.name.value
       }).subscribe(
         (response: CourseType) => {
-          
+          this.router.navigate(['types/'+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
