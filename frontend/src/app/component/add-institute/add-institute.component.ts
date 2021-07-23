@@ -46,7 +46,7 @@ export class AddInstituteComponent implements OnInit {
         parentId: this.parent
       }).subscribe(
         (response: Institute) => {
-          
+          this.router.navigate(['institutes/'+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
