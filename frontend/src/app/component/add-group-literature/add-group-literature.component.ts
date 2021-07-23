@@ -45,7 +45,7 @@ export class AddGroupLiteratureComponent implements OnInit {
         'obligatory': this.form.controls.obligatory.value
       }).subscribe(
         (response: Literature) => {
-          
+          this.router.navigate(['groups/literature/'+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
