@@ -47,7 +47,7 @@ export class AddStudentComponent implements OnInit {
         surname: this.form.controls.surname.value
       }).subscribe(
         (response: Student) => {
-          
+          this.router.navigate(['users/'+id+'/student']);
         },
         (error: HttpErrorResponse) => {
           this.message = error.error.message;
