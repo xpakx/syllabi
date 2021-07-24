@@ -44,6 +44,11 @@
                 <h3 mat-subheader>
                     {{typeName}}
                     <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" *ngIf="type" (click)="deleteType()">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
                         <button mat-icon-button type="button" class="choice" (click)="addType()">
                             <mat-icon>
                                 add
