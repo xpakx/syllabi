@@ -18,7 +18,7 @@ export class AddProgramComponent implements OnInit {
   public message: string = '';
   private formSubmitAttempt: boolean = false;
   institute: number | undefined;
-  instituteName: string = "Choose organizer";
+  instituteName: string = "Choose organizer *";
 
   constructor(private programService: ProgramService, 
     private fb: FormBuilder, private dialog: MatDialog,
@@ -53,6 +53,12 @@ export class AddProgramComponent implements OnInit {
           this.loginInvalid = true;
         }
       )
+    } else {
+      this.message = "Form invalid!";
+      if(!this.institute) {
+        this.message = "Form invalid! Choose organizer!"
+      }
+      this.loginInvalid = true;
     }
   }
 
@@ -72,6 +78,6 @@ export class AddProgramComponent implements OnInit {
 
   deleteInstitute(): void {
     this.institute = undefined;
-    this.instituteName = "Choose institute";
+    this.instituteName = "Choose organizer *";
   }
 }
