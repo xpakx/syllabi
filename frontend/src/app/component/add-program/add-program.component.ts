@@ -42,7 +42,7 @@ export class AddProgramComponent implements OnInit {
         coursesId: []
       }).subscribe(
         (response: Program) => {
-          
+          this.router.navigate(['programs/'+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
