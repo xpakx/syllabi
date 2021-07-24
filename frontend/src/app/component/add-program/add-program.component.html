@@ -18,6 +18,11 @@
                 <h3 mat-subheader>
                     {{instituteName}}
                     <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" *ngIf="institute" (click)="deleteInstitute()">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
                         <button mat-icon-button type="button" class="choice" (click)="addInstitutes()">
                             <mat-icon>
                                 add
