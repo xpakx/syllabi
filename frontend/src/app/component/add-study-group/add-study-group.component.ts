@@ -26,7 +26,7 @@ export class AddStudyGroupComponent implements OnInit {
   teachers: TeacherSummary[] = [];
   type!: CourseType;
   parentName: string = "";
-  typeName: string = "Choose type";
+  typeName: string = "Choose type *";
 
   constructor(private parentService: CourseYearService, private service: StudyGroupService,
     private route: ActivatedRoute, 

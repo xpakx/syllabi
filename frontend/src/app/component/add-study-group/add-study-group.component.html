@@ -15,25 +15,43 @@
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Limit" formControlName="studentLimit" required>
             </mat-form-field>
-            
-            <mat-list>
-                <h3 mat-subheader>Ongoing</h3>
+
+            <div class="checkbox">
                 <mat-checkbox formControlName="ongoing">Ongoing</mat-checkbox>
-            </mat-list>
-
+                <hr/>
+            </div>
 
             <mat-list>
-                <h3 mat-subheader>Teachers</h3>
+                <h3 mat-subheader>
+                    Teachers
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" (click)="addTeachers()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
 
-                <button mat-button type="button" (click)="addTeachers()">Add teachers</button>
                 <div *ngFor="let teacher of teachers">
                     {{teacher.name}} {{teacher.surname}}
                 </div>
+
             </mat-list>
 
             <mat-list>
-                <h3 mat-subheader>Type *</h3>
-                <button mat-button type="button" (click)="addType()">{{typeName}}</button>
+                <h3 mat-subheader>
+                    {{typeName}}
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" (click)="addType()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
             </mat-list>
 
             <button mat-raised-button color="secondary">Add</button>
