@@ -1,7 +1,7 @@
-<mat-card>
+<mat-card *ngIf="username">
     <mat-card-content>
         <form [formGroup]="form" (ngSubmit)="addRole()">
-            <h2>Add role to user USERN_NAME</h2>
+            <h2>Add role to user {{username}}</h2>
             <mat-error *ngIf="loginInvalid">
                 Error: {{message}}
             </mat-error>

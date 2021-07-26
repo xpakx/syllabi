@@ -15,6 +15,8 @@ export class AddUserRoleComponent implements OnInit {
   public loginInvalid: boolean = false;
   public message: string = '';
   private formSubmitAttempt: boolean = false;
+  id!: number;
+  username!: string;
 
   constructor(private userService: UserService, 
     private fb: FormBuilder, private router: Router, 
@@ -24,7 +26,21 @@ export class AddUserRoleComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.userService.getById(this.id).subscribe(
+      (result: User) => {
+        this.username = result.username;
+      },
+      (error: HttpErrorResponse) => {
+        if(error.status === 401) {
+          localStorage.removeItem("token");
+          this.router.navigate(['login']);
+        }
+        this.message = error.error.message;
+      }
+    );
+  }
 
   addRole(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
