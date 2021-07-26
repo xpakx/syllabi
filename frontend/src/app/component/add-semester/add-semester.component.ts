@@ -52,7 +52,7 @@ export class AddSemesterComponent implements OnInit {
         number: this.form.controls.number.value
       }).subscribe(
         (response: Semester) => {
-          
+          this.router.navigate(["semesters/"+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
