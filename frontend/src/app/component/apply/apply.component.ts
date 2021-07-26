@@ -1,5 +1,4 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { isNgContainer } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -72,7 +71,7 @@ export class ApplyComponent implements OnInit {
         points: points
       }).subscribe(
         (response: AdmissionForm) => {
-          
+          this.router.navigate(["admissions/forms/"+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
