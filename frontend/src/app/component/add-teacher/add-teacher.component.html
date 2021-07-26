@@ -27,9 +27,19 @@
                 <input matInput placeholder="Job" formControlName="jobName" required>
             </mat-form-field>
 
-            <div>
-                <button mat-button type="button" (click)="addInstitute()">{{instituteName}}</button>
-            </div>
+            <mat-list>
+                <h3 mat-subheader>
+                    {{instituteName}}
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" (click)="addInstitute()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
+            </mat-list>
 
             <button mat-raised-button color="secondary">Add</button>
         </form>
