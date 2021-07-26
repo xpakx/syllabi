@@ -33,7 +33,7 @@ export class AddUserRoleComponent implements OnInit {
         role: this.form.controls.role.value
       }).subscribe(
         (response: User) => {
-          
+          this.router.navigate(["users/"+response.id]);
         },
         (error: HttpErrorResponse) => {
           this.message = error.error.message;
