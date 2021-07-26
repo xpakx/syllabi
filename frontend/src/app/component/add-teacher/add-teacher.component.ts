@@ -92,4 +92,9 @@ export class AddTeacherComponent implements OnInit {
     );
   }
 
+  deleteInstitute(): void {
+    this.institute = undefined;
+    this.instituteName = "Choose institute";
+  }
+
 }
