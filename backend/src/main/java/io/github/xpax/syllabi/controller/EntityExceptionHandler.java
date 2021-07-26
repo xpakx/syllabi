@@ -1,5 +1,6 @@
 package io.github.xpax.syllabi.controller;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,5 +29,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         Dictionary<String, String> body = new Hashtable<>();
         body.put("message", exception.getMessage());
         return handleExceptionInternal(exception, body, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(final DataIntegrityViolationException exception,
+                                                                        final WebRequest request) {
+        Dictionary<String, String> body = new Hashtable<>();
+        body.put("message", exception.getMessage());
+        return handleExceptionInternal(exception, body, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 }
