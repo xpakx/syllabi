@@ -27,7 +27,7 @@ export class AddSemesterComponent implements OnInit {
       this.id = Number(this.route.snapshot.paramMap.get('id'));
     this.form = this.fb.group({
       name: ['', Validators.required],
-      number: ['', Validators.required]
+      number: ['', [Validators.required, Validators.pattern("^[0-9]*$")]]
     });
   }
 
