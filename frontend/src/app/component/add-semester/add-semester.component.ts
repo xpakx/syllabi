@@ -63,6 +63,9 @@ export class AddSemesterComponent implements OnInit {
           this.requestInvalid = true;
         }
       )
+    } else {
+      this.message = "Form invalid!";
+      this.requestInvalid = true;
     }
   }
 
