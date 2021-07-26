@@ -20,7 +20,7 @@ export class AddTeacherComponent implements OnInit {
   public message: string = '';
   private formSubmitAttempt: boolean = false;
   institute: number | undefined;
-  instituteName: string = "Choose institute";
+  instituteName: string = "Choose institute *";
   name: string = "";
 
   constructor(private teacherService: TeacherService, private userService: UserService,
@@ -61,7 +61,7 @@ export class AddTeacherComponent implements OnInit {
         instituteId: this.institute
       }).subscribe(
         (response: Teacher) => {
-          
+          this.router.navigate(["users/"+id+"/teacher"]);
         },
         (error: HttpErrorResponse) => {
           this.message = error.error.message;
@@ -75,6 +75,9 @@ export class AddTeacherComponent implements OnInit {
           this.loginInvalid = true;
         }
       )
+    } else {
+      this.message = "Select institute please!"
+      this.loginInvalid = true;
     }
   }
 
@@ -94,7 +97,7 @@ export class AddTeacherComponent implements OnInit {
 
   deleteInstitute(): void {
     this.institute = undefined;
-    this.instituteName = "Choose institute";
+    this.instituteName = "Choose institute *";
   }
 
 }
