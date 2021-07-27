@@ -23,8 +23,12 @@
                 <textarea matInput placeholder="Description" formControlName="description">
                 </textarea>
             </mat-form-field>
+
+            <div class="checkbox">
+                <mat-checkbox formControlName="obligatory"> Obligatory</mat-checkbox>
+                <hr/>
+            </div>
             
-            <mat-checkbox formControlName="obligatory"> Obligatory</mat-checkbox>
             <button mat-raised-button color="secondary">Edit</button>
         </form>
     </mat-card-content>
