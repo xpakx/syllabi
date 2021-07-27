@@ -94,10 +94,25 @@
 
             </mat-list>
 
-            <div>
-                <button mat-button type="button" (click)="addPrerequisites()">Add prerequisites</button>
-                <button mat-button type="button" *ngFor="let prerequisite of prerequisites">{{prerequisite.name}}</button>
-            </div>
+            <mat-list>
+                <h3 mat-subheader>
+                    Prerequisites
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" (click)="addPrerequisites()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
+
+                <div *ngFor="let prerequisite of prerequisites">
+                    {{prerequisite.name}}
+                </div>
+
+            </mat-list>
+            
             <button mat-raised-button color="secondary">Edit</button>
         </form>
     </mat-card-content>
