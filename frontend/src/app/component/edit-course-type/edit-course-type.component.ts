@@ -60,9 +60,6 @@ export class EditCourseTypeComponent implements OnInit {
         }
       )
     }
-    else {
-      alert("test");
-    }
   }
 
 }
