@@ -35,7 +35,7 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleDataIntegrityViolationException(final DataIntegrityViolationException exception,
                                                                         final WebRequest request) {
         Dictionary<String, String> body = new Hashtable<>();
-        body.put("message", exception.getMessage());
+        body.put("message", "Problem with database. " + exception.getCause().getMessage());
         return handleExceptionInternal(exception, body, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 }
