@@ -1,6 +1,6 @@
 <mat-card>
     <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="addStudyGroup()">
+        <form [formGroup]="form" (ngSubmit)="addCourseType()">
             <h2>Add new course type</h2>
             <mat-error *ngIf="requestInvalid">
                 Error: {{message}}

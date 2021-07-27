@@ -27,7 +27,7 @@ export class AddCourseTypeComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  addStudyGroup(): void {
+  addCourseType(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
       this.typeService.addNew({

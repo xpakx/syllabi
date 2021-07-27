@@ -41,7 +41,7 @@ export class EditCourseTypeComponent implements OnInit {
     );
   }
 
-  addStudyGroup(): void {
+  editCourseType(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if(this.form.valid) {
       this.typeService.edit(id, {
