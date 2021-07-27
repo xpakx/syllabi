@@ -88,11 +88,7 @@
                 </div>
 
             </mat-list>
-
-            <div>
-                <button mat-button type="button" (click)="addPrograms()">Add programs</button>
-                <button mat-button type="button" *ngFor="let program of semesters">{{program.name}}</button>
-            </div>
+            
             <div>
                 <button mat-button type="button" (click)="addPrerequisites()">Add prerequisites</button>
                 <button mat-button type="button" *ngFor="let prerequisite of prerequisites">{{prerequisite.name}}</button>
