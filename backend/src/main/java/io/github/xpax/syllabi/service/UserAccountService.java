@@ -45,7 +45,7 @@ public class UserAccountService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id "+userId+" not found!"));
         if(!passwordEncoder.matches(request.getPasswordOld(), user.getPassword())) {
-            throw new ValidationException("Wrong old password! " + passwordEncoder.encode(request.getPasswordOld()) + " " + user.getPassword());
+            throw new ValidationException("Wrong old password!");
         }
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
