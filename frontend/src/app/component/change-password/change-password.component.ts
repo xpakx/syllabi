@@ -37,7 +37,7 @@ export class ChangePasswordComponent implements OnInit {
         passwordRe: this.form.controls.passwordRe.value
       }).subscribe(
         (response: User) => {
-          
+          this.router.navigate(['users/'+id]);
         },
         (error: HttpErrorResponse) => {
           this.message = error.error.message;
