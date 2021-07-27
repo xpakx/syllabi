@@ -125,6 +125,11 @@ export class EditCourseComponent implements OnInit {
     );
   }
 
+  deleteInstitute(): void {
+    this.institute = undefined;
+    this.instituteName = "Choose institute";
+  }
+
   addPrograms(): void {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;

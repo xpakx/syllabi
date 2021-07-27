@@ -60,6 +60,11 @@
                 <h3 mat-subheader>
                     {{instituteName}}
                     <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" *ngIf="institute" (click)="deleteInstitute()">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
                         <button mat-icon-button type="button" class="choice" (click)="addInstitutes()">
                             <mat-icon>
                                 add
@@ -88,7 +93,7 @@
                 </div>
 
             </mat-list>
-            
+
             <div>
                 <button mat-button type="button" (click)="addPrerequisites()">Add prerequisites</button>
                 <button mat-button type="button" *ngFor="let prerequisite of prerequisites">{{prerequisite.name}}</button>
