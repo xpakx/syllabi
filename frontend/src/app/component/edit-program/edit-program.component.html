@@ -13,10 +13,24 @@
                 </textarea>
             </mat-form-field>
             
-            
-            <div>
-                <button mat-button type="button" (click)="addInstitutes()">{{instituteName}}</button>
-            </div>
+            <mat-list>
+                <h3 mat-subheader>
+                    {{instituteName}}
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" *ngIf="institute" (click)="deleteInstitute()">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
+                        <button mat-icon-button type="button" class="choice" (click)="addInstitutes()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
+            </mat-list>
 
             <button mat-raised-button color="secondary">Edit</button>
         </form>

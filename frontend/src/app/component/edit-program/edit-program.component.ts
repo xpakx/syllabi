@@ -18,7 +18,7 @@ export class EditProgramComponent implements OnInit {
   public message: string = '';
   private formSubmitAttempt: boolean = false;
   institute: number | undefined;
-  instituteName: string = "Choose organizer";
+  instituteName: string = "Choose organizer *";
 
   program: Program | undefined;
 
@@ -93,4 +93,8 @@ export class EditProgramComponent implements OnInit {
     );
   }
 
+  deleteInstitute(): void {
+    this.institute = undefined;
+    this.instituteName = "Choose organizer *";
+  }
 }
