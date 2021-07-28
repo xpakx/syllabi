@@ -40,6 +40,8 @@ export class EditGroupLiteratureComponent implements OnInit {
         if(error.status === 401) {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
+        } else if(error.status === 404) {
+          this.router.navigate(['404']);
         }
         this.message = error.error.message;
       }
@@ -58,7 +60,7 @@ export class EditGroupLiteratureComponent implements OnInit {
         'obligatory': this.form.controls.obligatory.value
       }).subscribe(
         (response: Literature) => {
-          
+          this.router.navigate(['courses/literature/' + response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
