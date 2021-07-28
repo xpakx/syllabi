@@ -1,6 +1,6 @@
-<mat-card>
+<mat-card *ngIf="year">
     <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="editCourseYear()" *ngIf="year">
+        <form [formGroup]="form" (ngSubmit)="editCourseYear()">
             <h2>Edit course year for {{year.parent.name}}</h2>
             <mat-error *ngIf="error">
                 Error: {{message}}
