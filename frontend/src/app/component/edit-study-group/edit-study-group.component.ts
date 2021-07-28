@@ -21,7 +21,7 @@ export class EditStudyGroupComponent implements OnInit {
   public message: string = '';
   private formSubmitAttempt: boolean = false;
   teachers: TeacherSummary[] = [];
-  type!: CourseType;
+  type: CourseType | undefined;
   parentName: string = "";
   typeName: string = "Choose type";
   id: number;
@@ -113,4 +113,8 @@ export class EditStudyGroupComponent implements OnInit {
     );
   }
 
+  deleteType(): void {
+    this.type = undefined;
+    this.typeName = "Choose type *";
+  }
 }

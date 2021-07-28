@@ -1,7 +1,7 @@
 <mat-card *ngIf="group">
     <mat-card-content>
         <form [formGroup]="form" (ngSubmit)="editStudyGroup()">
-            <h2>Edit study group</h2>
+            <h2>Edit study group for course {{group.year.parent.name}}</h2>
             <mat-error *ngIf="loginInvalid">
                 Error: {{message}}
             </mat-error>
@@ -16,16 +16,49 @@
                 <input matInput placeholder="Limit" formControlName="studentLimit" required>
             </mat-form-field>
             
-            <mat-checkbox formControlName="ongoing">Ongoing</mat-checkbox>
-            <div>
-                <button mat-button type="button" (click)="addTeachers()">Add teachers</button>
+            <div class="checkbox">
+                <mat-checkbox formControlName="ongoing">Ongoing</mat-checkbox>
+                <hr/>
+            </div>
+
+            <mat-list>
+                <h3 mat-subheader>
+                    Teachers
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" (click)="addTeachers()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
+
                 <div *ngFor="let teacher of teachers">
                     {{teacher.name}} {{teacher.surname}}
                 </div>
-            </div>
-            <div>
-                <button mat-button type="button" (click)="addType()">{{typeName}}</button>
-            </div>
+
+            </mat-list>
+
+            <mat-list>
+                <h3 mat-subheader>
+                    {{typeName}}
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" *ngIf="type" (click)="deleteType()">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
+                        <button mat-icon-button type="button" class="choice" (click)="addType()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
+            </mat-list>
+
             <button mat-raised-button color="secondary">Edit</button>
         </form>
     </mat-card-content>
