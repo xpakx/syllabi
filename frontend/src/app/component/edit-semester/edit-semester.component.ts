@@ -39,7 +39,11 @@ export class EditSemesterComponent implements OnInit {
         if(error.status === 401) {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
+        } else if(error.status === 404) {
+          this.router.navigate(['404']);
         }
+        this.message = error.error.message;
+        this.requestInvalid = true;
       }
     )
   }
@@ -51,7 +55,7 @@ export class EditSemesterComponent implements OnInit {
         number: this.form.controls.number.value
       }).subscribe(
         (response: Semester) => {
-          
+          this.router.navigate(['semesters/'+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
@@ -62,6 +66,9 @@ export class EditSemesterComponent implements OnInit {
           this.requestInvalid = true;
         }
       )
+    } else {
+      this.message = "Form invalid!";
+      this.requestInvalid = true;
     }
   }
 
