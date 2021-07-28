@@ -32,19 +32,22 @@
                 <mat-datepicker #pickerEnd></mat-datepicker>
             </mat-form-field>
             
-            <div>
-                <button mat-button type="button" class="choice" (click)="addCoordinators()">
-                    <span>Add coordinators</span>
-                    <mat-icon>
-                        add_task
-                    </mat-icon>
-                </button>
+            <mat-list>
+                <h3 mat-subheader>
+                    Coordinators
+                    <button mat-icon-button type="button" class="choice" (click)="addCoordinators()">
+                        <mat-icon>
+                            add
+                        </mat-icon>
+                    </button>
+                </h3>
+                <hr />
 
                 <div *ngFor="let teacher of coordinators">
                     {{teacher.name}} {{teacher.surname}}
                 </div>
-       
-            </div>
+
+            </mat-list>
 
             <button mat-raised-button color="secondary">Edit</button>
         </form>
