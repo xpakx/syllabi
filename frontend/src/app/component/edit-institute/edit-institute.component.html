@@ -21,9 +21,24 @@
                 <input matInput placeholder="Address" formControlName="address">
             </mat-form-field>
                         
-            <div>
-                <button mat-button type="button" (click)="addParent()">{{parentName}}</button>
-            </div>
+            <mat-list>
+                <h3 mat-subheader>
+                    {{parentName}}
+                    <div class="buttonWrapper">
+                        <button mat-icon-button type="button" class="choice" *ngIf="parent" (click)="deleteParent()">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
+                        <button mat-icon-button type="button" class="choice" (click)="addParent()">
+                            <mat-icon>
+                                add
+                            </mat-icon>
+                        </button>
+                    </div>
+                </h3>
+                <hr />
+            </mat-list>
 
 
 

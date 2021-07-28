@@ -92,4 +92,9 @@ export class EditInstituteComponent implements OnInit {
       }
     );
   }
+
+  deleteParent(): void {
+    this.parent = undefined;
+    this.parentName = "Choose parent";
+  }
 }
