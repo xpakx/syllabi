@@ -17,7 +17,7 @@ export class EditStudentComponent implements OnInit {
   public loginInvalid: boolean = false;
   public message: string = '';
   private formSubmitAttempt: boolean = false;
-  student: StudentWithUserId | undefined
+  student: StudentWithUserId | undefined;
 
   constructor(private studentService: StudentService, 
     private fb: FormBuilder, private dialog: MatDialog,
@@ -37,6 +37,8 @@ export class EditStudentComponent implements OnInit {
         if(error.status === 401) {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
+        } else if(error.status === 404) {
+          this.router.navigate(['404']);
         }
         this.message = error.error.message;
       }
@@ -51,7 +53,7 @@ export class EditStudentComponent implements OnInit {
         surname: this.form.controls.surname.value
       }).subscribe(
         (response: Student) => {
-          
+          this.router.navigate(['users/'+id+'/student']);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
@@ -62,6 +64,9 @@ export class EditStudentComponent implements OnInit {
           this.loginInvalid = true;
         }
       )
+    } else {
+      this.loginInvalid = true;
+      this.message = "Form invalid!"
     }
   }
 }

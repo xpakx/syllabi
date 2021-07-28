@@ -61,6 +61,9 @@ export class AddStudentComponent implements OnInit {
           this.loginInvalid = true;
         }
       )
+    } else {
+      this.loginInvalid = true;
+      this.message = "Form invalid!"
     }
   }
 }
