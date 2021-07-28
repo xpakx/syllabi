@@ -65,6 +65,8 @@ export class EditCourseComponent implements OnInit {
         if(error.status === 401) {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
+        } else if(error.status === 404) {
+          this.router.navigate(['404']);
         }
         this.message = error.error.message;
       }
