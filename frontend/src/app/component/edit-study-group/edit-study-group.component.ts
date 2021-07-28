@@ -51,6 +51,8 @@ export class EditStudyGroupComponent implements OnInit {
         if(error.status === 401) {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
+        } else if (error.status === 404) {
+          this.router.navigate(['404']);
         }
         this.message = error.error.message;
       }
@@ -69,7 +71,7 @@ export class EditStudyGroupComponent implements OnInit {
         teachers: this.teachers.map((p) => p.id)
       }).subscribe(
         (response: StudyGroup) => {
-          
+          this.router.navigate(['groups/'+response.id]);
         },
         (error: HttpErrorResponse) => {
           if(error.status === 401) {
