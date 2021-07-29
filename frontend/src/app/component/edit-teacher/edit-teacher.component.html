@@ -1,7 +1,7 @@
 <mat-card *ngIf="teacher">
     <mat-card-content>
         <form [formGroup]="form" (ngSubmit)="editTeacher()">
-            <h2>Edit teacher data for user USERN_NAME</h2>
+            <h2>Edit teacher data</h2>
             <mat-error *ngIf="loginInvalid">
                 Error: {{message}}
             </mat-error>
