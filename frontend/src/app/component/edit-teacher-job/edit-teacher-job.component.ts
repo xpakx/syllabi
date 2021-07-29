@@ -42,6 +42,8 @@ export class EditTeacherJobComponent implements OnInit {
         if(error.status === 401) {
           localStorage.removeItem("token");
           this.router.navigate(['login']);
+        } else if(error.status === 404) {
+          this.router.navigate(['404']);
         }
 
         this.message = error.error.message;
@@ -57,7 +59,7 @@ export class EditTeacherJobComponent implements OnInit {
         instituteId: this.institute
       }).subscribe(
         (response: Job) => {
-          
+          this.router.navigate(['user/'+id+'/teacher']);
         },
         (error: HttpErrorResponse) => {
           this.message = error.error.message;
@@ -71,6 +73,9 @@ export class EditTeacherJobComponent implements OnInit {
           this.loginInvalid = true;
         }
       )
+    } else {
+      this.message = "Form invalid!";
+      this.loginInvalid = true;
     }
   }
 
