@@ -7,3 +7,8 @@ mat-card {
 mat-form-field {
     display: block;
 }
+
+mat-card-footer {
+    margin: 2em 1em auto auto;
+    color: grey;
+}
