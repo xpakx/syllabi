@@ -17,7 +17,7 @@ import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -104,8 +104,6 @@ import { ModalCloseAdmissionComponent } from './component/modal-close-admission/
 import { RecruitStudentComponent } from './component/recruit-student/recruit-student.component';
 import { ShowUserAdmissionsComponent } from './component/show-user-admissions/show-user-admissions.component';
 import { HomeComponent } from './component/home/home.component';
-
-//import { MatOptionModule } from '@angular/material/op';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -205,7 +203,6 @@ export function tokenGetter() {
       config: {
         tokenGetter: tokenGetter,
         allowedDomains: ['localhost:8080', '192.168.1.204:8080'],
-        
       }
     }),
     FlexLayoutModule,
