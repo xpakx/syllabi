@@ -19,7 +19,7 @@ export class EditTeacherJobComponent implements OnInit {
   private formSubmitAttempt: boolean = false;
   job: Job | undefined;
   institute: number | undefined;
-  instituteName: string = "Choose institute";
+  instituteName: string = "Choose institute *";
 
   constructor(private teacherService: TeacherService, 
     private fb: FormBuilder, private dialog: MatDialog,
@@ -88,4 +88,8 @@ export class EditTeacherJobComponent implements OnInit {
     );
   }
 
+  deleteInstitute(): void {
+    this.institute = undefined;
+    this.instituteName = "Choose institute *";
+  }
 }
