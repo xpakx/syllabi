@@ -105,6 +105,9 @@ import { RecruitStudentComponent } from './component/recruit-student/recruit-stu
 import { ShowUserAdmissionsComponent } from './component/show-user-admissions/show-user-admissions.component';
 import { HomeComponent } from './component/home/home.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -219,7 +222,8 @@ export function tokenGetter() {
     MatListModule,
     MatGridListModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
