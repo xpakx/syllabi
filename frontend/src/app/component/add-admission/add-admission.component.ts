@@ -20,7 +20,7 @@ export class AddAdmissionComponent implements OnInit {
   public loginInvalid: boolean = false;
   public message: string = '';
   private formSubmitAttempt: boolean = false;
-  weights: AdmissionWeight[] = [];
+  weights: FormGroup[] = [];
   parentName: string = "";
 
   constructor(private programService: ProgramService, private service: AdmissionService,
@@ -51,13 +51,27 @@ export class AddAdmissionComponent implements OnInit {
 
   addAdmission(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    if(this.form.valid) {
+
+    let weights_adm: AdmissionWeight[] = [];
+    let valid_flag = true;
+
+    for(let weight of this.weights) {
+      if(weight.valid) {
+        weights_adm.push({name: weight.controls.name.value,
+        weight: weight.controls.weight.value})
+      }
+      else {
+        valid_flag = false;
+      }
+    }
+
+    if(this.form.valid && valid_flag) {
       this.service.addNew(id, {
         name: this.form.controls.name.value,
         studentLimit : this.form.controls.studentLimit.value,
         startDate : this.form.controls.startDate.value,
         endDate : this.form.controls.endDate.value,
-        weights: this.weights
+        weights: weights_adm
       }).subscribe(
         (response: Admission) => {
           this.router.navigate(["admissions/"+response.id]);
@@ -75,17 +89,11 @@ export class AddAdmissionComponent implements OnInit {
   }
 
   addWeight(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.hasBackdrop = true;
-    const dialogRef = this.dialog.open(ModalAddWeightComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(
-      (data) => {
-        if(data) {
-          this.weights.push({name: data.name, weight: data.weight});
-        }
-      }
-    );
+    let tempForm: FormGroup = this.fb.group({
+      name: ['', Validators.required],
+      weight: ['', [Validators.required, Validators.pattern("^[0-9]*$")]]
+    });
+    this.weights.push(tempForm);
   }
 
   deleteWeight(i: number): void {
