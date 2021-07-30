@@ -34,3 +34,8 @@ mat-list h3 button {
 mat-list h3 button mat-icon {
     font-size: 15px;
 }
+
+.half-width-input {
+    width: 50%;
+    display: inline-block;
+}

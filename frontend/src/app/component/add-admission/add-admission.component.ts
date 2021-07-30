@@ -85,6 +85,9 @@ export class AddAdmissionComponent implements OnInit {
           this.loginInvalid = true;
         }
       )
+    } else {
+      this.message = "Form invalid!";
+      this.loginInvalid = true;
     }
   }
 
