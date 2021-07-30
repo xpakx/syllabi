@@ -1,9 +1,3 @@
-.pageNav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 mat-dialog-actions {
     display: flex;
     align-items: right;
