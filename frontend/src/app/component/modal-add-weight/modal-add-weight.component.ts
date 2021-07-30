@@ -19,8 +19,10 @@ export class ModalAddWeightComponent {
 
 
   close(): void {
-    this.dialogRef.close({name: this.form.controls.name.value, 
+    if(!this.form.invalid) {
+      this.dialogRef.close({name: this.form.controls.name.value, 
       weight: this.form.controls.weight.value});
+    }
   }
 
   cancelAll() {
