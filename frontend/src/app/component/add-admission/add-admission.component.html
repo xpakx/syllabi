@@ -38,8 +38,13 @@
                 </h3>
                 <hr />
 
-                <div *ngFor="let weight of weights">
-                    {{weight.name}}: {{weight.weight}} 
+                <div *ngFor="let index of weights; index as i">
+                    {{weights[i].name}}: {{weights[i].weight}} 
+                    <button mat-icon-button (click)="deleteWeight(i)">
+                        <mat-icon>
+                            delete
+                        </mat-icon>
+                    </button>
                 </div>
 
             </mat-list>

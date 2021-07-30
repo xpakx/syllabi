@@ -87,4 +87,8 @@ export class AddAdmissionComponent implements OnInit {
       }
     );
   }
+
+  deleteWeight(i: number): void {
+    this.weights.splice(i, 1);
+  }
 }
