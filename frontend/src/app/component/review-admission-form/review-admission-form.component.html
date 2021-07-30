@@ -20,7 +20,10 @@
                 <input matInput [placeholder]="points.weight.name" [formControlName]="points.id" required>
             </mat-form-field>
 
-            <mat-checkbox formControlName="verify">Verified</mat-checkbox>
+            <div class="checkbox">
+                <mat-checkbox formControlName="verify">Verified</mat-checkbox>
+                <hr/>
+            </div>
 
             <button mat-raised-button color="secondary">Review</button>
         </form>
