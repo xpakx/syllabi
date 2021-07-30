@@ -13,7 +13,7 @@ export class ModalAddWeightComponent {
   constructor(private dialogRef: MatDialogRef<ModalAddWeightComponent>, private fb: FormBuilder) { 
     this.form = this.fb.group({
       name: ['', Validators.required],
-      weight: ['', Validators.required]
+      weight: ['', [Validators.required, Validators.pattern("^[0-9]*$")]]
     });
   }
 
