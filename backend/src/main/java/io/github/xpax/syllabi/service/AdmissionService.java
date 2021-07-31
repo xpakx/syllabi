@@ -144,8 +144,12 @@ public class AdmissionService {
             form.setDiscarded(false);
             form.setVerified(true);
             List<AdmissionPoints> points = admissionPointsRepository.findByFormId(formId);
-            int sum = points.stream()
-                    .mapToInt((p) -> p.getPoints() * p.getWeight().getWeight())
+            int sum = admissionRequest.getPoints().stream()
+                    .mapToInt((p) -> p.getPoints() * points.stream()
+                            .map(AdmissionPoints::getWeight)
+                            .filter(weight -> Objects.equals(weight.getId(), p.getWeightId()))
+                            .map(AdmissionWeight::getWeight)
+                            .findAny().orElse(0))
                     .sum();
             form.setPointsSum(sum);
         }
