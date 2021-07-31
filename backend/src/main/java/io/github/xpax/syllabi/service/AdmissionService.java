@@ -140,9 +140,7 @@ public class AdmissionService {
         form.setSurname(admissionRequest.getSurname());
         form.setDocumentId(admissionRequest.getDocumentId());
         if(admissionRequest.isVerify()) {
-            if(form.isDiscarded()) {
-                form.setDiscarded(false);
-            }
+            form.setDiscarded(false);
             form.setVerified(true);
             List<AdmissionPoints> points = admissionPointsRepository.findByFormId(formId);
             int sum = 0;
@@ -152,9 +150,7 @@ public class AdmissionService {
             form.setPointsSum(sum);
         }
         else {
-            if(form.isVerified()) {
-                form.setVerified(false);
-            }
+            form.setVerified(false);
             form.setDiscarded(true);
         }
         return admissionFormRepository.save(form);
