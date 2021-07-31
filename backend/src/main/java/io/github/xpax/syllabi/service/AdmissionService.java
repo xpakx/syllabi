@@ -143,10 +143,8 @@ public class AdmissionService {
         if(admissionRequest.isVerify()) {
             form.setDiscarded(false);
             form.setVerified(true);
-            List<AdmissionPoints> points = admissionPointsRepository.findByFormId(formId);
-            int sum = admissionRequest.getPoints().stream()
-                    .mapToInt((p) -> p.getPoints() * getWeightFromPointsList(points, p))
-                    .sum();
+            List<AdmissionWeight> weights = getWeightListForForm(formId);
+            int sum = getSumOfPoints(admissionRequest, weights);
             form.setPointsSum(sum);
         }
         else {
@@ -156,9 +154,20 @@ public class AdmissionService {
         return admissionFormRepository.save(form);
     }
 
-    private Integer getWeightFromPointsList(List<AdmissionPoints> pointsList, AdmissionPointRequest p) {
-        return pointsList.stream()
+    private List<AdmissionWeight> getWeightListForForm(Integer formId) {
+        return admissionPointsRepository.findByFormId(formId).stream()
                 .map(AdmissionPoints::getWeight)
+                .collect(Collectors.toList());
+    }
+
+    private int getSumOfPoints(AdmissionFormVerifyRequest request, List<AdmissionWeight> weightsList) {
+        return request.getPoints().stream()
+                .mapToInt((p) -> p.getPoints() * getWeightForPointsFromList(weightsList, p))
+                .sum();
+    }
+
+    private Integer getWeightForPointsFromList(List<AdmissionWeight> weightsList, AdmissionPointRequest p) {
+        return weightsList.stream()
                 .filter(weight -> Objects.equals(weight.getId(), p.getWeightId()))
                 .map(AdmissionWeight::getWeight)
                 .findAny().orElse(0);
