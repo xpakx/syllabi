@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
 
     public UserDetails loadUserToLogin(String username) throws UsernameNotFoundException {
         io.github.xpax.syllabi.entity.User user  = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No user with name" + username));
+                .orElseThrow(() -> new UsernameNotFoundException("No user with name " + username));
         return new User(user.getId().toString(), user.getPassword(), user.getRoles());
     }
 }
