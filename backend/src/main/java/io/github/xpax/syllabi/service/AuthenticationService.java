@@ -49,9 +49,9 @@ public class AuthenticationService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            throw new UserDisabledException();
+            throw new UserDisabledException("User " +username+" disabled!");
         } catch (BadCredentialsException e) {
-            throw new JwtBadCredentialsException();
+            throw new JwtBadCredentialsException("Invalid password!");
         }
     }
 
