@@ -143,10 +143,10 @@ public class AdmissionService {
             form.setDiscarded(false);
             form.setVerified(true);
             List<AdmissionPoints> points = admissionPointsRepository.findByFormId(formId);
-            int sum = 0;
-            for(AdmissionPoints point : points) {
-                sum += point.getPoints() * point.getWeight().getWeight();
-            }
+            int sum = points.stream()
+                    .map((p) -> p.getPoints() * p.getWeight().getWeight())
+                    .mapToInt((p) -> p)
+                    .sum();
             form.setPointsSum(sum);
         }
         else {
