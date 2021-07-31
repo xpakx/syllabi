@@ -12,4 +12,5 @@ public class AdmissionFormVerifyRequest {
     private String surname;
     private String documentId;
     private boolean verify;
+    private List<AdmissionPointRequest> points;
 }

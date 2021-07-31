@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -144,8 +145,7 @@ public class AdmissionService {
             form.setVerified(true);
             List<AdmissionPoints> points = admissionPointsRepository.findByFormId(formId);
             int sum = points.stream()
-                    .map((p) -> p.getPoints() * p.getWeight().getWeight())
-                    .mapToInt((p) -> p)
+                    .mapToInt((p) -> p.getPoints() * p.getWeight().getWeight())
                     .sum();
             form.setPointsSum(sum);
         }
