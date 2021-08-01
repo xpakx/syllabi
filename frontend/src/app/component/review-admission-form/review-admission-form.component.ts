@@ -69,7 +69,8 @@ export class ReviewAdmissionFormComponent implements OnInit {
         name: this.form.controls.name.value,
         surname: this.form.controls.surname.value,
         documentId: this.form.controls.documentId.value,
-        verify: this.form.controls.verify.value
+        verify: this.form.controls.verify.value,
+        points: points
       }).subscribe(
         (response: AdmissionForm) => {
           
