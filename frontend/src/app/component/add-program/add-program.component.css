@@ -38,3 +38,8 @@ mat-list h3 .buttonWrapper button mat-icon {
 .choice-invalid {
     color: red;
 }
+
+.choice-error {
+    font-size: 75%;
+    text-align: left;
+}
