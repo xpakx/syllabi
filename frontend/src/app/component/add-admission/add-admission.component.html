@@ -39,19 +39,21 @@
                 <hr />
 
                 <div *ngFor="let index of weights; index as i">
-                    <form [formGroup]="weights[i]" *ngIf="weights[i]">
-                        <mat-form-field class="half-width-input">
-                            <input matInput placeholder="Name" formControlName="name" required>
-                        </mat-form-field>
-                        <mat-form-field class="half-width-input">
-                            <input matInput placeholder="Weight" formControlName="weight" required>
-                        </mat-form-field>
-                    </form>
-                    <button mat-icon-button (click)="deleteWeight(i)">
-                        <mat-icon>
-                            delete
-                        </mat-icon>
-                    </button>
+                    <div class="weightWrapper">
+                        <form [formGroup]="weights[i]" *ngIf="weights[i]">
+                            <mat-form-field class="half-width-input">
+                                <input matInput placeholder="Name" formControlName="name" required>
+                            </mat-form-field>
+                            <mat-form-field class="half-width-input">
+                                <input matInput placeholder="Weight" formControlName="weight" required>
+                            </mat-form-field>
+                        </form>
+                        <button mat-icon-button (click)="deleteWeight(i)">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
+                     </div>
                 </div>
 
             </mat-list>
