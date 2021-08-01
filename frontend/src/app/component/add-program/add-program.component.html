@@ -33,9 +33,9 @@
                         </button>
                     </div>
                 </h3>
-                <hr />
+                <hr [ngClass]="[instituteInvalid ? 'choice-invalid' : '']" />
                 <mat-error *ngIf="instituteInvalid" class="choice-error">
-                    Please choose institute
+                    Please choose an institute
                 </mat-error>
             </mat-list>
 
