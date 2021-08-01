@@ -24,6 +24,9 @@
                 <input matInput [matDatepicker]="pickerStart" formControlName="startDate">
                 <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
                 <mat-datepicker #pickerStart></mat-datepicker>
+                <mat-error>
+                    Please specify a start time
+                </mat-error>
             </mat-form-field>
 
             <mat-form-field>
@@ -31,6 +34,9 @@
                 <input matInput [matDatepicker]="pickerEnd" formControlName="endDate">
                 <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
                 <mat-datepicker #pickerEnd></mat-datepicker>
+                <mat-error>
+                    Please specify an end time
+                </mat-error>
             </mat-form-field>
 
             <mat-list>
