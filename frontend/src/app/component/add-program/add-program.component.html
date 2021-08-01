@@ -7,6 +7,9 @@
             </mat-error>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Name" formControlName="name" required>
+                <mat-error>
+                    Please provide a program name
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <textarea matInput placeholder="Description" formControlName="description">
@@ -16,7 +19,7 @@
             
             <mat-list>
                 <h3 mat-subheader>
-                    {{instituteName}}
+                    <span  [ngClass]="[instituteInvalid ? 'choice-invalid' : '']">{{instituteName}}</span>
                     <div class="buttonWrapper">
                         <button mat-icon-button type="button" class="choice" *ngIf="institute" (click)="deleteInstitute()">
                             <mat-icon>
@@ -31,6 +34,9 @@
                     </div>
                 </h3>
                 <hr />
+                <mat-error *ngIf="instituteInvalid">
+                    Please choose institute
+                </mat-error>
             </mat-list>
 
             <button mat-raised-button color="secondary">Add</button>
