@@ -28,7 +28,7 @@ export class AddAdmissionComponent implements OnInit {
     private dialog: MatDialog, private router: Router) { 
     this.form = this.fb.group({
       name: ['', Validators.required],
-      studentLimit: ['', Validators.required],
+      studentLimit: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
     });
