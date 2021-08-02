@@ -7,9 +7,15 @@
             </mat-error>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Name" formControlName="name" required>
+                <mat-error>
+                    Please provide a semester name
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Number" formControlName="number" required>
+                <mat-error>
+                    Semester number should be a number
+                </mat-error>
             </mat-form-field>
             <button mat-raised-button color="secondary">Add</button>
         </form>
