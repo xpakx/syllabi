@@ -9,21 +9,39 @@
 
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Name" formControlName="name" required>
+                <mat-error>
+                    Please provide a course name
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Course Code" formControlName="courseCode" required>
+                <mat-error>
+                    Please provide a code
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="ISCED Code" formControlName="iscedCode" required>
+                <mat-error>
+                    Please provide an ISCED code
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Erasmus Code" formControlName="erasmusCode" required>
+                <mat-error>
+                    Please provide an Erasmus code
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="ECTS" formControlName="ects" required>
+                <mat-error>
+                    ECTS points must be a number
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Language" formControlName="language" required>
+                <mat-error>
+                    Please specify a course language
+                </mat-error>
             </mat-form-field>
             
             <mat-form-field class="full-width-input">

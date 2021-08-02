@@ -74,7 +74,7 @@ export class AddCourseComponent implements OnInit {
       )
     } else {
       this.invalid = true;
-      this.message = "Invalid form"; //this.form.getError.toString();
+      this.message = "Invalid form"; 
     }
   }
 
