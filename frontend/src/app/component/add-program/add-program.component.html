@@ -19,7 +19,7 @@
             
             <mat-list>
                 <h3 mat-subheader>
-                    <span  [ngClass]="[instituteInvalid ? 'choice-invalid' : '']">{{instituteName}}</span>
+                    <span [ngClass]="[instituteInvalid ? 'choice-invalid' : '']">{{instituteName}}</span>
                     <div class="buttonWrapper">
                         <button mat-icon-button type="button" class="choice" *ngIf="institute" (click)="deleteInstitute()">
                             <mat-icon>

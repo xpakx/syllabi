@@ -27,6 +27,7 @@ export class AddStudyGroupComponent implements OnInit {
   type!: CourseType | undefined;
   parentName: string = "";
   typeName: string = "Choose type *";
+  typeInvalid: boolean = false;
 
   constructor(private parentService: CourseYearService, private service: StudyGroupService,
     private route: ActivatedRoute, 
@@ -77,6 +78,12 @@ export class AddStudyGroupComponent implements OnInit {
           this.loginInvalid = true;
         }
       )
+    } else {
+      this.message = "Form invalid!";
+      if(!this.type) {
+        this.typeInvalid = true;
+      } 
+      this.loginInvalid = true;
     }
   }
 
@@ -105,6 +112,9 @@ export class AddStudyGroupComponent implements OnInit {
         if(data) {
           this.type = {id: data.id, name: data.name};
           this.typeName = data.name;
+          this.typeInvalid = false;
+        } else {
+          this.typeInvalid = true;
         }
       }
     );
@@ -113,5 +123,6 @@ export class AddStudyGroupComponent implements OnInit {
   deleteType(): void {
     this.type = undefined;
     this.typeName = "Choose type *";
+    this.typeInvalid = true;
   }
 }

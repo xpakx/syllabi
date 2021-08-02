@@ -7,6 +7,9 @@
             </mat-error>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Name" formControlName="name" required>
+                <mat-error>
+                    Please provide a group name
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <textarea matInput placeholder="Description" formControlName="description">
@@ -14,6 +17,9 @@
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Limit" formControlName="studentLimit" required>
+                <mat-error>
+                    Student limit should be a number
+                </mat-error>
             </mat-form-field>
 
             <div class="checkbox">
@@ -42,7 +48,7 @@
 
             <mat-list>
                 <h3 mat-subheader>
-                    {{typeName}}
+                    <span [ngClass]="[typeInvalid ? 'choice-invalid' : '']">{{typeName}}</span>
                     <div class="buttonWrapper">
                         <button mat-icon-button type="button" class="choice" *ngIf="type" (click)="deleteType()">
                             <mat-icon>
@@ -56,7 +62,10 @@
                         </button>
                     </div>
                 </h3>
-                <hr />
+                <hr [ngClass]="[typeInvalid ? 'choice-invalid' : '']" />
+                <mat-error *ngIf="typeInvalid" class="choice-error">
+                    Please choose a type
+                </mat-error>
             </mat-list>
 
             <button mat-raised-button color="secondary">Add</button>
