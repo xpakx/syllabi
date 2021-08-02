@@ -21,6 +21,7 @@ export class AddTeacherComponent implements OnInit {
   private formSubmitAttempt: boolean = false;
   institute: number | undefined;
   instituteName: string = "Choose institute *";
+  instituteInvalid: boolean = false;
   name: string = "";
 
   constructor(private teacherService: TeacherService, private userService: UserService,
@@ -76,7 +77,10 @@ export class AddTeacherComponent implements OnInit {
         }
       )
     } else {
-      this.message = "Select institute please!"
+      this.message = "Form invalid!"
+      if(!this.institute) {
+        this.instituteInvalid = true;
+      } 
       this.loginInvalid = true;
     }
   }
@@ -90,6 +94,9 @@ export class AddTeacherComponent implements OnInit {
       (data) => {
         if(data) {
           this.institute = data.id; this.instituteName = data.name;
+          this.instituteInvalid = false
+        } else {
+          this.instituteInvalid = true;
         }
       }
     );
@@ -98,6 +105,7 @@ export class AddTeacherComponent implements OnInit {
   deleteInstitute(): void {
     this.institute = undefined;
     this.instituteName = "Choose institute *";
+    this.instituteInvalid = true;
   }
 
 }

@@ -7,12 +7,20 @@
             </mat-error>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Name" formControlName="name" required>
+                <mat-error>
+                    Please provide a name
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Surname" formControlName="surname" required>
+                <mat-error>
+                    Please provide a surname
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
-                <input matInput placeholder="Title" formControlName="title" required>
+                <input matInput placeholder="Title" formControlName="title" required><mat-error>
+                    Please provide a title
+                </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Phone" formControlName="phone">
@@ -25,11 +33,14 @@
             </mat-form-field>
             <mat-form-field class="full-width-input">
                 <input matInput placeholder="Job" formControlName="jobName" required>
+                <mat-error>
+                    Please provide a job name
+                </mat-error>
             </mat-form-field>
 
             <mat-list>
                 <h3 mat-subheader>
-                    {{instituteName}}
+                    <span [ngClass]="[instituteInvalid ? 'choice-invalid' : '']">{{instituteName}}</span>
                     <div class="buttonWrapper">
                         <button mat-icon-button type="button" class="choice" *ngIf="institute" (click)="deleteInstitute()">
                             <mat-icon>
@@ -43,7 +54,10 @@
                         </button>
                     </div>
                 </h3>
-                <hr />
+                <hr [ngClass]="[instituteInvalid ? 'choice-invalid' : '']" />
+                <mat-error *ngIf="instituteInvalid" class="choice-error">
+                    Please choose an institute
+                </mat-error>
             </mat-list>
 
             <button mat-raised-button color="secondary">Add</button>
