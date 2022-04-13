@@ -21,14 +21,12 @@ import java.util.stream.Collectors;
 public class CourseService {
     private final CourseRepository courseRepository;
     private final InstituteRepository instituteRepository;
-    private final ProgramRepository programRepository;
     private final SemesterRepository semesterRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, InstituteRepository instituteRepository, ProgramRepository programRepository, SemesterRepository semesterRepository) {
+    public CourseService(CourseRepository courseRepository, InstituteRepository instituteRepository, SemesterRepository semesterRepository) {
         this.courseRepository = courseRepository;
         this.instituteRepository = instituteRepository;
-        this.programRepository = programRepository;
         this.semesterRepository = semesterRepository;
     }
 

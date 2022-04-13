@@ -43,8 +43,6 @@ class CourseServiceTest {
     @Mock
     private InstituteRepository instituteRepository;
     @Mock
-    private ProgramRepository programRepository;
-    @Mock
     private SemesterRepository semesterRepository;
 
     private CourseService courseService;
@@ -121,7 +119,7 @@ class CourseServiceTest {
     }
 
     private void injectMocks() {
-        courseService = new CourseService(courseRepository, instituteRepository, programRepository, semesterRepository);
+        courseService = new CourseService(courseRepository, instituteRepository, semesterRepository);
     }
 
     @Test
